@@ -77,8 +77,17 @@ def db():
 # ---------- HOME ----------
 @app.route('/')
 def Home():
-    return render_template("Home.html")
 
+    # 🔹 Customer already logged in?
+    if session.get('Cust num'):
+        return redirect('/Customer_Portal/Dashboard')
+
+    # 🔹 Mediator already logged in?
+    if session.get('Med Username'):
+        return redirect('/Mediator_Portal/Dashboard')
+
+    # 🔹 Otherwise show home page
+    return render_template("Home.html")
 
 # ---------- CUSTOMER REGISTRATION ----------
 @app.route('/Customer_Ragistration', methods=['GET','POST'])
@@ -868,6 +877,7 @@ def refundform():
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
