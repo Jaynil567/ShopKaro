@@ -21,7 +21,7 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 app = Flask(__name__)
 app.secret_key = "heavy-secret"
-app.permanent_session_lifetime = timedelta(days=7)
+app.permanent_session_lifetime = timedelta(days=60)
 
 cloudinary.config(
     cloud_name="dajnnvznf",
@@ -868,6 +868,7 @@ def refundform():
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
