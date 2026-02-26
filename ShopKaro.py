@@ -32,9 +32,9 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-clint_secret="client_secret.json"
-ABC = "abc.json"
-creds = ServiceAccountCredentials.from_json_keyfile_name(ABC, SCOPES)
+clint_secret=json.loads(os.getenv("clint_secret"))
+ABCD = json.loads(os.getenv("ABCD"))
+creds = ServiceAccountCredentials.from_json_keyfile_name(ABCD, SCOPES)
 client = gspread.authorize(creds)
 
 
@@ -856,7 +856,8 @@ def refundform():
 
 # ---------- RUN ----------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080,debug=True)
+    app.run(host="0.0.0.0", port=8080)
+
 
 
 
