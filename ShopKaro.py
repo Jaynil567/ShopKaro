@@ -13,6 +13,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from google.oauth2.service_account import Credentials as SACredentials
+from datetime import timedelta
 import json
 import os
 
@@ -20,6 +21,7 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 app = Flask(__name__)
 app.secret_key = "heavy-secret"
+app.permanent_session_lifetime = timedelta(days=7)
 
 cloudinary.config(
     cloud_name="dajnnvznf",
@@ -101,17 +103,17 @@ def Customer_Ragistration():
             conn.commit()
             cur.close()
             conn.close()
+
+            CustomerSheet=client.open("ShopKaro").sheet2
+            data = {"Name":name,"Whatsapp":num,"Email":email,"UPI ID":upi}
+            safe_append(CustomerSheet, data)
+
+            session.permanent = True
             session['Cust name'] = name
             session['Cust num'] = num
             session['Cust passw'] = passw
             session['Cust email'] = email
             session['Cust upi']=upi
-
-            spreadsheet = client.open("ShopKaro")
-            CustomerSheet = spreadsheet.get_worksheet(1)  # 0 = first sheet, 1 = second sheet
-            data = {"Name":name,"Whatsapp":num,"Email":email,"UPI ID":upi}
-            safe_append(CustomerSheet, data)
-            
             return render_template("Registration_Success.html")
         cur.close()
         conn.close()
@@ -135,6 +137,7 @@ def Customer_Login():
         else:
             cur.close()
             conn.close()
+            session.permanent = True
             session['Cust name'] = row[1]
             session['Cust num'] = row[2]
             session['Cust passw'] = row[3]
@@ -235,6 +238,8 @@ def Customer_Portal_Dashboard():
     email=session.get('Cust email')
     if num == None:
         return redirect('/')
+    elif session.get('Med num') != None :
+        return redirect("/Mediator_Portal/Dashboard")
 
     sheet = client.open("ShopKaro").sheet1
     all_values = sheet.get_all_values()
@@ -249,9 +254,11 @@ def Customer_Portal_Dashboard():
     order_reviewer_index = headers.index("Profile Name")
     user_orders = []
 
+    print(all_values)
+
     TO = 0
     for row in data_rows:
-        if row[mobile_index] == num:
+        if str(row[mobile_index]) == str(num):
             TO+=1
             user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index]))
     
@@ -286,6 +293,7 @@ def Mediator_Login():
         else:
             cur.close()
             conn.close()
+            session.permanent = True
             session['Med Username'] = row[1]
             session['Med name'] = row[2]
             session['Med num'] = row[3]
@@ -860,8 +868,6 @@ def refundform():
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
-
-
 
 
 
