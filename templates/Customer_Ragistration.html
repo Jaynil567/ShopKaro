@@ -120,14 +120,6 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
     let pass = document.getElementById("password").value;
     let cpass = document.getElementById("confirmPassword").value;
 
-    let regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-
-    if(!regex.test(pass)){
-        alert("Password must be at least 8 characters and include:\n1 Capital\n1 Small\n1 Number\n1 Special Character");
-        e.preventDefault();
-        return;
-    }
-
     if(pass !== cpass){
         alert("Passwords do not match");
         e.preventDefault();
@@ -137,4 +129,5 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
 
 </body>
 </html>
+
 
