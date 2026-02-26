@@ -39,6 +39,7 @@ client = gspread.authorize(creds)
 
 
 
+
 # ----------send email for password --------------
 def send_verification_email(to_email, code):
     try:
@@ -86,6 +87,7 @@ def Customer_Ragistration():
         num = request.form['Num']
         passw = request.form['P']
         email = request.form['E']
+        upi = request.form['upi']
         conn = db()
         cur = conn.cursor()
         cur.execute("SELECT * FROM ShopKaro_Customers WHERE Number=%s", (num,))
@@ -93,8 +95,8 @@ def Customer_Ragistration():
             msg = "This mobile number is already registered"
         else:
             cur.execute(
-                "INSERT INTO ShopKaro_Customers (Name, Number, passw, email) VALUES (%s,%s,%s,%s)",
-                (name, num, passw, email)
+                "INSERT INTO ShopKaro_Customers (Name, Number, passw, email,upi) VALUES (%s,%s,%s,%s,%s)",
+                (name, num, passw, email,upi)
             )
             conn.commit()
             cur.close()
@@ -103,6 +105,7 @@ def Customer_Ragistration():
             session['Cust num'] = num
             session['Cust passw'] = passw
             session['Cust email'] = email
+            session['Cust upi']=upi
             return render_template("Registration_Success.html")
         cur.close()
         conn.close()
@@ -130,6 +133,7 @@ def Customer_Login():
             session['Cust num'] = row[2]
             session['Cust passw'] = row[3]
             session['Cust email'] = row[4]
+            session['Cust upi']=row[5]
             return redirect('/Customer_Portal/Dashboard')
         cur.close()
         conn.close()
