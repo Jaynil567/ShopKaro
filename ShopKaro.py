@@ -34,7 +34,7 @@ SCOPES = [
 
 clint_secret=json.loads(os.getenv("clint_secret"))
 ABCD = json.loads(os.getenv("ABCD"))
-creds = ServiceAccountCredentials.from_json_keyfile_name(ABCD, SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_dict(ABCD, SCOPES)
 client = gspread.authorize(creds)
 
 
@@ -857,6 +857,7 @@ def refundform():
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
