@@ -106,6 +106,11 @@ def Customer_Ragistration():
             session['Cust passw'] = passw
             session['Cust email'] = email
             session['Cust upi']=upi
+
+            CustomerSheet=client.open("ShopKaro").sheet2
+            data = {"Name":name,"Whatsapp":num,"Email":email,"UPI ID":upi}
+            safe_append(CustomerSheet, data)
+            
             return render_template("Registration_Success.html")
         cur.close()
         conn.close()
@@ -854,6 +859,7 @@ def refundform():
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
