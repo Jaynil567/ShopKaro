@@ -39,8 +39,6 @@ client = gspread.authorize(creds)
 
 
 
-
-
 # ----------send email for password --------------
 def send_verification_email(to_email, code):
     try:
@@ -559,23 +557,17 @@ def create_sheet():
 
     # -------- Add Header Row --------
     headers = [[
-        "TimeStamp",
         "Brand Name",
-        "Profile Name",
         "Order Date",
         "Product Name",
-        "Order SS",
-        "Order Amount",
         "Order ID",
-        "Email",
-        "Whatsapp",
-        "Status",
-        "UPI ID",
-        "Refund Amount",
-        "Mediator name",
+        "Profile Name",
+        "Order Amount",
+        "Order SS",
         "Delivered SS",
         "Review SS",
-        "Review Link"
+        "Review Link",
+        "Status"
     ]]
 
     body = {
