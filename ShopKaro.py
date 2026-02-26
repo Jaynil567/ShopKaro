@@ -686,7 +686,7 @@ def orderform():
     num = session.get('Cust num')
     passw = session.get('Cust passw')
     email = session.get('Cust email')
-
+    upi = session.get("Cust upi")
     if request.method == "POST":
 
         brand = request.form.get("brand")
@@ -744,6 +744,7 @@ def orderform():
 
     return render_template(
         "Customer_Order_Form.html",
+        upi = upi,
         name=name,
         num=num,
         passw=passw,
@@ -853,6 +854,7 @@ def refundform():
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
