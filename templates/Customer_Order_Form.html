@@ -274,7 +274,10 @@ body{
                 </div>
 
                 
-                
+                <div class="col-md-6">
+                    <label class="form-label text-warning">UPI ID *</label>
+                    <input type="text" class="form-control" name="upi" {% if upi %} value="{{ upi }}" {% endif %} placeholder="Enter UPI ID" required>
+                </div>
 
                 
 
@@ -283,10 +286,7 @@ body{
                     <input type="file" class="form-control" name="screenshot" required>
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label text-warning">UPI ID *</label>
-                    <input type="text" class="form-control" name="upi" {% if upi %} value="{{ upi }}" {% endif %} placeholder="Enter UPI ID" required>
-                </div>
+                
 
             </div>
 
@@ -348,6 +348,7 @@ function toggleSidebar(){
 
 </body>
 </html>
+
 
 
 
