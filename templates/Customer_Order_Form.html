@@ -285,7 +285,7 @@ body{
 
                 <div class="col-md-6">
                     <label class="form-label text-warning">UPI ID *</label>
-                    <input type="text" class="form-control" name="upi" placeholder="Enter UPI ID" required>
+                    <input type="text" class="form-control" name="upi" {% if upi %} value="{{ upi }}" {% endif %} placeholder="Enter UPI ID" required>
                 </div>
 
             </div>
@@ -348,6 +348,7 @@ function toggleSidebar(){
 
 </body>
 </html>
+
 
 
 
