@@ -460,9 +460,9 @@
                             <td>{{ order[2] }}</td>
                             <td >
                                 {% if order[2]=='Done'%}
-                                <span class="payout-chip-done">₹60</span>
+                                <span class="payout-chip-done">₹{{ order[4] }}</span>
                                 {% else %}
-                                <span class="payout-chip-pending">₹60</span>
+                                <span class="payout-chip-pending">₹{{ order[4] }}</span>
                                 {% endif %}
                             </td>
                             <td class="text-end">
