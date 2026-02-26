@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Customer Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        .orders-table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .orders-table {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .orders-table thead tr {
+            background: #0b1220;
+        }
+
+        .orders-table thead th {
+            padding: 18px 20px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 500;
+            color: #64748b;
+            letter-spacing: 0.5px;
+        }
+
+        .orders-table thead th:last-child {
+            text-align: right;
+        }
+
+        .orders-table tbody tr {
+            background: #111827;
+            transition: 0.3s ease;
+        }
+
+        .orders-table td {
+            padding: 18px 20px;
+            color: #e5e7eb;
+            border: none;
+        }
+
+        .orders-table td:last-child {
+            text-align: right;
+        }
+
+        .orders-wrapper {
+            padding: 10px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #0a0f1f, #0f172a);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .orders-title {
+            font-weight: 600;
+            color: #facc15;
+            letter-spacing: 0.5px;
+        }
+
+        .orders-count {
+            padding: 8px 18px;
+            border-radius: 50px;
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .orders-table {
+            border-collapse: separate;
+            border-spacing: 0 14px;
+        }
+
+        .orders-table thead th {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 13px;
+            padding-bottom: 10px;
+        }
+
+        .orders-table tbody tr {
+            background: #111827;
+            border-radius: 14px;
+            transition: 0.3s ease;
+        }
+
+        .orders-table tbody tr:hover {
+            background: #1f2937;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .orders-table td {
+            padding: 18px 20px;
+            color: #e5e7eb;
+            border: none;
+        }
+
+        .order-id {
+            color: #38bdf8;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+
+        .payout-chip-done {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 13px;
+            color: white;
+        }
+
+        .payout-chip-pending {
+            background: linear-gradient(135deg, #f4ff26, #575c03);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 13px;
+            color: white;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            height: 100vh;
+            background: linear-gradient(180deg, #020617, #020617);
+            padding: 20px;
+        }
+
+        .sidebar h4 {
+            color: #facc15;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            color: #cbd5f5;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #1e293b;
+            color: #ffffff;
+        }
+
+        /* ===== TOPBAR ===== */
+        .topbar {
+            height: 56px;
+            margin-left: 230px;
+            background: #020617;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            padding: 0 18px;
+        }
+
+        .menu-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+            color: #f8fafc;
+        }
+
+        .top-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* ===== PROFILE ===== */
+        .profile {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .profile-role {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #22d3ee);
+            color: #020617;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            margin-left: 230px;
+            padding: 24px;
+        }
+
+        /* ===== STATS CARDS ===== */
+        /* DESKTOP - 4 in row */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .stat-card {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 14px;
+            padding: 18px;
+            transition: .3s;
+        }
+
+        /* MOBILE - 2x2 */
+        @media (max-width: 768px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .stat-card {
+                height: 120px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                border-radius: 20px;
+            }
+        }
+
+        .stat-card {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 14px;
+            padding: 18px;
+            transition: .3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 0 1px #38bdf8;
+        }
+
+        .stat-icon {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        /* ===== WELCOME CARD ===== */
+        .welcome {
+            background: linear-gradient(135deg, #1e293b, #020617);
+            border-radius: 16px;
+            padding: 22px;
+            border: 1px solid #1e293b;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:768px) {
+            .sidebar {
+                left: -240px
+            }
+
+            .sidebar.active {
+                left: 0
+            }
+
+            .topbar,
+            .main {
+                margin-left: 0
+            }
+
+            .menu-btn {
+                display: block
+            }
+        }
+
+        /* Sidebar */
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                left: -260px;
+                top: 0;
+                width: 260px;
+                height: 100%;
+                background: #111;
+                transition: 0.3s;
+                z-index: 1000;
+            }
+
+            /* Open sidebar */
+            #sidebar.active {
+                left: 0;
+            }
+        }
+
+        /* Overlay */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        #overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="overlay"></div>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <h4>ShopKaro Deals</h4>
+        <a href="/Customer_Portal/Dashboard" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="/orderform"><i class="bi bi-file-earmark-text"></i> Add Order</a>
+        <a href="/Logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </div>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <i class="bi bi-list menu-btn" onclick="openSidebar()"></i>
+        <div class="top-title">Dashboard</div>
+
+        <div class="profile">
+            <div class="text-end me-2">
+                <div class="profile-name">{{ name }}</div>
+                <div class="profile-role">Customer</div>
+            </div>
+            <div class="avatar">{{ name[0] }}</div>
+        </div>
+    </div>
+
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="welcome mb-3">
+            <h5>Welcome, {{ name }} 👋</h5>
+        </div>
+        <div class="stats">
+            <div class="stat-card" onclick="goOF()">
+                <div class="stat-icon text-info"><i class="bi bi-bag-check"></i></div>
+                <div class="stat-value">{{TO}}</div>
+                <div class="stat-label">Order Forms</div>
+            </div>
+
+            <div class="stat-card"">
+                <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
+                <div class="stat-value">{{CO}}</div>
+                <div class="stat-label">Refund Forms</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon text-warning"><i class="bi bi-clock"></i></div>
+                <div class="stat-value">{{PO}}</div>
+                <div class="stat-label">Pending</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon text-primary"><i class="bi bi-wallet2"></i></div>
+                <div class="stat-value">₹{{R}}</div>
+                <div class="stat-label">Refund</div>
+            </div>
+        </div>
+
+        
+        <div class="orders-wrapper mt-5">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="orders-title mb-0">
+                    My Orders
+                </h3>
+
+                <div class="orders-count btn d-flex align-items-center justify-content-center" onclick="goOF()">
+    <i class="bi bi-plus fs-4 me-2"></i> Add Order
+</div>
+            </div>
+{% if orders %}
+            <div class="orders-table-container">
+
+                <table class="orders-table w-100">
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Form Status</th>
+                            <th>Payout</th>
+                            <th class="text-end">Refund Form</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="order-id">
+                                {{ order[0] }}
+                            </td>
+                            <td>{{ order[1] }}</td>
+                            <td>{{ order[2] }}</td>
+                            <td >
+                                {% if order[2]=='Done'%}
+                                <span class="payout-chip-done">₹60</span>
+                                {% else %}
+                                <span class="payout-chip-pending">₹60</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if order[2]=='Done'%}
+                                <i class="bi bi-check-circle-fill btn" style="color:green;"></i>
+                                {% else %}
+                                <button class="btn" onclick="goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')"><i class="bi bi-file-earmark-text btn btn-primary"></i></button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+            {% else %}
+        <p class="text-light mt-4">No orders yet.</p>
+        {% endif %}
+        </div>
+        
+
+
+    </div>
+
+    <script>
+        document.addEventListener("click", function (e) {
+            let sidebar = document.querySelector(".sidebar");
+
+            // ONLY mobile par close hoga
+            if (window.innerWidth <= 768) {
+                if (!e.target.closest(".sidebar") && !e.target.closest(".menu-btn")) {
+                    sidebar.classList.remove("active");
+                }
+            }
+        });
+    </script>
+    <script>
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+
+        // open sidebar
+        function openSidebar() {
+            sidebar.classList.add("active");
+            overlay.classList.add("active");
+        }
+
+        // close sidebar
+        function closeSidebar() {
+            sidebar.classList.remove("active");
+            overlay.classList.remove("active");
+        }
+
+        // overlay click -> close sidebar
+        overlay.addEventListener("click", closeSidebar);
+
+        // outside click (optional advanced)
+        document.addEventListener("click", function (e) {
+            if (!sidebar.contains(e.target) && !e.target.closest(".menu-btn")) {
+                closeSidebar();
+            }
+        });
+
+
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
+        }
+
+
+        function goOF() {
+            window.location.href = "{{ url_for('orderform')}}";
+        }
+
+        function goRF(OI,DC,RN) {
+            window.location.href = "/refundform?id=" + OI +"&DealCode="+ DC +"&ProfileName="+RN;
+        }
+    </script>
+
+</body>
+
+</html>
