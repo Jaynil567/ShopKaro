@@ -891,9 +891,18 @@ def refundform():
     else :
         return render_template("Customer_Refund_Form.html",RN=RN,DC=DC, name=name,msg=msg, num=num, passw=passw, email=email)
 
+
+@app.route("/open-sheet/<brand>")
+def open_sheet(brand):
+
+    spreadsheet = client.open(brand)   # existing sheet open
+    sheet_url = spreadsheet.url        # get link
+
+    return redirect(sheet_url)
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
