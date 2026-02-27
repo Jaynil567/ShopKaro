@@ -239,7 +239,7 @@ body{
         <h5>Welcome, {{ MN }} 👋</h5>
     </div>
     <div class="stats">
-        <div class="stat-card" onclick="/open-sheet/ShopKaro">
+        <div class="stat-card" onclick="OpenSheet("ShopKaro")">
             <div class="stat-icon text-info"><i class="bi bi-box"></i></div>
             <div class="stat-value">{{TO}}</div>
             <div class="stat-label">Total Orders</div>
@@ -300,6 +300,11 @@ body{
 
 
 <script>
+
+
+    function OpenSheet(Name){
+        window.location.href = '/open-sheet/'+Name;
+    }
 
 document.addEventListener("click", function(e) {
     let sidebar = document.querySelector(".sidebar");
