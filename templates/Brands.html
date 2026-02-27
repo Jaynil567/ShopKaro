@@ -225,6 +225,33 @@
             }
         }
 
+        @media (max-width: 768px) {
+
+    .orders-table th:nth-child(3),
+    .orders-table td:nth-child(3) {
+        display: none;   /* Hide No of Orders */
+    }
+
+    .orders-table th:nth-child(4),
+    .orders-table td:nth-child(4) {
+        text-align: center;
+    }
+
+    .orders-table td {
+        padding: 14px 10px;
+        font-size: 13px;
+    }
+
+}
+
+        @media (max-width: 768px) {
+
+    .btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+}
         /* Overlay */
         #overlay {
             position: fixed;
@@ -374,7 +401,7 @@
                 </div>
             </div>
             {% if brands %}
-            <div class="orders-table-container">
+            <div class="orders-table-container table-responsive" >
 
                 <table class="orders-table w-100">
 
@@ -498,5 +525,6 @@
     </script>
 
 </body>
+
 
 </html>
