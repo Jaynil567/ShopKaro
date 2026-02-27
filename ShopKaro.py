@@ -40,8 +40,6 @@ creds = ServiceAccountCredentials.from_json_keyfile_dict(ABCD, SCOPES)
 client = gspread.authorize(creds)
 
 
-
-
 # ----------send email for password --------------
 def send_verification_email(to_email, code):
     try:
@@ -263,7 +261,6 @@ def Customer_Portal_Dashboard():
     order_reviewer_index = headers.index("Profile Name")
     user_orders = []
 
-    print(all_values)
 
     TO = 0
     for row in data_rows:
@@ -419,7 +416,7 @@ def Mediator_Portal_Dashboard():
             Payout+=int(i[1])
             CO+=1
     
-    return render_template('Mediator_Dashboard.html',Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout,url=sheeturl)
+    return render_template('Mediator_Dashboard.html',Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl)
 
 
 
@@ -442,19 +439,13 @@ def add_deal_code():
             return redirect(f'/Mediator_Portal/Dashboard?Nmsg={Nmsg}')
             
         else:
-            cur.execute(
-                "INSERT INTO ShopKaro_Sellers (Seller) VALUES (%s)",
-                (seller,)
-            )
-            conn.commit()
+            
             cur.close()
             conn.close()
             session['Brand'] = seller
             return redirect('/login')
         
     return redirect('/Mediator_Portal/Dashboard')
-
-
 @app.route("/login")
 def login():
 
@@ -491,8 +482,6 @@ def login():
     session["state"] = state
 
     return redirect(auth_url)
-
-
 # ---------------- CALLBACK ----------------
 @app.route("/callback")
 def callback():
@@ -519,10 +508,8 @@ def callback():
     conn.close()
 
     return redirect("/create-sheet")
-
 from google.oauth2.credentials import Credentials
 import json
-
 def get_mediator_creds(username):
     conn = db()
     cur = conn.cursor(dictionary=True)
@@ -540,9 +527,7 @@ def get_mediator_creds(username):
     token_data = json.loads(row["token"])
     creds = Credentials.from_authorized_user_info(token_data)
     return creds
-
 from google.auth.transport.requests import Request
-
 def refresh_if_needed(creds, username):
     if creds.expired and creds.refresh_token:
         creds.refresh(Request())
@@ -561,10 +546,8 @@ def refresh_if_needed(creds, username):
         cur.close()
         conn.close()
     return creds
-
 # ---------------- CREATE SHEET ----------------
 from google.auth.transport.requests import Request
-
 @app.route("/create-sheet")
 def create_sheet():
 
@@ -638,6 +621,7 @@ def create_sheet():
         body=permission
     ).execute()
 
+    
 # -------- Format Header Like Screenshot --------
 
     requests = [
@@ -710,9 +694,73 @@ def create_sheet():
     ).execute()
 
     Pmsg=f"Added :- {Brand}"
+    conn = db()
+    cur=conn.cursor()
+    cur.execute("INSERT INTO ShopKaro_Sellers (Seller) VALUES (%s)",(Brand,))
+    conn.commit()
+    cur.close()
+    conn.close()
     return redirect(f'/Mediator_Portal/Dashboard?Pmsg={Pmsg}')
 
 
+@app.route("/Brands")
+def Brands():
+
+    MUN = session.get('Med Username')
+    MN = session.get('Med name')
+    MNUM = session.get('Med num')
+
+    brands = []
+
+    conn = db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT Seller FROM ShopKaro_Sellers")
+    db_brands = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    for b in db_brands:
+        brandSheet = client.open(b[0]).sheet1
+        url=brandSheet.url
+        data = brandSheet.get_all_values()
+        row = data[1:]
+        brands.append((b[0], len(row),url))
+
+    return render_template("Brands.html", MUN=MUN, MN=MN, MNUM=MNUM, brands=brands)
+   
+
+@app.route("/delete-brand/<brand>")
+def delete_brand(brand):
+
+    username = session.get("Med Username")
+
+    if not username:
+        return redirect("/")
+
+    creds = get_mediator_creds(username)
+    creds = refresh_if_needed(creds, username)
+
+    drive_service = build("drive", "v3", credentials=creds)
+
+    try:
+        spreadsheet = client.open(brand)
+        sheet_id = spreadsheet.id
+
+        # 🔥 Delete using mediator (Owner)
+        drive_service.files().delete(fileId=sheet_id).execute()
+
+    except Exception as e:
+        print("Delete Error:", e)
+
+    # 🔹 Remove brand from MySQL
+    conn = db()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM ShopKaro_Sellers WHERE Seller=%s", (brand,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect("/Mediator_Portal/Dashboard")
 
 
 def safe_append(sheet, data_dict):
@@ -892,21 +940,19 @@ def refundform():
     else :
         return render_template("Customer_Refund_Form.html",RN=RN,DC=DC, name=name,msg=msg, num=num, passw=passw, email=email)
 
+@app.route("/open-sheet/<Name>")
+def open_sheet(Name):
 
-@app.route("/open-sheet/<brand>")
-def open_sheet(brand):
-
-    spreadsheet = client.open(brand)   # existing sheet open
+    spreadsheet = client.open(Name)   # existing sheet open
     sheet_url = spreadsheet.url        # get link
 
     return redirect(sheet_url)
+
+
+
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
-
-
-
-
 
 
 
