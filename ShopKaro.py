@@ -760,7 +760,7 @@ def delete_brand(brand):
     cur.close()
     conn.close()
 
-    return redirect("/Mediator_Portal/Dashboard")
+    return redirect("/Brands")
 
 
 def safe_append(sheet, data_dict):
@@ -953,6 +953,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
