@@ -211,7 +211,7 @@ body{
 <div class="sidebar" id="sidebar">
     <h4>ShopKaro Deals</h4>
     <a href="/Mediator_Portal/Dashboard" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a>
-    <a href="/open-sheet/ShopKaro" target="_blank"><i class="bi bi-mailbox"></i> Google Sheet</a>
+    <a href="{{ url }}" target="_blank"><i class="bi bi-mailbox"></i> Google Sheet</a>
     <a href="#"><i class="bi bi-send-slash"></i> Send Refund Form Requist</a>
     <a href="#"><i class="bi bi-gear"></i> Settings</a>
     <a href="/Logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
@@ -219,7 +219,7 @@ body{
 
 <!-- TOPBAR -->
 <div class="topbar">
-    <i class="bi bi-list menu-btn" onclick="openSidebar()"></i>
+    <i class="bi bi-list menu-btn" onclick="window.open('{{ url }}', '_blank'))"></i>
     <div class="top-title">Dashboard</div>
 
     <div class="profile">
