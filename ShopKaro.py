@@ -398,6 +398,7 @@ def Mediator_Portal_Dashboard():
         return redirect('/')
     
     sheet = client.open("ShopKaro").sheet1
+    sheeturl=sheet.url
     all_values = sheet.get_all_values()
     headers = all_values[0]
     data_rows = all_values[1:]
@@ -418,7 +419,7 @@ def Mediator_Portal_Dashboard():
             Payout+=int(i[1])
             CO+=1
     
-    return render_template('Mediator_Dashboard.html',Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout)
+    return render_template('Mediator_Dashboard.html',Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout,url=sheeturl)
 
 
 
@@ -902,6 +903,7 @@ def open_sheet(brand):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
