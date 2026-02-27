@@ -394,14 +394,31 @@ def Mediator_Portal_Dashboard():
     MN = session.get('Med name')
     MNUM = session.get('Med num')
 
-
     if MUN == None:
         return redirect('/')
-        
-    TO=0
-    RF=0
     
-    return render_template('Mediator_Dashboard.html',Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, RF=RF, TP=RF*60)
+    sheet = client.open("ShopKaro").sheet1
+    all_values = sheet.get_all_values()
+    headers = all_values[0]
+    data_rows = all_values[1:]
+    order_status_index = headers.index("Status")
+    order_refundAmount_index = headers.index("Refund Amount")
+    user_orders = []
+
+    TO=0
+    for row in data_rows:
+        TO+=1
+        user_orders.append((row[order_status_index],row[order_refundAmount_index]))
+
+    
+    CO=0
+    Payout=0
+    for i in user_orders:
+        if i[0]=="Done":
+            Payout+=int(i[1])
+            CO+=1
+    
+    return render_template('Mediator_Dashboard.html',Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout)
 
 
 
@@ -877,6 +894,7 @@ def refundform():
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
