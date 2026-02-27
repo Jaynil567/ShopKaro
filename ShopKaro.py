@@ -274,7 +274,7 @@ def Customer_Portal_Dashboard():
         if i[2]=="Done":
             Payout+=int(i[4])
             RO+=1
-    
+    user_orders=user_orders[::-1]
     
     return render_template("Customer_Dashboard.html",orders=user_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout)
 
@@ -953,6 +953,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
