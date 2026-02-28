@@ -364,17 +364,44 @@
         #overlay.active {
             display: block;
         }
+
+        #global-loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #1e293b;
+    border-top: 6px solid #38bdf8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
     </style>
 </head>
 
 <body>
+    <div id="global-loader" style="display:none;">
+    <div class="spinner"></div>
+</div>
     <div id="overlay"></div>
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <h4>ShopKaro Deals</h4>
-        <a href="/Customer_Portal/Dashboard" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a href="/orderform"><i class="bi bi-file-earmark-text"></i> Add Order</a>
-        <a href="/Logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        <a href="/Customer_Portal/Dashboard" onclick="showLoader()" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="/orderform" onclick="showLoader()"><i class="bi bi-file-earmark-text"></i> Add Order</a>
+        <a href="/Logout" onclick="showLoader()" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
     </div>
 
     <!-- TOPBAR -->
@@ -398,7 +425,7 @@
             <h5>Welcome, {{ name }} 👋</h5>
         </div>
         <div class="stats">
-            <div class="stat-card" onclick="goOF()">
+            <div class="stat-card" onclick="showLoader();goOF()">
                 <div class="stat-icon text-info"><i class="bi bi-bag-check"></i></div>
                 <div class="stat-value">{{TO}}</div>
                 <div class="stat-label">Order Forms</div>
@@ -431,7 +458,7 @@
                     My Orders
                 </h3>
 
-                <div class="orders-count btn d-flex align-items-center justify-content-center" onclick="goOF()">
+                <div class="orders-count btn d-flex align-items-center justify-content-center" onclick="showLoader(),goOF()">
     <i class="bi bi-plus fs-4 me-2"></i> Add Order
 </div>
             </div>
@@ -471,7 +498,7 @@
                                 {% if order[2]=='Done'%}
                                 <i class="bi bi-check-circle-fill btn" style="color:green;"></i>
                                 {% else %}
-                                <button class="btn" onclick="goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')"><i class="bi bi-file-earmark-text btn btn-primary"></i></button>
+                                <button class="btn" onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')"><i class="bi bi-file-earmark-text btn btn-primary"></i></button>
                                 {% endif %}
                             </td>
                         </tr>
@@ -491,6 +518,9 @@
     </div>
 
     <script>
+        function showLoader() {
+    document.getElementById("global-loader").style.display = "flex";
+}
         document.addEventListener("click", function (e) {
             let sidebar = document.querySelector(".sidebar");
 
