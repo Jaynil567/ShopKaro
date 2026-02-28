@@ -772,6 +772,12 @@ def safe_append(sheet, data_dict):
     sheet.append_row(row)
 @app.route("/orderform", methods=["GET", "POST"])
 def orderform():
+    conn = db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT Seller FROM ShopKaro_Sellers")
+    brands = cursor.fetchall()
+    cursor.close()
+    conn.close()
     msg=""
     name = session.get('Cust name')
     num = session.get('Cust num')
@@ -836,12 +842,7 @@ def orderform():
         return render_template("order_success.html")
 
     # -------- GET REQUEST PART --------
-    conn = db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT Seller FROM ShopKaro_Sellers")
-    brands = cursor.fetchall()
-    cursor.close()
-    conn.close()
+    
 
     return render_template(
         "Customer_Order_Form.html",
@@ -966,6 +967,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
