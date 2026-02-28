@@ -111,7 +111,7 @@ def Customer_Ragistration():
             cur.close()
             conn.close()
 
-            CustomerSheet=client.open("ShopKaro").sheet2
+            CustomerSheet=client.open("ShopKaro").get_worksheet(1)
             data = {"Name":name,"Whatsapp":num,"Email":email,"UPI ID":upi}
             safe_append(CustomerSheet, data)
 
@@ -953,6 +953,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
