@@ -11,6 +11,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
+        #global-loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #1e293b;
+    border-top: 6px solid #38bdf8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
         * {
             margin: 0;
             padding: 0;
@@ -341,47 +364,24 @@
         .orders-table td:last-child {
             width: 100px;
         }
-        
-#page-loader {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: #0f172a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.spinner {
-    width: 60px;
-    height: 60px;
-    border: 6px solid #1e293b;
-    border-top: 6px solid #38bdf8;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    100% { transform: rotate(360deg); }
-}
 
     </style>
 </head>
 
 <body>
-    <div id="page-loader">
+    <div id="global-loader" style="display:none;">
     <div class="spinner"></div>
 </div>
+    
     <div id="overlay"></div>
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <h4>ShopKaro Deals</h4>
-        <a href="/Mediator_Portal/Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="/Mediator_Portal/Dashboard" onclick="showLoader()"><i class="bi bi-speedometer2"></i> Dashboard</a>
         <a href="{{ url }}" target="_blank"><i class="bi bi-mailbox"></i> Google Sheet</a>
         <a href="#" class="active"><i class="bi bi-send-slash"></i> Brands</a>
         <a href="#"><i class="bi bi-gear"></i> Settings</a>
-        <a href="/Logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        <a href="/Logout" onclick="showLoader()" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
     </div>
 
     <!-- TOPBAR -->
@@ -442,7 +442,7 @@
                                 </button>
                             </td>
                             <td class="text-end">
-                                <button class="btn btn-danger" onclick="goDelete('{{ b[0] }}')">
+                                <button class="btn btn-danger" onclick="showLoader();goDelete('{{ b[0] }}')">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </td>
@@ -466,9 +466,11 @@
 
     <script>
 
-window.addEventListener("load", function () {
-    document.getElementById("page-loader").style.display = "none";
-});
+
+function showLoader() {
+    document.getElementById("global-loader").style.display = "flex";
+}
+
 
 
         function goDelete(brandName) {
@@ -545,6 +547,7 @@ window.addEventListener("load", function () {
 
 
 </html>
+
 
 
 
