@@ -772,6 +772,7 @@ def safe_append(sheet, data_dict):
     sheet.append_row(row)
 @app.route("/orderform", methods=["GET", "POST"])
 def orderform():
+    msg=""
     name = session.get('Cust name')
     num = session.get('Cust num')
     passw = session.get('Cust passw')
@@ -791,6 +792,16 @@ def orderform():
 
         OSheet = client.open("ShopKaro").sheet1
         BrandSheet = client.open(brand).sheet1
+        all_values = Osheet.get_all_values()
+        headers = all_values[0]
+        data_rows = all_values[1:]
+        order_id_index = headers.index("Order ID")
+        user_orders = []
+        for row in data_rows:
+        if row[order_id_index] == order_id:
+            msg="This Order ID is already filled"
+            return render_template("Customer_Order_Form.html",upi = upi,name=name,num=num,passw=passw,email=email,brands=brands,msg=msg)
+
 
         now = datetime.now().replace(microsecond=0)
 
@@ -839,7 +850,8 @@ def orderform():
         num=num,
         passw=passw,
         email=email,
-        brands=brands
+        brands=brands,
+        msg=msg
     )
 
 
@@ -954,6 +966,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
