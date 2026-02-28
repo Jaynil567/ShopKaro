@@ -792,7 +792,7 @@ def orderform():
 
         OSheet = client.open("ShopKaro").sheet1
         BrandSheet = client.open(brand).sheet1
-        all_values = Osheet.get_all_values()
+        all_values = OSheet.get_all_values()
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -966,6 +966,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
