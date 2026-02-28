@@ -236,7 +236,7 @@ body{
                 <div class="col-md-6">
                     <label class="form-label text-warning">Brand Name *</label><br>
                     <select class="form-select" name="brand" required>
-                        <option value="" disabled>-- Select Brand Name --</option>
+                        <option value="" hidden>-- Select Brand Name --</option>
                         {% for brand in brands %}
                             <option value="{{ brand[0] }}">{{ brand[0] }}</option>
                         {% endfor %}
@@ -352,6 +352,7 @@ function toggleSidebar(){
 
 </body>
 </html>
+
 
 
 
