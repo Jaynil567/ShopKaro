@@ -710,7 +710,7 @@ def Brands():
     MN = session.get('Med name')
     MNUM = session.get('Med num')
     sheet=client.open("ShopKaro").sheet1
-    url=sheet.url
+    mainurl=sheet.url
     brands = []
 
     conn = db()
@@ -727,7 +727,7 @@ def Brands():
         row = data[1:]
         brands.append((b[0], len(row),url))
 
-    return render_template("Brands.html", MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=url)
+    return render_template("Brands.html", MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=mainurl)
    
 
 @app.route("/delete-brand/<brand>")
@@ -954,6 +954,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
