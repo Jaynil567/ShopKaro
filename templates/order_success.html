@@ -57,10 +57,36 @@ body{
 .btn-main:hover{
     background:#4338ca;
 }
+    #global-loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #1e293b;
+    border-top: 6px solid #38bdf8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
 </style>
 </head>
 
 <body>
+    <div id="global-loader" style="display:none;">
+    <div class="spinner"></div>
+</div>
 
 <div class="success-card">
     <div class="success-icon">✓</div>
@@ -72,8 +98,13 @@ body{
         Our mediator will review your request and contact you if required.
     </div>
 
-    <a href="/Customer_Portal/Dashboard" class="btn btn-main">Back to Home</a>
+    <a href="/Customer_Portal/Dashboard" class="btn btn-main" onclick="showLoader()">Back to Home</a>
 </div>
-
+<script>
+function showLoader() {
+    document.getElementById("global-loader").style.display = "flex";
+}
+</script>
 </body>
 </html>
+
