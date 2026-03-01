@@ -392,7 +392,7 @@ def Mediator_Portal_Dashboard():
     MNUM = session.get('Med num')
 
     if MUN == None:
-        return redirect('/')
+        return redirect('/Mediator_Login')
     
     sheet = client.open("ShopKaro").sheet1
     sheeturl=sheet.url
@@ -967,6 +967,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
