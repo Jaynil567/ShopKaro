@@ -765,11 +765,18 @@ def delete_brand(brand):
 
 
 def safe_append(sheet, data_dict):
-    headers = sheet.row_values(1)  # First row = header
+
+    headers = sheet.row_values(1)
+
     row = []
     for header in headers:
-        row.append(data_dict.get(header, ""))  # Missing column = blank
-    sheet.append_row(row)
+        row.append(data_dict.get(header, ""))
+
+    # find next empty row
+    data = sheet.get_all_values()
+    next_row = len(data) + 1
+
+    sheet.insert_row(row, next_row)
 @app.route("/orderform", methods=["GET", "POST"])
 def orderform():
     conn = db()
@@ -967,6 +974,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
