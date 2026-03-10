@@ -399,24 +399,32 @@ def Mediator_Portal_Dashboard():
     all_values = sheet.get_all_values()
     headers = all_values[0]
     data_rows = all_values[1:]
+    mobile_index = headers.index("Whatsapp")
+    order_id_index = headers.index("Order ID")
+    order_date_index = headers.index("Order Date")
     order_status_index = headers.index("Status")
+    order_brand_index = headers.index("Brand Name")
     order_refundAmount_index = headers.index("Refund Amount")
+    order_reviewer_index = headers.index("Profile Name")
     user_orders = []
+
 
     TO=0
     for row in data_rows:
         TO+=1
-        user_orders.append((row[order_status_index],row[order_refundAmount_index]))
+        user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index]))
 
     
     CO=0
     Payout=0
     for i in user_orders:
-        if i[0]=="Done":
-            Payout+=int(i[1])
+        if i[2]=="Done":
+            Payout+=int(i[4])
             CO+=1
     
-    return render_template('Mediator_Dashboard.html',Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl)
+    user_orders=user_orders[::-1]
+
+    return render_template('Mediator_Dashboard.html',orders=user_orders, Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl)
 
 
 
@@ -974,22 +982,4 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
