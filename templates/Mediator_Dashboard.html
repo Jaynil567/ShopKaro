@@ -233,170 +233,349 @@
         #overlay.active {
             display: block;
         }
+
         #global-loader {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: #0f172a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
 
-.spinner {
-    width: 60px;
-    height: 60px;
-    border: 6px solid #1e293b;
-    border-top: 6px solid #38bdf8;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #1e293b;
+            border-top: 6px solid #38bdf8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
 
-@keyframes spin {
-    100% { transform: rotate(360deg); }
-}
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .orders-wrapper {
+            padding: 10px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #0a0f1f, #0f172a);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .orders-title {
+            font-weight: 600;
+            color: #facc15;
+            letter-spacing: 0.5px;
+        }
+
+        .orders-count {
+            padding: 8px 18px;
+            border-radius: 50px;
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .orders-table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .orders-table {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .orders-table thead tr {
+            background: #0b1220;
+        }
+
+        .orders-table thead th {
+            padding: 18px 20px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 500;
+            color: #64748b;
+            letter-spacing: 0.5px;
+        }
+
+        .orders-table thead th:last-child {
+            text-align: right;
+        }
+
+        .orders-table tbody tr {
+            background: #111827;
+            transition: 0.3s ease;
+        }
+
+        .orders-table td {
+            padding: 18px 20px;
+            color: #e5e7eb;
+            border: none;
+        }
+
+        .orders-table td:last-child {
+            text-align: right;
+        }
+
+        .orders-table {
+            border-collapse: separate;
+            border-spacing: 0 14px;
+        }
+
+        .orders-table thead th {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 13px;
+            padding-bottom: 10px;
+        }
+
+        .orders-table tbody tr {
+            background: #111827;
+            border-radius: 14px;
+            transition: 0.3s ease;
+        }
+
+        .orders-table tbody tr:hover {
+            background: #1f2937;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .orders-table td {
+            padding: 18px 20px;
+            color: #e5e7eb;
+            border: none;
+        }
+
+        .order-id {
+            color: #38bdf8;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+
+        .payout-chip-done {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 13px;
+            color: white;
+        }
+
+        .payout-chip-pending {
+            background: linear-gradient(135deg, #f4ff26, #575c03);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 13px;
+            color: white;
+        }
     </style>
 </head>
 
 <body>
     <div id="global-loader" style="display:none;">
-    <div class="spinner"></div>
-</div>
+        <div class="spinner"></div>
+    </div>
     <div class="mt=4">
         <div class="mt=4">
-    <div id="overlay"></div>
-    <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar">
-        <h4>ShopKaro Deals</h4>
-        <a href="#" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a href="{{ url }}" target="_blank"><i class="bi bi-mailbox"></i> Google Sheet</a>
-        <a href="/Brands" onclick="showLoader()"><i class="bi bi-send-slash"></i> Brands</a>
-        <a href="#"><i class="bi bi-gear"></i> Settings</a>
-        <a href="/Logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
-    </div>
-
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <i class="bi bi-list menu-btn" onclick="openSidebar()"></i>
-        <div class="top-title">Dashboard</div>
-
-        <div class="profile">
-            <div class="text-end me-2">
-                <div class="profile-name">{{ MN }}</div>
-                <div class="profile-role">Mediator</div>
+            <div id="overlay"></div>
+            <!-- SIDEBAR -->
+            <div class="sidebar" id="sidebar">
+                <h4>ShopKaro Deals</h4>
+                <a href="#" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="{{ url }}" target="_blank"><i class="bi bi-mailbox"></i> Google Sheet</a>
+                <a href="/Brands" onclick="showLoader()"><i class="bi bi-send-slash"></i> Brands</a>
+                <a href="#"><i class="bi bi-gear"></i> Settings</a>
+                <a href="/Logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
             </div>
-            <div class="avatar">{{ MN[0] }}</div>
-        </div>
-    </div>
 
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <i class="bi bi-list menu-btn" onclick="openSidebar()"></i>
+                <div class="top-title">Dashboard</div>
 
-
-    <!-- MAIN -->
-    <div class="main">
-        <div class="welcome mb-3">
-            <h5>Welcome, {{ MN }} 👋</h5>
-        </div>
-        <div class="stats">
-            <div class="stat-card" onclick="window.open('{{ url }}', '_blank')">
-                <div class="stat-icon text-info"><i class="bi bi-box"></i></div>
-                <div class="stat-value">{{TO}}</div>
-                <div class="stat-label">Total Orders</div>
+                <div class="profile">
+                    <div class="text-end me-2">
+                        <div class="profile-name">{{ MN }}</div>
+                        <div class="profile-role">Mediator</div>
+                    </div>
+                    <div class="avatar">{{ MN[0] }}</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
-                <div class="stat-value">{{CO}}</div>
-                <div class="stat-label">Complete Forms</div>
+
+
+
+            <!-- MAIN -->
+            <div class="main">
+                <div class="welcome mb-3">
+                    <h5>Welcome, {{ MN }} 👋</h5>
+                </div>
+                <div class="stats">
+                    <div class="stat-card" onclick="window.open('{{ url }}', '_blank')">
+                        <div class="stat-icon text-info"><i class="bi bi-box"></i></div>
+                        <div class="stat-value">{{TO}}</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
+                        <div class="stat-value">{{CO}}</div>
+                        <div class="stat-label">Complete Forms</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon text-warning"><i class="bi bi-clock"></i></div>
+                        <div class="stat-value">{{PF}}</div>
+                        <div class="stat-label">Pending Forms</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon text-primary"><i class="bi bi-wallet2"></i></div>
+                        <div class="stat-value">₹{{TP}}</div>
+                        <div class="stat-label">Total Payout</div>
+                    </div>
+                </div>
+
+                <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3">
+                    <input type="text" name="deal_code" class="form-control me-2 w-25"
+                        placeholder="Enter New Brand Name" required>
+                    <button type="submit" class="btn btn-warning fw-semibold">
+                        <i class="bi bi-plus-circle"></i> Add Brand
+                    </button>
+                </form>
+                <br>
+                {% if Nmsg %}
+                <div class="d-flex justify-content-end">
+                    <div class="alert alert-danger text-center ">
+                        {{ Nmsg }}
+                    </div>
+                </div>
+                {% endif %}
+                {% if Pmsg %}
+                <div class="d-flex justify-content-end">
+                    <div class="alert alert-success text-center ">
+                        {{ Pmsg }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="orders-wrapper mt-5">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="orders-title mb-0">All Orders</h3>
+
+                        <div class="orders-count btn d-flex align-items-center justify-content-center">
+                            {{ orders|length }} Orders
+                        </div>
+                    </div>
+                    {% if orders %}
+                    <div class="orders-table-container">
+
+                        <table class="orders-table w-100">
+
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Form Status</th>
+                                    <th>Payout</th>
+                                    <th class="text-end">Whatsapp</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td class="order-id">
+                                        {{ order[0] }}
+                                    </td>
+                                    <td>{{ order[1] }}</td>
+                                    <td>{{ order[2] }}</td>
+                                    <td>
+                                        {% if order[2]=='Done'%}
+                                        <span class="payout-chip-done">₹{{ order[4] }}</span>
+                                        {% else %}
+                                        <span class="payout-chip-pending">₹{{ order[4] }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end"> 
+                                        <button class="btn"
+                                            onclick="window.open('https://wa.me/91{{ order[7] }}', '_blank')">
+                                            <i class="bi bi-whatsapp"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                    {% else %}
+                    <p class="text-light mt-4">No orders yet.</p>
+                    {% endif %}
+                </div>
+
+
             </div>
-            <div class="stat-card">
-                <div class="stat-icon text-warning"><i class="bi bi-clock"></i></div>
-                <div class="stat-value">{{PF}}</div>
-                <div class="stat-label">Pending Forms</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon text-primary"><i class="bi bi-wallet2"></i></div>
-                <div class="stat-value">₹{{TP}}</div>
-                <div class="stat-label">Total Payout</div>
-            </div>
-        </div>
 
-        <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3">
-            <input type="text" name="deal_code" class="form-control me-2 w-25" placeholder="Enter New Brand Name"
-                required>
-            <button type="submit" class="btn btn-warning fw-semibold">
-                <i class="bi bi-plus-circle"></i> Add Brand
-            </button>
-        </form>
-        <br>
-        {% if Nmsg %}
-        <div class="d-flex justify-content-end">
-            <div class="alert alert-danger text-center ">
-                {{ Nmsg }}
-            </div>
-        </div>
-        {% endif %}
-        {% if Pmsg %}
-        <div class="d-flex justify-content-end">
-            <div class="alert alert-success text-center ">
-                {{ Pmsg }}
-            </div>
-        </div>
-        {% endif %}
-
-
-        
-    </div>
-
-    <script>
-        function showLoader() {
-    document.getElementById("global-loader").style.display = "flex";
-}
-        function OpenSheet(Name) {
-            window.location.href = '/open-sheet/' + Name;
-        }
-
-        document.addEventListener("click", function (e) {
-            let sidebar = document.querySelector(".sidebar");
-
-            // ONLY mobile par close hoga
-            if (window.innerWidth <= 768) {
-                if (!e.target.closest(".sidebar") && !e.target.closest(".menu-btn")) {
-                    sidebar.classList.remove("active");
+            <script>
+                function showLoader() {
+                    document.getElementById("global-loader").style.display = "flex";
                 }
-            }
-        });
+                function OpenSheet(Name) {
+                    window.location.href = '/open-sheet/' + Name;
+                }
+
+                document.addEventListener("click", function (e) {
+                    let sidebar = document.querySelector(".sidebar");
+
+                    // ONLY mobile par close hoga
+                    if (window.innerWidth <= 768) {
+                        if (!e.target.closest(".sidebar") && !e.target.closest(".menu-btn")) {
+                            sidebar.classList.remove("active");
+                        }
+                    }
+                });
 
 
-        const sidebar = document.getElementById("sidebar");
-        const overlay = document.getElementById("overlay");
+                const sidebar = document.getElementById("sidebar");
+                const overlay = document.getElementById("overlay");
 
-        // open sidebar
-        function openSidebar() {
-            sidebar.classList.add("active");
-            overlay.classList.add("active");
-        }
+                // open sidebar
+                function openSidebar() {
+                    sidebar.classList.add("active");
+                    overlay.classList.add("active");
+                }
 
-        // close sidebar
-        function closeSidebar() {
-            sidebar.classList.remove("active");
-            overlay.classList.remove("active");
-        }
+                // close sidebar
+                function closeSidebar() {
+                    sidebar.classList.remove("active");
+                    overlay.classList.remove("active");
+                }
 
-        // overlay click -> close sidebar
-        overlay.addEventListener("click", closeSidebar);
+                // overlay click -> close sidebar
+                overlay.addEventListener("click", closeSidebar);
 
-        // outside click (optional advanced)
-        document.addEventListener("click", function (e) {
-            if (!sidebar.contains(e.target) && !e.target.closest(".menu-btn")) {
-                closeSidebar();
-            }
-        });
+                // outside click (optional advanced)
+                document.addEventListener("click", function (e) {
+                    if (!sidebar.contains(e.target) && !e.target.closest(".menu-btn")) {
+                        closeSidebar();
+                    }
+                });
 
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("active");
-        }
-    </script>
-    </div>
+                function toggleSidebar() {
+                    document.getElementById("sidebar").classList.toggle("active");
+                }
+            </script>
+        </div>
     </div>
 </body>
 
