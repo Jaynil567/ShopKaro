@@ -412,7 +412,7 @@ def Mediator_Portal_Dashboard():
     TO=0
     for row in data_rows:
         TO+=1
-        user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index]))
+        user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_date_index], row[mobile_index]))
 
     
     CO=0
@@ -982,4 +982,21 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
