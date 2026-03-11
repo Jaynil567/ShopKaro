@@ -64,13 +64,8 @@ def send_verification_email(to_email, code):
         print("SENDGRID ERROR:", str(e))
 # ---------- DB CONNECTION ----------
 def db():
-    return mysql.connector.connect(
-        host="centerbeam.proxy.rlwy.net",
-        user="root",
-        password="GZFvMhflsqtzEyFBvPOnNtrapaJWNqhF",
-        database="railway",
-        port=11620
-    )
+    s=psycopg2.connect("postgresql://neondb_owner:npg_tYsv8cD9MVAu@ep-rough-grass-a1bedl2d-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
+    return s
 
 # ---------- HOME ----------
 @app.route('/')
@@ -982,6 +977,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
