@@ -16,6 +16,7 @@ from google.oauth2.service_account import Credentials as SACredentials
 from datetime import timedelta
 import json
 import os
+import psycopg2
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
@@ -977,6 +978,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
