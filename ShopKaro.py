@@ -22,6 +22,9 @@ NAME="ShopKaro"
 
 app = Flask(__name__)
 app.secret_key = "heavy-secret"
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "None"
+app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.permanent_session_lifetime = timedelta(days=1500)
 
 cloudinary.config(
@@ -993,6 +996,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
 
 
 
