@@ -20,8 +20,6 @@ import psycopg2
 
 NAME="ShopKaro"
 
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-
 app = Flask(__name__)
 app.secret_key = "heavy-secret"
 app.permanent_session_lifetime = timedelta(days=1500)
@@ -485,7 +483,7 @@ def login():
     )
 
     auth_url, state = flow.authorization_url(prompt="consent")
-    
+    session["state"] = state
 
     return redirect(auth_url)
 # ---------------- CALLBACK ----------------
@@ -495,7 +493,7 @@ def callback():
     flow = Flow.from_client_config(
         clint_secret,
         scopes=["https://www.googleapis.com/auth/userinfo.email"],
-    
+        state=session["state"],
         redirect_uri="https://shopkaro-42so.onrender.com/callback"
     )
 
@@ -981,6 +979,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
 
 
 
