@@ -474,7 +474,7 @@ def login():
     conn.close()
 
     # If token exists → skip Google login
-    if row and row["token"]:
+    if row and row[0]:
         return redirect("/create-sheet")
 
     # -------- Else Google OAuth --------
@@ -981,6 +981,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
