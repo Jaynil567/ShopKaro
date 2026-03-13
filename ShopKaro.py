@@ -458,7 +458,7 @@ def login():
     if not username:
         return redirect("/Mediator_Login")
 
-    # -------- Check Token in DB --------
+    # Check token in DB
     conn = db()
     cur = conn.cursor()
 
@@ -471,18 +471,22 @@ def login():
     cur.close()
     conn.close()
 
-    # If token exists → skip Google login
+    # If token already exists skip Google login
     if row and row[0]:
         return redirect("/create-sheet")
 
-    # -------- Else Google OAuth --------
+    # Google OAuth start
     flow = Flow.from_client_config(
         clint_secret,
         scopes=["https://www.googleapis.com/auth/userinfo.email"],
         redirect_uri="https://shopkaro-42so.onrender.com/callback"
     )
 
-    auth_url, state = flow.authorization_url(prompt="consent")
+    auth_url, state = flow.authorization_url(
+        prompt="consent",
+        access_type="offline"
+    )
+
     session["state"] = state
 
     return redirect(auth_url)
@@ -490,23 +494,34 @@ def login():
 @app.route("/callback")
 def callback():
 
+    state = session.get("state")
+
     flow = Flow.from_client_config(
         clint_secret,
         scopes=["https://www.googleapis.com/auth/userinfo.email"],
-        state=session["state"],
+        state=state,
         redirect_uri="https://shopkaro-42so.onrender.com/callback"
     )
 
     flow.fetch_token(authorization_response=request.url)
 
     creds = flow.credentials
-
-    # Save token
     token_json = creds.to_json()
 
+    username = session.get("Med Username")
+
+    if not username:
+        return redirect("/Mediator_Login")
+
+    # Save token in DB
     conn = db()
     cur = conn.cursor()
-    cur.execute(f"UPDATE {NAME}_mediator SET token=%s WHERE username=%s", (token_json,session["Med Username"]))
+
+    cur.execute(
+        f"UPDATE {NAME}_mediator SET token=%s WHERE username=%s",
+        (token_json, username)
+    )
+
     conn.commit()
     cur.close()
     conn.close()
@@ -979,6 +994,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
 
 
 
