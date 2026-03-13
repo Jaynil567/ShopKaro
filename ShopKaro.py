@@ -518,7 +518,7 @@ from google.oauth2.credentials import Credentials
 import json
 def get_mediator_creds(username):
     conn = db()
-    cur = conn.cursor(dictionary=True)
+    cur = conn.cursor()
     cur.execute(f"""
         SELECT token FROM {NAME}_mediator
         WHERE username=%s
@@ -527,10 +527,10 @@ def get_mediator_creds(username):
     cur.close()
     conn.close()
 
-    if not row or not row["token"]:
+    if not row or not row[0]:
         return None
     
-    token_data = json.loads(row["token"])
+    token_data = json.loads(row[0])
     creds = Credentials.from_authorized_user_info(token_data)
     return creds
 from google.auth.transport.requests import Request
@@ -981,6 +981,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
