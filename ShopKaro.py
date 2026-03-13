@@ -478,7 +478,7 @@ def login():
         return redirect("/create-sheet")
 
     # -------- Else Google OAuth --------
-    flow = Flow.from_client_secrets_file(
+    flow = Flow.from_client_config(
         clint_secret,
         scopes=SCOPES,
         redirect_uri=url_for("callback", _external=True)
@@ -492,7 +492,7 @@ def login():
 @app.route("/callback")
 def callback():
 
-    flow = Flow.from_client_secrets_file(
+    flow = Flow.from_client_config(
         clint_secret,
         scopes=SCOPES,
         state=session["state"],
@@ -981,6 +981,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
