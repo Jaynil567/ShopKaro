@@ -18,6 +18,8 @@ import json
 import os
 import psycopg2
 
+NAME="ShopKaro"
+
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 app = Flask(__name__)
@@ -81,7 +83,7 @@ def Home():
         return redirect('/Mediator_Portal/Dashboard')
 
     # 🔹 Otherwise show home page
-    return render_template("Home.html")
+    return render_template("Home.html", NAME=NAME)
 
 # ---------- CUSTOMER REGISTRATION ----------
 @app.route('/Customer_Ragistration', methods=['GET','POST'])
@@ -95,19 +97,19 @@ def Customer_Ragistration():
         upi = request.form['upi']
         conn = db()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM ShopKaro_Customers WHERE Number=%s", (num,))
+        cur.execute(f"SELECT * FROM {NAME}_Customers WHERE Number=%s", (num,))
         if cur.fetchone():
             msg = "This mobile number is already registered"
         else:
             cur.execute(
-                "INSERT INTO ShopKaro_Customers (Name, Number, passw, email,upi) VALUES (%s,%s,%s,%s,%s)",
+                f"INSERT INTO {NAME}_Customers (Name, Number, passw, email,upi) VALUES (%s,%s,%s,%s,%s)",
                 (name, num, passw, email,upi)
             )
             conn.commit()
             cur.close()
             conn.close()
 
-            CustomerSheet=client.open("ShopKaro").get_worksheet(1)
+            CustomerSheet=client.open(NAME).get_worksheet(1)
             data = {"Name":name,"Whatsapp":num,"Email":email,"UPI ID":upi}
             safe_append(CustomerSheet, data)
 
@@ -120,7 +122,7 @@ def Customer_Ragistration():
             return render_template("Registration_Success.html")
         cur.close()
         conn.close()
-    return render_template("Customer_Ragistration.html", msg=msg)
+    return render_template("Customer_Ragistration.html", msg=msg, NAME=NAME)
 
 # ---------- CUSTOMER LOGIN ----------
 @app.route('/Customer_Login', methods=['GET','POST'])
@@ -131,7 +133,7 @@ def Customer_Login():
         passw = request.form['P']
         conn = db()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM ShopKaro_Customers WHERE Number=%s", (num,))
+        cur.execute(f"SELECT * FROM {NAME}_Customers WHERE Number=%s", (num,))
         row = cur.fetchone()
         if row is None:
             msg = "Mobile number not registered"
@@ -169,7 +171,7 @@ def Forgot_Password():
 
         conn = db()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM ShopKaro_Customers WHERE email=%s", (email,))
+        cur.execute(f"SELECT * FROM {NAME}_Customers WHERE email=%s", (email,))
         user = cur.fetchone()
         cur.close()
         conn.close()
@@ -184,7 +186,7 @@ def Forgot_Password():
             send_verification_email(email, code)
             return redirect('/Verify_Code')
 
-    return render_template('Forgot_Password.html', msg=msg)
+    return render_template('Forgot_Password.html', msg=msg, NAME=NAME)
 @app.route('/Verify_Code', methods=['GET', 'POST'])
 def Verify_Code():
     msg = ""
@@ -197,7 +199,7 @@ def Verify_Code():
         else:
             msg = "Invalid verification code"
 
-    return render_template('Verify_Code.html', msg=msg)
+    return render_template('Verify_Code.html', msg=msg, NAME=NAME)
 @app.route('/Reset_Password', methods=['GET', 'POST'])
 def Reset_Password():
     msg = ""
@@ -214,7 +216,7 @@ def Reset_Password():
             conn = db()
             cur = conn.cursor()
             cur.execute(
-                "UPDATE ShopKaro_Customers SET passw=%s WHERE email=%s",
+                f"UPDATE {NAME}_Customers SET passw=%s WHERE email=%s",
                 (p1, email)
             )
             conn.commit()
@@ -226,10 +228,10 @@ def Reset_Password():
 
             return redirect('/Password_Reset_Success')
 
-    return render_template('Reset_Password.html', msg=msg)
+    return render_template('Reset_Password.html', msg=msg, NAME=NAME)
 @app.route('/Password_Reset_Success')
 def Password_Reset_Success():
-    return render_template('Password_Reset_Success.html')
+    return render_template('Password_Reset_Success.html', NAME=NAME)
 
 
 # ---------- CUSTOMER PORTAL ----------
@@ -244,7 +246,7 @@ def Customer_Portal_Dashboard():
     elif session.get('Med num') != None :
         return redirect("/Mediator_Portal/Dashboard")
 
-    sheet = client.open("ShopKaro").sheet1
+    sheet = client.open(NAME).sheet1
     all_values = sheet.get_all_values()
     headers = all_values[0]
     data_rows = all_values[1:]
@@ -272,7 +274,7 @@ def Customer_Portal_Dashboard():
             RO+=1
     user_orders=user_orders[::-1]
     
-    return render_template("Customer_Dashboard.html",orders=user_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout)
+    return render_template("Customer_Dashboard.html",orders=user_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout, NAME=NAME)
 
 # ---------- MEDIATOR LOGIN ----------
 @app.route('/Mediator_Login',methods=['GET','POST'])
@@ -285,7 +287,7 @@ def Mediator_Login():
         conn = db()
         cur=conn.cursor()
 
-        cur.execute("SELECT * FROM ShopKaro_mediator WHERE username=%s", (MUN,))
+        cur.execute(f"SELECT * FROM {NAME}_mediator WHERE username=%s", (MUN,))
         row = cur.fetchone()
 
         if row is None:
@@ -315,7 +317,7 @@ def MForgot_Password():
 
         conn = db()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM ShopKaro_mediator WHERE email=%s", (email,))
+        cur.execute(f"SELECT * FROM {NAME}_mediator WHERE email=%s", (email,))
         user = cur.fetchone()
         cur.close()
         conn.close()
@@ -330,7 +332,7 @@ def MForgot_Password():
             send_verification_email(email, code)
             return redirect('/Med_Verify_Code')
 
-    return render_template('Med_Forgot_Password.html', msg=msg)
+    return render_template('Med_Forgot_Password.html', msg=msg, NAME=NAME)
 @app.route('/Med_Verify_Code', methods=['GET', 'POST'])
 def MVerify_Code():
     msg = ""
@@ -343,7 +345,7 @@ def MVerify_Code():
         else:
             msg = "Invalid verification code"
 
-    return render_template('Med_Verify_Code.html', msg=msg)
+    return render_template('Med_Verify_Code.html', msg=msg, NAME=NAME)
 @app.route('/Med_Reset_Password/', methods=['GET', 'POST'])
 def MReset_Password():
     msg = ""
@@ -360,7 +362,7 @@ def MReset_Password():
             conn = db()
             cur = conn.cursor()
             cur.execute(
-                "UPDATE ShopKaro_mediator SET password=%s WHERE email=%s",
+                f"UPDATE {NAME}_mediator SET password=%s WHERE email=%s",
                 (p1, email)
             )
             conn.commit()
@@ -372,10 +374,10 @@ def MReset_Password():
 
             return redirect('/Med_Password_Reset_Success')
 
-    return render_template('Med_Reset_Password.html', msg=msg)
+    return render_template('Med_Reset_Password.html', msg=msg, NAME=NAME)
 @app.route('/Med_Password_Reset_Success')
 def MPassword_Reset_Success():
-    return render_template('Med_Password_Reset_Success.html')
+    return render_template('Med_Password_Reset_Success.html', NAME=NAME)
 
 
 # ---------- MEDIATOR PORTAL ----------
@@ -390,7 +392,7 @@ def Mediator_Portal_Dashboard():
     if MUN == None:
         return redirect('/Mediator_Login')
     
-    sheet = client.open("ShopKaro").sheet1
+    sheet = client.open(NAME).sheet1
     sheeturl=sheet.url
     all_values = sheet.get_all_values()
     headers = all_values[0]
@@ -420,7 +422,7 @@ def Mediator_Portal_Dashboard():
     
     user_orders=user_orders[::-1]
 
-    return render_template('Mediator_Dashboard.html',orders=user_orders, Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl)
+    return render_template('Mediator_Dashboard.html',orders=user_orders, Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl, NAME=NAME)
 
 
 
@@ -435,7 +437,7 @@ def add_deal_code():
         seller = request.form["deal_code"]
         conn = db()
         cur=conn.cursor()
-        cur.execute("SELECT * FROM ShopKaro_Sellers WHERE Seller=%s", (seller,))
+        cur.execute(f"SELECT * FROM {NAME}_Sellers WHERE Seller=%s", (seller,))
         if cur.fetchone():
             Nmsg = "This Brand is already exist"
             cur.close()
@@ -462,8 +464,8 @@ def login():
     conn = db()
     cur = conn.cursor(dictionary=True)
 
-    cur.execute("""
-        SELECT token FROM ShopKaro_mediator
+    cur.execute(f"""
+        SELECT token FROM {NAME}_mediator
         WHERE username=%s
     """, (username,))
 
@@ -506,7 +508,7 @@ def callback():
 
     conn = db()
     cur = conn.cursor()
-    cur.execute("UPDATE ShopKaro_mediator SET token=%s WHERE username=%s", (token_json,session["Med Username"]))
+    cur.execute(f"UPDATE {NAME}_mediator SET token=%s WHERE username=%s", (token_json,session["Med Username"]))
     conn.commit()
     cur.close()
     conn.close()
@@ -517,8 +519,8 @@ import json
 def get_mediator_creds(username):
     conn = db()
     cur = conn.cursor(dictionary=True)
-    cur.execute("""
-        SELECT token FROM ShopKaro_mediator
+    cur.execute(f"""
+        SELECT token FROM {NAME}_mediator
         WHERE username=%s
     """, (username,))
     row = cur.fetchone()
@@ -538,8 +540,8 @@ def refresh_if_needed(creds, username):
         # Save updated token
         conn = db()
         cur = conn.cursor()
-        cur.execute("""
-            UPDATE ShopKaro_mediator
+        cur.execute(f"""
+            UPDATE {NAME}_mediator
             SET token=%s
             WHERE username=%s
         """, (
@@ -700,7 +702,7 @@ def create_sheet():
     Pmsg=f"Added :- {Brand}"
     conn = db()
     cur=conn.cursor()
-    cur.execute("INSERT INTO ShopKaro_Sellers (Seller) VALUES (%s)",(Brand,))
+    cur.execute(f"INSERT INTO {NAME}_Sellers (Seller) VALUES (%s)",(Brand,))
     conn.commit()
     cur.close()
     conn.close()
@@ -713,13 +715,13 @@ def Brands():
     MUN = session.get('Med Username')
     MN = session.get('Med name')
     MNUM = session.get('Med num')
-    sheet=client.open("ShopKaro").sheet1
+    sheet=client.open(NAME).sheet1
     mainurl=sheet.url
     brands = []
 
     conn = db()
     cursor = conn.cursor()
-    cursor.execute("SELECT Seller FROM ShopKaro_Sellers")
+    cursor.execute(f"SELECT Seller FROM {NAME}_Sellers")
     db_brands = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -731,7 +733,7 @@ def Brands():
         row = data[1:]
         brands.append((b[0], len(row),url))
 
-    return render_template("Brands.html", MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=mainurl)
+    return render_template("Brands.html", MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=mainurl, NAME=NAME)
    
 
 @app.route("/delete-brand/<brand>")
@@ -760,7 +762,7 @@ def delete_brand(brand):
     # 🔹 Remove brand from MySQL
     conn = db()
     cur = conn.cursor()
-    cur.execute("DELETE FROM ShopKaro_Sellers WHERE Seller=%s", (brand,))
+    cur.execute(f"DELETE FROM {NAME}_Sellers WHERE Seller=%s", (brand,))
     conn.commit()
     cur.close()
     conn.close()
@@ -785,7 +787,7 @@ def safe_append(sheet, data_dict):
 def orderform():
     conn = db()
     cursor = conn.cursor()
-    cursor.execute("SELECT Seller FROM ShopKaro_Sellers")
+    cursor.execute(f"SELECT Seller FROM {NAME}_Sellers")
     brands = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -807,7 +809,7 @@ def orderform():
         Ramount = int(request.form.get("refund_amount"))
         upi = request.form.get("upi")
 
-        OSheet = client.open("ShopKaro").sheet1
+        OSheet = client.open(NAME).sheet1
         BrandSheet = client.open(brand).sheet1
         all_values = OSheet.get_all_values()
         headers = all_values[0]
@@ -817,7 +819,7 @@ def orderform():
         for row in data_rows:
             if row[order_id_index] == order_id:
                 msg="This Order ID is already filled"
-                return render_template("Customer_Order_Form.html",upi = upi,name=name,num=num,passw=passw,email=email,brands=brands,msg=msg)
+                return render_template("Customer_Order_Form.html",upi = upi,name=name,num=num,passw=passw,email=email,brands=brands,msg=msg,NAME=NAME)
 
 
         now = datetime.now().replace(microsecond=0)
@@ -844,7 +846,7 @@ def orderform():
             "Status": "Pending",
             "UPI ID": upi,
             "Refund Amount": Ramount,
-            "Mediator name": 'ShopKaro'
+            "Mediator name": NAME
         }
 
         safe_append(OSheet, data)
@@ -863,7 +865,8 @@ def orderform():
         passw=passw,
         email=email,
         brands=brands,
-        msg=msg
+        msg=msg,
+        NAME=NAME
     )
 
 
@@ -880,7 +883,7 @@ def refundform():
     if request.method == "POST":
         
         
-        OrderSheet = client.open("ShopKaro").sheet1
+        OrderSheet = client.open(NAME).sheet1
         
         if DC :
             deal_code=DC
@@ -916,7 +919,7 @@ def refundform():
         if flag == 0:
             msg="Invalid Order-ID"
             if id != 'undefined' :
-                return render_template("Customer_Refund_Form.html",RN=RN,DC=DC,msg=msg,id=id, name=name, num=num, passw=passw, email=email)
+                return render_template("Customer_Refund_Form.html",RN=RN,DC=DC,msg=msg,id=id, name=name, num=num, passw=passw, email=email, NAME=NAME)
             else :
                 return render_template("Customer_Refund_Form.html",RN=RN,DC=DC,msg=msg, name=name, num=num, passw=passw, email=email)
 
@@ -961,9 +964,9 @@ def refundform():
             return render_template("order_success.html")
     
     if id != 'undefined' :
-        return render_template("Customer_Refund_Form.html",RN=RN,DC=DC,id=id,msg=msg, name=name, num=num, passw=passw, email=email)
+        return render_template("Customer_Refund_Form.html",RN=RN,DC=DC,id=id,msg=msg, name=name, num=num, passw=passw, email=email, NAME=NAME)
     else :
-        return render_template("Customer_Refund_Form.html",RN=RN,DC=DC, name=name,msg=msg, num=num, passw=passw, email=email)
+        return render_template("Customer_Refund_Form.html",RN=RN,DC=DC, name=name,msg=msg, num=num, passw=passw, email=email, NAME=NAME)
 
 @app.route("/open-sheet/<Name>")
 def open_sheet(Name):
@@ -978,23 +981,5 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
