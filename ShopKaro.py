@@ -468,6 +468,7 @@ def login():
     """, (username,))
 
     row = cur.fetchone()
+
     cur.close()
     conn.close()
 
@@ -475,7 +476,6 @@ def login():
     if row and row[0]:
         return redirect("/create-sheet")
 
-    # Google OAuth start
     flow = Flow.from_client_config(
         clint_secret,
         scopes=["https://www.googleapis.com/auth/userinfo.email"],
@@ -513,7 +513,6 @@ def callback():
     if not username:
         return redirect("/Mediator_Login")
 
-    # Save token in DB
     conn = db()
     cur = conn.cursor()
 
@@ -994,6 +993,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
 
 
 
