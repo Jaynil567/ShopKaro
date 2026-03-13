@@ -480,8 +480,8 @@ def login():
     # -------- Else Google OAuth --------
     flow = Flow.from_client_config(
         clint_secret,
-        scopes=SCOPES,
-        redirect_uri=url_for("callback", _external=True)
+        scopes=["https://www.googleapis.com/auth/userinfo.email"],
+        redirect_uri="https://shopkaro-42so.onrender.com/callback"
     )
 
     auth_url, state = flow.authorization_url(prompt="consent")
@@ -494,9 +494,9 @@ def callback():
 
     flow = Flow.from_client_config(
         clint_secret,
-        scopes=SCOPES,
+        scopes=["https://www.googleapis.com/auth/userinfo.email"],
         state=session["state"],
-        redirect_uri=url_for("callback", _external=True)
+        redirect_uri="https://shopkaro-42so.onrender.com/callback"
     )
 
     flow.fetch_token(authorization_response=request.url)
@@ -981,6 +981,7 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
 
