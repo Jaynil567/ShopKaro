@@ -462,7 +462,7 @@ def login():
 
     # -------- Check Token in DB --------
     conn = db()
-    cur = conn.cursor(dictionary=True)
+    cur = conn.cursor()
 
     cur.execute(f"""
         SELECT token FROM {NAME}_mediator
@@ -981,5 +981,6 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 
 
