@@ -18,7 +18,7 @@ import json
 import os
 import psycopg2
 
-NAME="ShopKaro"
+
 
 app = Flask(__name__)
 app.secret_key = "heavy-secret"
@@ -68,6 +68,12 @@ def send_verification_email(to_email, code):
 def db():
     s=psycopg2.connect("postgresql://neondb_owner:npg_tYsv8cD9MVAu@ep-rough-grass-a1bedl2d-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
     return s
+
+
+
+NAME="ShopKaro"
+MainSheet=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
+
 
 # ---------- HOME ----------
 @app.route('/')
@@ -245,7 +251,7 @@ def Customer_Portal_Dashboard():
     elif session.get('Med num') != None :
         return redirect("/Mediator_Portal/Dashboard")
 
-    sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
+    sheet = MainSheet
     all_values = sheet.get_all_values()
     headers = all_values[0]
     data_rows = all_values[1:]
@@ -391,7 +397,7 @@ def Mediator_Portal_Dashboard():
     if MUN == None:
         return redirect('/Mediator_Login')
     
-    sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
+    sheet = MainSheet
     sheeturl=sheet.url
     all_values = sheet.get_all_values()
     headers = all_values[0]
@@ -728,7 +734,7 @@ def Brands():
     MUN = session.get('Med Username')
     MN = session.get('Med name')
     MNUM = session.get('Med num')
-    sheet=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
+    sheet=MainSheet
     mainurl=sheet.url
     brands = []
 
@@ -822,7 +828,7 @@ def orderform():
         Ramount = int(request.form.get("refund_amount"))
         upi = request.form.get("upi")
 
-        OSheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
+        OSheet = MainSheet
         BrandSheet = client.open(brand).sheet1
         all_values = OSheet.get_all_values()
         headers = all_values[0]
@@ -896,7 +902,7 @@ def refundform():
     if request.method == "POST":
         
         
-        OrderSheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
+        OrderSheet = MainSheet
         
         if DC :
             deal_code=DC
@@ -994,7 +1000,6 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
 
 
 
