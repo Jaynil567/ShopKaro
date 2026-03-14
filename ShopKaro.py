@@ -39,8 +39,7 @@ SCOPES = [
 ]
 
 clint_secret=json.loads(os.getenv("clint_secret"))
-ABCD = json.loads(os.getenv("ABCD"))
-creds = ServiceAccountCredentials.from_json_keyfile_dict(ABCD, SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', scope)
 client = gspread.authorize(creds)
 
 
