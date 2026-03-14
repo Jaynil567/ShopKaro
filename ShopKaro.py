@@ -499,7 +499,8 @@ def login():
 
     auth_url, state = flow.authorization_url(
         prompt="consent",
-        access_type="offline"
+        access_type="offline",
+        include_granted_scopes="true"
     )
 
     session["state"] = state
@@ -1027,7 +1028,6 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
 
 
 
