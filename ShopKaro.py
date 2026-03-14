@@ -35,10 +35,9 @@ cloudinary.config(
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
+    "https://www.googleapis.com/auth/drive.file"
 ]
 
-clint_secret=json.loads(os.getenv("clint_secret"))
 creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
@@ -479,8 +478,8 @@ def login():
         return redirect("/create-sheet")
 
     flow = Flow.from_client_config(
-        clint_secret,
-        scopes=["https://www.googleapis.com/auth/userinfo.email"],
+        "/etc/secrets/client_secret.json",    
+        scopes=SCOPES,
         redirect_uri="https://shopkaro-42so.onrender.com/callback"
     )
 
@@ -499,8 +498,8 @@ def callback():
     state = session.get("state")
 
     flow = Flow.from_client_config(
-        clint_secret,
-        scopes=["https://www.googleapis.com/auth/userinfo.email"],
+        "/etc/secrets/client_secret.json",
+        scopes=SCOPES,
         state=state,
         redirect_uri="https://shopkaro-42so.onrender.com/callback"
     )
