@@ -728,7 +728,7 @@ def Brands():
     MUN = session.get('Med Username')
     MN = session.get('Med name')
     MNUM = session.get('Med num')
-    sheet=client.open(NAME).sheet1
+    sheet=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
     mainurl=sheet.url
     brands = []
 
@@ -822,7 +822,7 @@ def orderform():
         Ramount = int(request.form.get("refund_amount"))
         upi = request.form.get("upi")
 
-        OSheet = client.open(NAME).sheet1
+        OSheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
         BrandSheet = client.open(brand).sheet1
         all_values = OSheet.get_all_values()
         headers = all_values[0]
@@ -896,7 +896,7 @@ def refundform():
     if request.method == "POST":
         
         
-        OrderSheet = client.open(NAME).sheet1
+        OrderSheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
         
         if DC :
             deal_code=DC
@@ -984,7 +984,7 @@ def refundform():
 @app.route("/open-sheet/<Name>")
 def open_sheet(Name):
 
-    spreadsheet = client.open(Name)   # existing sheet open
+    spreadsheet = client.open_by_key(Name)   # existing sheet open
     sheet_url = spreadsheet.url        # get link
 
     return redirect(sheet_url)
