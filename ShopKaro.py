@@ -748,13 +748,13 @@ def Brands():
 
     conn = db()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT Seller FROM {NAME}_Sellers")
+    cursor.execute(f"SELECT * FROM {NAME}_Sellers")
     db_brands = cursor.fetchall()
     cursor.close()
     conn.close()
 
     for b in db_brands:
-        brandSheet = client.open(b[0]).sheet1
+        brandSheet = client.open_by_key(b[1]).sheet1
         url=brandSheet.url
         data = brandSheet.get_all_values()
         row = data[1:]
@@ -765,6 +765,16 @@ def Brands():
 
 @app.route("/delete-brand/<brand>")
 def delete_brand(brand):
+
+    conn = db()
+    cur = conn.cursor()
+    cur.execute(f"SELECT * FROM {NAME}_Sellers WHERE Seller=%s", (brand,))
+    brand_data = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    key=brand_data[1]
+
 
     username = session.get("Med Username")
 
@@ -777,7 +787,7 @@ def delete_brand(brand):
     drive_service = build("drive", "v3", credentials=creds)
 
     try:
-        spreadsheet = client.open(brand)
+        spreadsheet = client.open_by_key(key)
         sheet_id = spreadsheet.id
 
         # 🔥 Delete using mediator (Owner)
@@ -837,7 +847,14 @@ def orderform():
         upi = request.form.get("upi")
 
         OSheet = MainSheet()
-        BrandSheet = client.open(brand).sheet1
+        conn = db()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM {NAME}_Sellers WHERE Seller=%s", (brand,))
+        brand_data = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        BrandSheet = client.open_by_key(brand_data[1]).sheet1
         all_values = OSheet.get_all_values()
         headers = all_values[0]
         data_rows = all_values[1:]
@@ -1008,7 +1025,6 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
 
 
 
