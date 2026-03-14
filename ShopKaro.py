@@ -729,7 +729,7 @@ def create_sheet():
     Pmsg=f"Added :- {Brand}"
     conn = db()
     cur=conn.cursor()
-    cur.execute(f"INSERT INTO {NAME}_Sellers (Seller) VALUES (%s)",(Brand,))
+    cur.execute(f"INSERT INTO {NAME}_Sellers (Seller,key) VALUES (%s,%s)",(Brand,sheet_id))
     conn.commit()
     cur.close()
     conn.close()
