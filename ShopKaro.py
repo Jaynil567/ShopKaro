@@ -72,7 +72,9 @@ def db():
 
 
 NAME="ShopKaro"
-MainSheet=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
+def MainSheet():
+    Main=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
+    return Main
 
 
 # ---------- HOME ----------
@@ -251,7 +253,7 @@ def Customer_Portal_Dashboard():
     elif session.get('Med num') != None :
         return redirect("/Mediator_Portal/Dashboard")
 
-    sheet = MainSheet
+    sheet = MainSheet()
     all_values = sheet.get_all_values()
     headers = all_values[0]
     data_rows = all_values[1:]
@@ -397,7 +399,7 @@ def Mediator_Portal_Dashboard():
     if MUN == None:
         return redirect('/Mediator_Login')
     
-    sheet = MainSheet
+    sheet = MainSheet()
     sheeturl=sheet.url
     all_values = sheet.get_all_values()
     headers = all_values[0]
@@ -734,7 +736,7 @@ def Brands():
     MUN = session.get('Med Username')
     MN = session.get('Med name')
     MNUM = session.get('Med num')
-    sheet=MainSheet
+    sheet=MainSheet()
     mainurl=sheet.url
     brands = []
 
@@ -828,7 +830,7 @@ def orderform():
         Ramount = int(request.form.get("refund_amount"))
         upi = request.form.get("upi")
 
-        OSheet = MainSheet
+        OSheet = MainSheet()
         BrandSheet = client.open(brand).sheet1
         all_values = OSheet.get_all_values()
         headers = all_values[0]
@@ -902,7 +904,7 @@ def refundform():
     if request.method == "POST":
         
         
-        OrderSheet = MainSheet
+        OrderSheet = MainSheet()
         
         if DC :
             deal_code=DC
