@@ -391,7 +391,7 @@ def Mediator_Portal_Dashboard():
     if MUN == None:
         return redirect('/Mediator_Login')
     
-    sheet = client.open(NAME).sheet1
+    sheet = client.open("ShopKaro").sheet1
     sheeturl=sheet.url
     all_values = sheet.get_all_values()
     headers = all_values[0]
