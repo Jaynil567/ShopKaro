@@ -485,7 +485,7 @@ def login():
     if row and row[0]:
         return redirect("/create-sheet")
 
-    flow = Flow.from_client_config(
+    flow = Flow.from_client_secrets_file(
         "/etc/secrets/client_secret.json",    
         scopes=SCOPES,
         redirect_uri="https://shopkaro-42so.onrender.com/callback"
@@ -505,7 +505,7 @@ def callback():
 
     state = session.get("state")
 
-    flow = Flow.from_client_config(
+    flow = Flow.from_client_secrets_file(
         "/etc/secrets/client_secret.json",
         scopes=SCOPES,
         state=state,
