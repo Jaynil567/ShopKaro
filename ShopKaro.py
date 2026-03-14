@@ -75,7 +75,11 @@ NAME="ShopKaro"
 def MainSheet():
     Main=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
     return Main
-
+    
+@app.route("/test")
+def test():
+    return "Server OK"
+    
 #----------callback--------
 @app.route("/callback")
 def callback():
@@ -525,7 +529,7 @@ def login():
     flow = Flow.from_client_secrets_file(
         "/etc/secrets/client_secret.json",    
         scopes=SCOPES,
-        redirect_uri="https://shopkaro-42so.onrender.com/callback"
+        redirect_uri="https://shopkaro-42so.onrender.com/test"
     )
 
     auth_url, state = flow.authorization_url(
