@@ -76,6 +76,43 @@ def MainSheet():
     Main=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
     return Main
 
+#----------callback--------
+@app.route("/callback")
+def callback():
+
+    state = session.get("state")
+
+    flow = Flow.from_client_secrets_file(
+        "/etc/secrets/client_secret.json",
+        scopes=SCOPES,
+        state=state,
+        redirect_uri="https://shopkaro-42so.onrender.com/callback"
+    )
+
+    flow.fetch_token(authorization_response=request.url)
+
+    creds = flow.credentials
+    token_json = creds.to_json()
+
+    username = session.get("Med Username")
+
+    if not username:
+        return redirect("/Mediator_Login")
+
+    conn = db()
+    cur = conn.cursor()
+
+    cur.execute(
+        f"UPDATE {NAME}_mediator SET token=%s WHERE username=%s",
+        (token_json, username)
+    )
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect("/create-sheet")
+
 
 # ---------- HOME ----------
 @app.route('/')
@@ -963,41 +1000,6 @@ def open_sheet(Name):
     return redirect(sheet_url)
 
 # ---------------- CALLBACK ----------------
-@app.route("/callback")
-def callback():
-
-    state = session.get("state")
-
-    flow = Flow.from_client_secrets_file(
-        "/etc/secrets/client_secret.json",
-        scopes=SCOPES,
-        state=state,
-        redirect_uri="https://shopkaro-42so.onrender.com/callback"
-    )
-
-    flow.fetch_token(authorization_response=request.url)
-
-    creds = flow.credentials
-    token_json = creds.to_json()
-
-    username = session.get("Med Username")
-
-    if not username:
-        return redirect("/Mediator_Login")
-
-    conn = db()
-    cur = conn.cursor()
-
-    cur.execute(
-        f"UPDATE {NAME}_mediator SET token=%s WHERE username=%s",
-        (token_json, username)
-    )
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return redirect("/create-sheet")
 
 # ---------- RUN ----------
 if __name__ == "__main__":
