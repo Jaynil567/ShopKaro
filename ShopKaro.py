@@ -500,10 +500,11 @@ def login():
     auth_url, state = flow.authorization_url(
         prompt="consent",
         access_type="offline",
-        include_granted_scopes="true"
+       include_granted_scopes="true"
     )
 
     session["state"] = state
+    session["code_verifier"] = flow.code_verifier
 
     return redirect(auth_url)
 
@@ -516,9 +517,11 @@ def callback():
     flow = Flow.from_client_secrets_file(
         "/etc/secrets/client_secret.json",
         scopes=SCOPES,
-        state=state,
+        state=session["state"],
         redirect_uri="https://shopkaro-42s0.onrender.com/callback"
     )
+
+    flow.code_verifier = session["code_verifier"]
 
     flow.fetch_token(authorization_response=request.url)
 
@@ -1028,7 +1031,6 @@ def open_sheet(Name):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
 
 
 
