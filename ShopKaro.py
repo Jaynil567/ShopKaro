@@ -108,7 +108,7 @@ def Customer_Ragistration():
             cur.close()
             conn.close()
 
-            CustomerSheet=client.open(NAME).get_worksheet(1)
+            CustomerSheet=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").get_worksheet(1)
             data = {"Name":name,"Whatsapp":num,"Email":email,"UPI ID":upi}
             safe_append(CustomerSheet, data)
 
