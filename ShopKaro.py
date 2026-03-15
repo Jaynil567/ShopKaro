@@ -74,9 +74,7 @@ def db():
 
 
 NAME="ShopKaro"
-def MainSheet():
-    Main=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
-    return Main
+MainSheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
     
 @app.route("/test")
 def test():
@@ -260,8 +258,8 @@ def Customer_Portal_Dashboard():
         return redirect('/')
     elif session.get('Med num') != None :
         return redirect("/Mediator_Portal/Dashboard")
-
-    sheet = MainSheet()
+    global MainSheet
+    sheet = MainSheet
     all_values = sheet.get_all_values()
     headers = all_values[0]
     data_rows = all_values[1:]
@@ -406,8 +404,8 @@ def Mediator_Portal_Dashboard():
 
     if MUN == None:
         return redirect('/Mediator_Login')
-    
-    sheet = MainSheet()
+    global MainSheet
+    sheet = MainSheet
     sheeturl=sheet.url
     all_values = sheet.get_all_values()
     headers = all_values[0]
@@ -751,7 +749,8 @@ def Brands():
     MUN = session.get('Med Username')
     MN = session.get('Med name')
     MNUM = session.get('Med num')
-    sheet=MainSheet()
+    global MainSheet
+    sheet=MainSheet
     mainurl=sheet.url
     brands = []
 
@@ -875,7 +874,8 @@ def orderform():
         Ramount = int(request.form.get("refund_amount"))
         upi = request.form.get("upi")
 
-        OSheet = MainSheet()
+        global MainSheet
+        OSheet = MainSheet
         conn = db()
         cursor = conn.cursor()
         cursor.execute(f"SELECT * FROM {NAME}_Sellers WHERE Seller=%s", (brand,))
@@ -953,8 +953,8 @@ def refundform():
     email=session.get('Cust email')
     if request.method == "POST":
         
-        
-        OrderSheet = MainSheet()
+        global MainSheet
+        OrderSheet = MainSheet
         
         if DC :
             deal_code=DC
@@ -1048,8 +1048,8 @@ def open_sheet(Name):
 # ---------------- Delete row ----------------
 @app.route("/delete_order/<order_id>/<brand>")
 def delete_order(order_id,brand):
-
-    sheet = MainSheet()
+    global MainSheet
+    sheet = MainSheet
     data = sheet.get_all_values()
 
     headers = data[0]
