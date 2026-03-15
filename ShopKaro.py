@@ -14,6 +14,8 @@ from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from google.oauth2.service_account import Credentials as SACredentials
 from datetime import timedelta
+from PIL import Image
+import io
 import json
 import os
 import psycopg2
@@ -827,6 +829,26 @@ def safe_append(sheet, data_dict):
     next_row = len(data) + 1
 
     sheet.insert_row(row, next_row)
+
+
+def upload_compressed_image(file):
+
+    img = Image.open(file).convert("RGB")
+
+    # resize large images
+    img.thumbnail((1000, 1000))
+
+    # compress image
+    img_io = io.BytesIO()
+    img.save(img_io, format="JPEG", quality=60, optimize=True)
+    img_io.seek(0)
+
+    # upload to cloudinary
+    result = cloudinary.uploader.upload(img_io)
+
+    return result["secure_url"]
+
+
 @app.route("/orderform", methods=["GET", "POST"])
 def orderform():
     conn = db()
@@ -879,8 +901,7 @@ def orderform():
 
         Order_SS = request.files.get("screenshot")
         if Order_SS:
-            result = cloudinary.uploader.upload(Order_SS)
-            url = result['secure_url']
+            url = upload_compressed_image(Order_SS)
 
         # 🔥 Header-based mapping
         data = {
@@ -919,7 +940,6 @@ def orderform():
         msg=msg,
         NAME=NAME
     )
-
 
 @app.route("/refundform", methods=["GET", "POST"])
 def refundform():
@@ -977,13 +997,11 @@ def refundform():
         else:
             Review_SS = request.files.get("Review-screenshot")
             if Review_SS:
-                result = cloudinary.uploader.upload(Review_SS)
-                Review_url = result['secure_url']
+                Review_url = upload_compressed_image(Review_SS)
 
             D_SS = request.files.get("D-screenshot")
             if D_SS:
-                result = cloudinary.uploader.upload(D_SS)
-                D_url = result['secure_url']
+                D_url = pload_compressed_image(D_SS)
 
 
             for i, row in enumerate(data_rows, start=2):
