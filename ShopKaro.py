@@ -1027,7 +1027,41 @@ def open_sheet(Name):
 
     return redirect(sheet_url)
 
-# ---------------- CALLBACK ----------------
+# ---------------- Delete row ----------------
+@app.route("/delete_order/<order_id>/<brand>")
+def delete_order(order_id,brand):
+
+    sheet = MainSheet()
+    data = sheet.get_all_values()
+
+    headers = data[0]
+    order_id_index = headers.index("Order ID")
+
+    for i, row in enumerate(data):
+        if row[order_id_index] == order_id:
+            sheet.delete_rows(i+1)
+            break
+
+    # ----- Brand Sheet -----
+    conn = db()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM {NAME}_Sellers WHERE Seller=%s", (brand,))
+    brand_data = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    
+    brand = client.open_by_key(brand_data[1]).sheet1
+    data = brand.get_all_values()
+
+    headers = data[0]
+    order_id_index = headers.index("Order ID")
+
+    for i, row in enumerate(data):
+        if row[order_id_index] == order_id:
+            brand.delete_rows(i+1)
+            break
+            
+    return redirect("/Mediator_Portal/Dashboard")
 
 # ---------- RUN ----------
 if __name__ == "__main__":
