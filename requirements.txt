@@ -4,6 +4,7 @@ gspread
 gunicorn
 oauth2client
 cloudinary
+Pillow
 sendgrid
 google-auth
 google-auth-oauthlib
