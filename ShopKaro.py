@@ -1163,6 +1163,19 @@ def add_deal():
     
 
     return redirect("/mediator/deals")
+
+@app.route("/delete_deal/<code>")
+def delete_deal(code):
+
+    sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").worksheet("Deals")
+    data = sheet.get_all_values()
+
+    for i,row in enumerate(data):
+        if row[1] == code:
+            sheet.delete_rows(i+1)
+            break
+
+    return redirect("/mediator/deals")
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
