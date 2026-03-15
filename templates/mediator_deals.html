@@ -325,6 +325,7 @@
                             <th>Deal Type</th>
                             <th>Order Price</th>
                             <th>Refund</th>
+                            <th>Delete</th>
 
                         </tr>
 
@@ -351,7 +352,11 @@
                             <td>{{ d[3] }}</td>
                             <td>₹{{ d[4] }}</td>
                             <td class="text-success">₹{{ d[5] }}</td>
-
+                            <td>
+    <a href="/delete_deal/{{ d[1] }}" onclick="return confirm('Delete this deal?')">
+        <i class="bi bi-trash text-danger"></i>
+    </a>
+                            </td>
                         </tr>
 
                         {% endfor %}
