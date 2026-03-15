@@ -232,7 +232,7 @@
 
     <div class="sidebar" id="sidebar">
         <h4>{{ NAME }} Deals</h4>
-        <a href="/Mediator_Portal/Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="/Mediator_Portal/Dashboard" onclick="showLoader()"><i class="bi bi-speedometer2"></i> Dashboard</a>
         <a href="/mediator/deals" class="active"><i class="bi bi-tag"></i> All Deals</a>
         <a href="{{ url }}" target="_blank"><i class="bi bi-mailbox"></i> Google Sheet</a>
         <a href="/Brands" onclick="showLoader()"><i class="bi bi-send-slash"></i> Brands</a>
@@ -362,28 +362,17 @@
 
                         <input type="file" name="image" class="form-control mb-3">
 
-                        <input type="text" name="product_code" class="form-control mb-3" placeholder="Product Code"
-                            required>
+                        <input type="text" name="product_code" class="form-control mb-3" placeholder="Product Code" required>
 
-                        <select name="platform" class="form-control mb-3">
+                        <input type="text" name="platform" class="form-control mb-3" placeholder="Platform" required>
 
-                            <option>Amazon</option>
-                            <option>Flipkart</option>
-
-                        </select>
-
-                        <select name="deal_type" class="form-control mb-3">
-
-                            <option>Rating</option>
-                            <option>Review</option>
-
-                        </select>
+                        <input type="text" name="deal_type" class="form-control mb-3" placeholder="Deal Type" required>
 
                         <input type="number" name="order_price" class="form-control mb-3" placeholder="Order Price">
 
                         <input type="number" name="refund_amount" class="form-control mb-3" placeholder="Refund Amount">
 
-                        <button class="btn btn-warning w-100">
+                        <button class="btn btn-warning w-100" onclick="showLoader()">
 
                             Save Deal
 
