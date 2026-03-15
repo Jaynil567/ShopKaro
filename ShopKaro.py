@@ -1001,7 +1001,7 @@ def refundform():
 
             D_SS = request.files.get("D-screenshot")
             if D_SS:
-                D_url = pload_compressed_image(D_SS)
+                D_url = upload_compressed_image(D_SS)
 
 
             for i, row in enumerate(data_rows, start=2):
@@ -1081,6 +1081,88 @@ def delete_order(order_id,brand):
             
     return redirect("/Mediator_Portal/Dashboard")
 
+@app.route("/customer/deals")
+def customer_deals():
+    name=session.get('Cust name')
+    num=session.get('Cust num')
+    passw=session.get('Cust passw')
+    email=session.get('Cust email')
+    
+
+    sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").worksheet("Deals")
+    sheeturl=sheet.url
+
+    deals = sheet.get_all_values()[1:]
+    deals = deals[::-1]  # Show latest deals first
+
+    return render_template(
+        "Customer_All_Deal.html",
+        deals=deals,
+        NAME=NAME,
+        name=name,
+        num=num,
+        passw=passw,
+        email=email,
+        url=sheeturl
+    )
+
+@app.route("/mediator/deals")
+def mediator_deals():
+    MUN = session.get('Med Username')
+    MN = session.get('Med name')
+    MNUM = session.get('Med num')
+
+    sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").worksheet("Deals")
+    sheeturl=sheet.url
+
+    deals = sheet.get_all_values()[1:]
+    deals = deals[::-1]  # Show latest deals first
+
+    return render_template(
+        "mediator_deals.html",
+        deals=deals,
+        NAME=NAME,
+        MN=MN,
+        MUN=MUN,
+        MNUM=MNUM,
+        url=sheeturl
+    )
+
+
+
+@app.route("/add_deal", methods=["POST"])
+def add_deal():
+
+    sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").worksheet("Deals")
+
+    product_code = request.form.get("product_code")
+    platform = request.form.get("platform")
+    deal_type = request.form.get("deal_type")
+    order_price = request.form.get("order_price")
+    refund_amount = request.form.get("refund_amount")
+
+    image_file = request.files.get("image")
+
+    image_url = ""
+
+    if image_file and image_file.filename != "":
+        image_url = upload_compressed_image(image_file)
+
+    
+
+    data={
+        "Image URL": image_url,
+        "Product Code": product_code,
+        "Platform": platform,
+        "Deal Type": deal_type,
+        "Order Price": order_price,
+        "Refund Amount": refund_amount
+    }
+
+    safe_append(sheet, data)
+    
+
+    return redirect("/mediator/deals")
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
