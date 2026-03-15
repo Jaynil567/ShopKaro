@@ -89,7 +89,7 @@ def Home():
 
     # 🔹 Customer already logged in?
     if session.get('Cust num'):
-        return redirect('/Customer_Portal/Dashboard')
+        return redirect('/customer/deals')
 
     # 🔹 Mediator already logged in?
     if session.get('Med Username'):
