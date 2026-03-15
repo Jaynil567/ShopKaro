@@ -487,7 +487,9 @@
                                     <th>Order ID</th>
                                     <th>Form Status</th>
                                     <th>Payout</th>
-                                    <th class="text-end">Whatsapp</th>
+                                    <th>Whatsapp</th>
+                                    <th class="text-end">Delete</th>
+                                    
                                 </tr>
                             </thead>
 
@@ -509,11 +511,18 @@
                                         <span class="payout-chip-pending">₹{{ order[4] }}</span>
                                         {% endif %}
                                     </td>
-                                    <td class="text-end"> 
+                                    <td > 
                                         <button class="btn" 
                                             onclick="window.open('https://wa.me/91{{ order[7] }}?text=Order%20ID%20:-%20{{ order[0] }}%0A%0AYour%20Refund%20is%20Pending.%0APlease%20fill%20Refund%20Form.', '_blank')">
                                             <i class="bi bi-whatsapp btn btn-success"></i>
                                         </button>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="/delete_order/{{ order[0] }}"
+                                           onclick="return confirm('Are you sure you want to delete this order?')"
+                                            class="btn btn-danger btn-sm">
+                                           <i class="bi bi-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 {% endfor %}
