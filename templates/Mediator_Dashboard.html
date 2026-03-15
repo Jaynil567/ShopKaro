@@ -481,9 +481,10 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>TimeStamp</th>
                                     <th>Date</th>
-                                    <th>Order ID</th>
                                     <th>Brand</th>
+                                    <th>Order ID</th>
                                     <th>Form Status</th>
                                     <th>Payout</th>
                                     <th class="text-end">Whatsapp</th>
@@ -494,11 +495,12 @@
                                 {% for order in orders %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
+                                    <td>{{ order[8] }}</td>
                                     <td>{{ order[1] }}</td>
+                                    <td>{{ order[3] }}</td>
                                     <td class="order-id">
                                         {{ order[0] }}
                                     </td>
-                                    <td>{{ order[3] }}</td>
                                     <td>{{ order[2] }}</td>
                                     <td>
                                         {% if order[2]=='Done'%}
