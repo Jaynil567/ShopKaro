@@ -480,33 +480,37 @@
                         <div class="stat-label">Total Payout</div>
                     </div>
                 </div>
-
-                <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3">
-                    <input type="text" name="deal_code" class="form-control me-2 w-25"
-                        placeholder="Enter New Brand Name" required>
-                    <button type="submit" class="btn btn-warning fw-semibold">
-                        <i class="bi bi-plus-circle"></i> Add Brand
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sortModal">
+                        Sort By
                     </button>
-                </form>
-                <br>
-                {% if Nmsg %}
-                <div class="d-flex justify-content-end">
-                    <div class="alert alert-danger text-center ">
-                        {{ Nmsg }}
-                    </div>
-                </div>
-                {% endif %}
-                {% if Pmsg %}
-                <div class="d-flex justify-content-end">
-                    <div class="alert alert-success text-center ">
-                        {{ Pmsg }}
-                    </div>
-                </div>
-                {% endif %}
 
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sortModal">
-                    Sort By
-                </button>
+                    <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3">
+                        <input type="text" name="deal_code" class="form-control me-2 w-25"
+                            placeholder="Enter New Brand Name" required>
+                        <button type="submit" class="btn btn-warning fw-semibold">
+                            <i class="bi bi-plus-circle"></i> Add Brand
+                        </button>
+                    </form>
+                    <br>
+                    {% if Nmsg %}
+                    <div class="d-flex justify-content-end">
+                        <div class="alert alert-danger text-center ">
+                            {{ Nmsg }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if Pmsg %}
+                    <div class="d-flex justify-content-end">
+                        <div class="alert alert-success text-center ">
+                            {{ Pmsg }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+
+
+                </div>
 
                 <div class="orders-wrapper mt-5">
 
