@@ -464,12 +464,14 @@
                         <div class="stat-value">{{TO}}</div>
                         <div class="stat-label">Total Orders</div>
                     </div>
-                    <div class="stat-card" onclick="window.open('/Mediator_Portal/Dashboard?rec=Done&sort={{ sort }}','_self')">
+                    <div class="stat-card"
+                        onclick="window.open('/Mediator_Portal/Dashboard?rec=Done&sort={{ sort }}','_self')">
                         <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
                         <div class="stat-value">{{CO}}</div>
                         <div class="stat-label">Complete Forms</div>
                     </div>
-                    <div class="stat-card" onclick="window.open('/Mediator_Portal/Dashboard?rec=Pending&sort={{ sort }}','_self')">
+                    <div class="stat-card"
+                        onclick="window.open('/Mediator_Portal/Dashboard?rec=Pending&sort={{ sort }}','_self')">
                         <div class="stat-icon text-warning"><i class="bi bi-clock"></i></div>
                         <div class="stat-value">{{PF}}</div>
                         <div class="stat-label">Pending Forms</div>
@@ -480,35 +482,35 @@
                         <div class="stat-label">Total Payout</div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="d-flex align-items-center mt-3">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sortModal">
                         Sort By
                     </button>
-
-                    <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3">
-                        <input type="text" name="deal_code" class="form-control me-2 w-25"
-                            placeholder="Enter New Brand Name" required>
-                        <button type="submit" class="btn btn-warning fw-semibold">
-                            <i class="bi bi-plus-circle"></i> Add Brand
-                        </button>
-                    </form>
-                    <br>
-                    {% if Nmsg %}
-                    <div class="d-flex justify-content-end">
-                        <div class="alert alert-danger text-center ">
-                            {{ Nmsg }}
+                    <div class="ms-auto d-flex align-items-center">
+                        <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3">
+                            <input type="text" name="deal_code" class="form-control me-2 w-25"
+                                placeholder="Enter New Brand Name" required>
+                            <button type="submit" class="btn btn-warning fw-semibold">
+                                <i class="bi bi-plus-circle"></i> Add Brand
+                            </button>
+                        </form>
+                        <br>
+                        {% if Nmsg %}
+                        <div class="d-flex justify-content-end">
+                            <div class="alert alert-danger text-center ">
+                                {{ Nmsg }}
+                            </div>
                         </div>
-                    </div>
-                    {% endif %}
-                    {% if Pmsg %}
-                    <div class="d-flex justify-content-end">
-                        <div class="alert alert-success text-center ">
-                            {{ Pmsg }}
+                        {% endif %}
+                        {% if Pmsg %}
+                        <div class="d-flex justify-content-end">
+                            <div class="alert alert-success text-center ">
+                                {{ Pmsg }}
+                            </div>
                         </div>
+                        {% endif %}
+
                     </div>
-                    {% endif %}
-
-
 
                 </div>
 
