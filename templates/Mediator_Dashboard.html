@@ -465,6 +465,10 @@
                 </div>
                 {% endif %}
 
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sortModal">
+                    Sort By
+                </button>
+
                 <div class="orders-wrapper mt-5">
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -542,7 +546,37 @@
 
 
         </div>
+        <div class="modal fade" id="sortModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Sort By</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="list-group">
+
+                            <a href="customer_dashboard.php?rec={{ rec }}&sort=newFirst"
+                                class="list-group-item list-group-item-action">
+                                Date (newest to oldest)
+                            </a>
+
+                            <a href="customer_dashboard.php?rec={{ rec }}&sort=oldFirst"
+                                class="list-group-item list-group-item-action">
+                                Date (oldest to newest)
+                            </a>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
+
+
 
     <script>
         function showLoader() {
