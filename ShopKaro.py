@@ -396,6 +396,7 @@ def MPassword_Reset_Success():
 # ---------- MEDIATOR PORTAL ----------
 @app.route('/Mediator_Portal/Dashboard')
 def Mediator_Portal_Dashboard():
+    rec = request.args.get("rec")
     Nmsg = request.args.get("Nmsg")
     Pmsg = request.args.get("Pmsg")
     MUN = session.get('Med Username')
@@ -436,7 +437,20 @@ def Mediator_Portal_Dashboard():
     
     user_orders=user_orders[::-1]
 
-    return render_template('Mediator_Dashboard.html',orders=user_orders, Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl, NAME=NAME)
+    send_orders=[]
+    if rec=="Done":
+        for i in user_orders:
+            if i[2]=="Done":
+                send_orders.append(i)
+    elif rec=="Pending":
+        for i in user_orders:
+            if i[2]=="Pending":
+                send_orders.append(i)
+    else:
+        send_orders=user_orders
+    
+
+    return render_template('Mediator_Dashboard.html',orders=send_orders, Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl, NAME=NAME)
 
 
 
