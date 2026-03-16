@@ -246,10 +246,11 @@ def Reset_Password():
 def Password_Reset_Success():
     return render_template('Password_Reset_Success.html', NAME=NAME)
 
- 
+
 # ---------- CUSTOMER PORTAL ----------
 @app.route('/Customer_Portal/Dashboard')
 def Customer_Portal_Dashboard():
+    sort = request.args.get("sort")
     rec = request.args.get("rec")
     name=session.get('Cust name')
     num=session.get('Cust num')
@@ -286,7 +287,11 @@ def Customer_Portal_Dashboard():
         if i[2]=="Done":
             Payout+=int(i[4])
             RO+=1
-    user_orders=user_orders[::-1]
+    
+    if sort == "oldFirst":
+        user_orders=user_orders
+    else:
+        user_orders=user_orders[::-1]
 
     send_orders=[]
     if rec=="Done":
@@ -300,7 +305,7 @@ def Customer_Portal_Dashboard():
     else:
         send_orders=user_orders
     
-    return render_template("Customer_Dashboard.html",orders=send_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout, NAME=NAME)
+    return render_template("Customer_Dashboard.html",rec=rec,sort=sort,orders=send_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout, NAME=NAME)
 
 # ---------- MEDIATOR LOGIN ----------
 @app.route('/Mediator_Login',methods=['GET','POST'])
