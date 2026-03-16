@@ -377,6 +377,45 @@
             font-size: 13px;
             color: white;
         }
+
+        #sortModal .modal-content {
+            background: linear-gradient(145deg, #0b1220, #020617);
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            color: #e5e7eb;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+        }
+
+        #sortModal .modal-header {
+            border-bottom: 1px solid #1e293b;
+        }
+
+        #sortModal .modal-title {
+            color: #facc15;
+            font-weight: 600;
+        }
+
+        #sortModal .btn-close {
+            filter: invert(1);
+        }
+
+        .sort-option {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+            color: #e5e7eb;
+            text-decoration: none;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sort-option:hover {
+            background: #1f2937;
+            transform: translateX(5px);
+            border-color: #facc15;
+        }
     </style>
 </head>
 
@@ -556,19 +595,15 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="list-group">
 
-                            <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort=newFirst"
-                                class="list-group-item list-group-item-action">
-                                Date (newest to oldest)
-                            </a>
+                        <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort=newFirst" class="sort-option">
+                            <i class="bi bi-arrow-down"></i> Date (Newest First)
+                        </a>
 
-                            <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort=oldFirst"
-                                class="list-group-item list-group-item-action">
-                                Date (oldest to newest)
-                            </a>
+                        <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort=oldFirst" class="sort-option">
+                            <i class="bi bi-arrow-up"></i> Date (Oldest First)
+                        </a>
 
-                        </div>
                     </div>
 
                 </div>
