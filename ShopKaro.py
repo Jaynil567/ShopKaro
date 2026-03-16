@@ -246,7 +246,7 @@ def Reset_Password():
 def Password_Reset_Success():
     return render_template('Password_Reset_Success.html', NAME=NAME)
 
-
+ 
 # ---------- CUSTOMER PORTAL ----------
 @app.route('/Customer_Portal/Dashboard')
 def Customer_Portal_Dashboard():
