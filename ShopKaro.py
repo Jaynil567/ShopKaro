@@ -409,6 +409,7 @@ def MPassword_Reset_Success():
 # ---------- MEDIATOR PORTAL ----------
 @app.route('/Mediator_Portal/Dashboard')
 def Mediator_Portal_Dashboard():
+    sort = request.args.get("sort")
     rec = request.args.get("rec")
     Nmsg = request.args.get("Nmsg")
     Pmsg = request.args.get("Pmsg")
@@ -448,7 +449,10 @@ def Mediator_Portal_Dashboard():
             Payout+=int(i[4])
             CO+=1
     
-    user_orders=user_orders[::-1]
+    if sort == "oldFirst":
+        user_orders=user_orders
+    else:
+        user_orders=user_orders[::-1]
 
     send_orders=[]
     if rec=="Done":
@@ -1206,7 +1210,6 @@ def delete_deal(code):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
 
 
 
