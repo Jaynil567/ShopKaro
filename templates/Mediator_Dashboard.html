@@ -459,17 +459,17 @@
                     <h5>Welcome, {{ MN }} 👋</h5>
                 </div>
                 <div class="stats">
-                    <div class="stat-card" onclick="window.open('/Mediator_Portal/Dashboard','_self')">
+                    <div class="stat-card" onclick="window.open('/Mediator_Portal/Dashboard?sort={{ sort }}','_self')">
                         <div class="stat-icon text-info"><i class="bi bi-box"></i></div>
                         <div class="stat-value">{{TO}}</div>
                         <div class="stat-label">Total Orders</div>
                     </div>
-                    <div class="stat-card" onclick="window.open('/Mediator_Portal/Dashboard?rec=Done','_self')">
+                    <div class="stat-card" onclick="window.open('/Mediator_Portal/Dashboard?rec=Done&sort={{ sort }}','_self')">
                         <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
                         <div class="stat-value">{{CO}}</div>
                         <div class="stat-label">Complete Forms</div>
                     </div>
-                    <div class="stat-card" onclick="window.open('/Mediator_Portal/Dashboard?rec=Pending','_self')">
+                    <div class="stat-card" onclick="window.open('/Mediator_Portal/Dashboard?rec=Pending&sort={{ sort }}','_self')">
                         <div class="stat-icon text-warning"><i class="bi bi-clock"></i></div>
                         <div class="stat-value">{{PF}}</div>
                         <div class="stat-label">Pending Forms</div>
