@@ -467,7 +467,7 @@ def Mediator_Portal_Dashboard():
         send_orders=user_orders
     
 
-    return render_template('Mediator_Dashboard.html',orders=send_orders, Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl, NAME=NAME)
+    return render_template('Mediator_Dashboard.html',rec=rec,orders=send_orders, Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl, NAME=NAME)
 
 
 
