@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, session,url_for
-import mysql.connector
 import random
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -251,6 +250,7 @@ def Password_Reset_Success():
 # ---------- CUSTOMER PORTAL ----------
 @app.route('/Customer_Portal/Dashboard')
 def Customer_Portal_Dashboard():
+    rec = request.args.get("rec")
     name=session.get('Cust name')
     num=session.get('Cust num')
     passw=session.get('Cust passw')
@@ -287,8 +287,20 @@ def Customer_Portal_Dashboard():
             Payout+=int(i[4])
             RO+=1
     user_orders=user_orders[::-1]
+
+    send_orders=[]
+    if rec=="Done":
+        for i in user_orders:
+            if i[2]=="Done":
+                send_orders.append(i)
+    elif rec=="Pending":
+        for i in user_orders:
+            if i[2]=="Pending":
+                send_orders.append(i)
+    else:
+        send_orders=user_orders
     
-    return render_template("Customer_Dashboard.html",orders=user_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout, NAME=NAME)
+    return render_template("Customer_Dashboard.html",orders=send_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout, NAME=NAME)
 
 # ---------- MEDIATOR LOGIN ----------
 @app.route('/Mediator_Login',methods=['GET','POST'])
@@ -1194,7 +1206,6 @@ def delete_deal(code):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
 
 
 
