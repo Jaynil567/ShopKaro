@@ -18,6 +18,7 @@ from PIL import Image
 import io
 import json
 import os
+import pytz
 import psycopg2
 
 
@@ -909,7 +910,7 @@ def orderform():
                 return render_template("Customer_Order_Form.html",upi = upi,name=name,num=num,passw=passw,email=email,brands=brands,msg=msg,NAME=NAME)
 
 
-        now = datetime.now().replace(microsecond=0)
+        now = datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")
 
         url = ""   # 🔥 important fix (avoid undefined error)
 
