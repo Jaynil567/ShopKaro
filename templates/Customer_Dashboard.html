@@ -391,6 +391,7 @@
             }
         }
 
+        #brandModal .modal-content,
         #sortModal .modal-content {
             background: linear-gradient(145deg, #0b1220, #020617);
             border: 1px solid #1e293b;
@@ -399,15 +400,18 @@
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
         }
 
+        #brandModal .modal-header,
         #sortModal .modal-header {
             border-bottom: 1px solid #1e293b;
         }
 
+        #brandModal .modal-title,
         #sortModal .modal-title {
             color: #facc15;
             font-weight: 600;
         }
 
+        #brandModal .btn-close,
         #sortModal .btn-close {
             filter: invert(1);
         }
@@ -494,9 +498,13 @@
                 <div class="stat-label">Refund</div>
             </div>
         </div>
-        
-        <button class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#sortModal">
+
+        <button class="btn btn-outline-primary mt-3 me-2" data-bs-toggle="modal" data-bs-target="#sortModal">
             <i class="bi bi-sort-down"></i> Sort By
+        </button>
+
+        <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#brandModal">
+            <i class="bi bi-tags"></i> Filter by Brand
         </button>
 
         <div class="orders-wrapper mt-3">
@@ -590,7 +598,36 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="brandModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
 
+                    <div class="modal-header">
+                        <h5 class="modal-title">Filter by Brand</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand=" class="sort-option">
+                            All Brands
+                        </a>
+
+                        {% if brands %}
+                        {% for b in brands %}
+                        <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand={{ b[0] }}"
+                            class="sort-option">
+                            {{ b[0] }}
+                        </a>
+                        {% endfor %}
+                        {% else %}
+                        <p>No brands found</p>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
