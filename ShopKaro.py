@@ -325,7 +325,7 @@ def Customer_Portal_Dashboard():
         send_orders=filtered_orders
     
     
-    return render_template("Customer_Dashboard.html",brands=brands,rec=rec,sort=sort,orders=send_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout, NAME=NAME)
+    return render_template("Customer_Dashboard.html",brands=brands,brand=currentbrand,rec=rec,sort=sort,orders=send_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout, NAME=NAME)
 
 # ---------- MEDIATOR LOGIN ----------
 @app.route('/Mediator_Login',methods=['GET','POST'])
