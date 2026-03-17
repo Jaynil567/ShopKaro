@@ -424,6 +424,14 @@ def Mediator_Portal_Dashboard():
 
     if MUN == None:
         return redirect('/Mediator_Login')
+    
+    conn=db()
+    cur=conn.cursor()
+    brands =cur.execute(f"SELECT * FROM {NAME}_Sellers") 
+    cur.close()
+    conn.close()
+
+
     global MainSheet
     sheet = MainSheet
     sheeturl=sheet.url
@@ -472,7 +480,7 @@ def Mediator_Portal_Dashboard():
         send_orders=user_orders
     
 
-    return render_template('Mediator_Dashboard.html',rec=rec,sort=sort,orders=send_orders, Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl, NAME=NAME)
+    return render_template('Mediator_Dashboard.html',brands=brands,rec=rec,sort=sort,orders=send_orders, Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl, NAME=NAME)
 
 
 
@@ -1215,7 +1223,6 @@ def delete_deal(code):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
 
 
 
