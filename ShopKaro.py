@@ -427,7 +427,8 @@ def Mediator_Portal_Dashboard():
     
     conn=db()
     cur=conn.cursor()
-    brands =cur.execute(f"SELECT * FROM {NAME}_Sellers") 
+    cur.execute(f"SELECT Seller FROM {NAME}_Sellers")
+    brands = cur.fetchall()
     cur.close()
     conn.close()
 
