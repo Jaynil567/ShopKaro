@@ -518,7 +518,7 @@
                     </button>
 
                     <div class="ms-auto d-flex align-items-center">
-                        <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3">
+                        <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3" onsubmit="showLoader()">
                             <input type="text" name="deal_code" class="form-control me-2 w-25"
                                 placeholder="Enter New Brand Name" required>
                             <button type="submit" class="btn btn-warning fw-semibold">
