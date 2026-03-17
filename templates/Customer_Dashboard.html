@@ -472,21 +472,21 @@
         </div>
         <div class="stats">
             <div class="stat-card"
-                onclick="showLoader();window.open('/Customer_Portal/Dashboard?rec=&sort={{ sort }}','_self')">
+                onclick="showLoader();window.open('/Customer_Portal/Dashboard?rec=&sort={{ sort }}&brand={{ brand }}','_self')">
                 <div class="stat-icon text-info"><i class="bi bi-bag-check"></i></div>
                 <div class="stat-value">{{TO}}</div>
                 <div class="stat-label">Order Forms</div>
             </div>
 
             <div class="stat-card"
-                onclick="showLoader();window.open('/Customer_Portal/Dashboard?rec=Done&sort={{ sort }}','_self')">
+                onclick="showLoader();window.open('/Customer_Portal/Dashboard?rec=Done&sort={{ sort }}&brand={{ brand }}','_self')">
                 <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
                 <div class="stat-value">{{CO}}</div>
                 <div class="stat-label">Refund Forms</div>
             </div>
 
             <div class="stat-card"
-                onclick="showLoader();window.open('/Customer_Portal/Dashboard?rec=Pending&sort={{ sort }}','_self')">
+                onclick="showLoader();window.open('/Customer_Portal/Dashboard?rec=Pending&sort={{ sort }}&brand={{ brand }}','_self')">
                 <div class="stat-icon text-warning"><i class="bi bi-clock"></i></div>
                 <div class="stat-value">{{PO}}</div>
                 <div class="stat-label">Pending</div>
@@ -503,7 +503,7 @@
             <i class="bi bi-sort-down"></i> Sort By
         </button>
 
-        <button class="btn btn-outline-warning mt-3" data-bs-toggle="modal" data-bs-target="#brandModal">
+        <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#brandModal">
             <i class="bi bi-tags"></i> Filter by Brand
         </button>
 
@@ -585,11 +585,11 @@
 
                     <div class="modal-body">
 
-                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort=newFirst" class="sort-option">
+                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort=newFirst&brand={{ brand }}" class="sort-option">
                             <i class="bi bi-arrow-down"></i> Date (Newest First)
                         </a>
 
-                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort=oldFirst" class="sort-option">
+                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort=oldFirst&brand={{ brand }}" class="sort-option">
                             <i class="bi bi-arrow-up"></i> Date (Oldest First)
                         </a>
 
@@ -608,13 +608,13 @@
                     </div>
 
                     <div class="modal-body">
-                        <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand=" class="sort-option">
+                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand=" class="sort-option">
                             All Brands
                         </a>
 
                         {% if brands %}
                         {% for b in brands %}
-                        <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand={{ b[0] }}"
+                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand={{ b[0] }}"
                             class="sort-option">
                             {{ b[0] }}
                         </a>
