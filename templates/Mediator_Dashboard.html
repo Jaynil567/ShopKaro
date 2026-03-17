@@ -378,6 +378,14 @@
             color: white;
         }
 
+        #imageModal .modal-content {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            color: #e5e7eb;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+        }
+
         #brandModal .modal-content,
         #sortModal .modal-content {
             background: linear-gradient(145deg, #0b1220, #020617);
@@ -387,15 +395,24 @@
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
         }
 
+        #imageModal .modal-header {
+            border-bottom: 1px solid #1e293b;
+        }
+
         #brandModal .modal-header,
         #sortModal .modal-header {
             border-bottom: 1px solid #1e293b;
         }
 
+        #imageModal .modal-title,
         #brandModal .modal-title,
         #sortModal .modal-title {
             color: #facc15;
             font-weight: 600;
+        }
+
+        #imageModal .btn-close {
+            filter: invert(1);
         }
 
         #brandModal .btn-close,
@@ -419,6 +436,20 @@
             background: #1f2937;
             transform: translateX(5px);
             border-color: #facc15;
+        }
+
+        .order-ss-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #333;
+        }
+
+        .order-ss-img:hover {
+            transform: scale(1.1);
+            transition: 0.2s;
         }
 
         @media (max-width: 768px) {
@@ -518,7 +549,8 @@
                     </button>
 
                     <div class="ms-auto d-flex align-items-center">
-                        <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3" onsubmit="showLoader()">
+                        <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3"
+                            onsubmit="showLoader()">
                             <input type="text" name="deal_code" class="form-control me-2 w-25"
                                 placeholder="Enter New Brand Name" required>
                             <button type="submit" class="btn btn-warning fw-semibold">
@@ -566,6 +598,7 @@
                                     <th>Date</th>
                                     <th>Brand</th>
                                     <th>Order ID</th>
+                                    <th>Order SS</th>
                                     <th>Form Status</th>
                                     <th>Payout</th>
                                     <th>Whatsapp</th>
@@ -584,6 +617,15 @@
                                     <td class="order-id">
                                         {{ order[0] }}
                                     </td>
+
+                                    <td data-label="Order SS">
+                                        {% if order[9] %}
+                                        <img src="{{ order[9] }}" class="order-ss-img">
+                                        {% else %}
+                                        <img src="/static/logo.jpeg" alt="-" class="order-ss-img">
+                                        {% endif %}
+                                    </td>
+
                                     <td>{{ order[2] }}</td>
                                     <td>
                                         {% if order[2]=='Done'%}
@@ -678,11 +720,37 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="imageModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background:#020617;">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Image Preview</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="modalImage" src=""
+                            style="width:100%; max-height:400px; object-fit:contain; border-radius:10px;">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
 
     <script>
+
+        document.querySelectorAll(".order-ss-img").forEach(img => {
+            img.addEventListener("click", function () {
+                let modalImg = document.getElementById("modalImage");
+                modalImg.src = this.src;
+
+                let modal = new bootstrap.Modal(document.getElementById('imageModal'));
+                modal.show();
+            });
+        });
+
         function showLoader() {
             document.getElementById("global-loader").style.display = "flex";
         }
