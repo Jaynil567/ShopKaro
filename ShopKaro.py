@@ -123,7 +123,7 @@ def Customer_Ragistration():
             conn.close()
 
             CustomerSheet=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").get_worksheet(1)
-            data = {"Name":name,"Whatsapp":num,"Email":email,"UPI ID":upi}
+            data = {"Name":name,"Whatsapp":num,"Email":email,"UPI ID":upi,"Password":passw}
             safe_append(CustomerSheet, data)
 
             session.permanent = True
@@ -1233,7 +1233,6 @@ def delete_deal(code):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
 
 
 
