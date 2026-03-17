@@ -625,26 +625,23 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
 
-                    <!-- Header -->
                     <div class="modal-header">
-                        <h5 class="modal-title">Select Brand</h5>
+                        <h5 class="modal-title">Filter by Brand</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
-                    <!-- Body -->
                     <div class="modal-body">
 
-                        <!-- All -->
-                        <a href="/Customer_Portal/Dashboard" class="sort-option">
-                            <i class="bi bi-grid"></i> All Brands
-                        </a>
-
-                        <!-- Dynamic Brands -->
+                        {% if brands %}
                         {% for b in brands %}
-                        <a href="/Customer_Portal/Dashboard?brand={{ b[0] }}" class="sort-option">
-                            <i class="bi bi-tag"></i> {{ b[0] }}
+                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand={{ b[0] }}"
+                            class="sort-option">
+                            {{ b[0] }}
                         </a>
                         {% endfor %}
+                        {% else %}
+                        <p>No brands found</p>
+                        {% endif %}
 
                     </div>
 
