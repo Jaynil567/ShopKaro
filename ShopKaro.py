@@ -40,7 +40,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_name('etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
 
@@ -250,6 +250,7 @@ def Password_Reset_Success():
 # ---------- CUSTOMER PORTAL ----------
 @app.route('/Customer_Portal/Dashboard')
 def Customer_Portal_Dashboard():
+    currentbrand = request.args.get('brand')
     sort = request.args.get("sort")
     rec = request.args.get("rec")
     name=session.get('Cust name')
@@ -260,6 +261,16 @@ def Customer_Portal_Dashboard():
         return redirect('/')
     elif session.get('Med num') != None :
         return redirect("/Mediator_Portal/Dashboard")
+    
+    conn=db()
+    cur=conn.cursor()
+    cur.execute(f"SELECT Seller FROM {NAME}_Sellers")
+    brands = cur.fetchall()
+    cur.close()
+    conn.close()
+    
+
+
     global MainSheet
     sheet = MainSheet
     all_values = sheet.get_all_values()
@@ -304,8 +315,17 @@ def Customer_Portal_Dashboard():
                 send_orders.append(i)
     else:
         send_orders=user_orders
+
+
+    if currentbrand:
+        filtered_orders = []
+        for order in send_orders:
+            if order[3] == str(currentbrand):
+                filtered_orders.append(order)
+        send_orders=filtered_orders
     
-    return render_template("Customer_Dashboard.html",rec=rec,sort=sort,orders=send_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout, NAME=NAME)
+    
+    return render_template("Customer_Dashboard.html",brands=brands,rec=rec,sort=sort,orders=send_orders, name=name, num=num, passw=passw, email=email,TO=TO,PO=TO-RO,CO=RO,R=Payout, NAME=NAME)
 
 # ---------- MEDIATOR LOGIN ----------
 @app.route('/Mediator_Login',methods=['GET','POST'])
@@ -1232,7 +1252,7 @@ def delete_deal(code):
     return redirect("/mediator/deals")
 # ---------- RUN ----------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    app.run(host="0.0.0.0", port=10000, debug=True)
 
 
 
