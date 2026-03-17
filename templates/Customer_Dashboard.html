@@ -391,6 +391,13 @@
             }
         }
 
+        #imageModal .modal-content {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            color: #e5e7eb;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+        }
         #brandModal .modal-content,
         #sortModal .modal-content {
             background: linear-gradient(145deg, #0b1220, #020617);
@@ -400,17 +407,24 @@
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
         }
 
+        #imageModal .modal-header {
+            border-bottom: 1px solid #1e293b;
+        }
         #brandModal .modal-header,
         #sortModal .modal-header {
             border-bottom: 1px solid #1e293b;
         }
 
+        #imageModal .modal-title,
         #brandModal .modal-title,
         #sortModal .modal-title {
             color: #facc15;
             font-weight: 600;
         }
 
+        #imageModal .btn-close {
+            filter: invert(1);
+        }
         #brandModal .btn-close,
         #sortModal .btn-close {
             filter: invert(1);
@@ -432,6 +446,20 @@
             background: #1f2937;
             transform: translateX(5px);
             border-color: #facc15;
+        }
+
+        .order-ss-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #333;
+        }
+
+        .order-ss-img:hover {
+            transform: scale(1.1);
+            transition: 0.2s;
         }
     </style>
 </head>
@@ -527,33 +555,44 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Order ID</th>
+                            <th>Order Date</th>
                             <th>Brand</th>
-                            <th>Date</th>
-                            <th>Form Status</th>
+                            <th>Product Name</th>
+                            <th>Order ID</th>
+                            <th>Profile Name</th>
+                            <th>Order Amount</th>
                             <th>Payout</th>
-                            <th class="text-end">Refund Form</th>
+                            <th>Order SS</th>
+                            <th>Refund Form</th>
+                            <th class="text-end">Form Status</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {% for order in orders %}
                         <tr>
+
                             <td>{{ loop.index }}</td>
+                            <td>{{ order[1] }}</td>
+                            <td>{{ order[3] }}</td>
+                            <td>{{ order[8] }}</td>
                             <td class="order-id">
                                 {{ order[0] }}
                             </td>
-                            <td>{{ order[3] }}</td>
-                            <td>{{ order[1] }}</td>
-                            <td>{{ order[2] }}</td>
-                            <td>
-                                {% if order[2]=='Done'%}
-                                <span class="payout-chip-done">₹{{ order[4] }}</span>
+                            <td>{{ order[5] }}</td>
+                            <td><span class="payout-chip-pending">₹{{ order[6] }}</span></td>
+
+                            <td><span class="payout-chip-done">₹{{ order[4] }}</span></td>
+
+                            <td data-label="Order SS">
+                                {% if order[7] %}
+                                <img src="{{ order[7] }}" class="order-ss-img">
                                 {% else %}
-                                <span class="payout-chip-pending">₹{{ order[4] }}</span>
+                                <img src="/static/logo.jpeg" alt="-" class="order-ss-img">
                                 {% endif %}
                             </td>
-                            <td class="text-end">
+
+                            <td>
                                 {% if order[2]=='Done'%}
                                 <i class="bi bi-check-circle-fill btn" style="color:green;"></i>
                                 {% else %}
@@ -562,6 +601,7 @@
                                         class="bi bi-file-earmark-text btn btn-primary"></i></button>
                                 {% endif %}
                             </td>
+                            <td class="text-end">{{ order[2] }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -585,11 +625,13 @@
 
                     <div class="modal-body">
 
-                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort=newFirst&brand={{ brand }}" class="sort-option">
+                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort=newFirst&brand={{ brand }}"
+                            class="sort-option">
                             <i class="bi bi-arrow-down"></i> Date (Newest First)
                         </a>
 
-                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort=oldFirst&brand={{ brand }}" class="sort-option">
+                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort=oldFirst&brand={{ brand }}"
+                            class="sort-option">
                             <i class="bi bi-arrow-up"></i> Date (Oldest First)
                         </a>
 
@@ -628,9 +670,35 @@
                 </div>
             </div>
         </div>
+        <!-- Image Preview Modal -->
+        <div class="modal fade" id="imageModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background:#020617;">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Image Preview</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="modalImage" src=""
+                            style="width:100%; max-height:400px; object-fit:contain; border-radius:10px;">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
+
+        document.querySelectorAll(".order-ss-img").forEach(img => {
+            img.addEventListener("click", function () {
+                let modalImg = document.getElementById("modalImage");
+                modalImg.src = this.src;
+
+                let modal = new bootstrap.Modal(document.getElementById('imageModal'));
+                modal.show();
+            });
+        });
+
         function showLoader() {
             document.getElementById("global-loader").style.display = "flex";
         }
