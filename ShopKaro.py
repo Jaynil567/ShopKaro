@@ -277,12 +277,16 @@ def Customer_Portal_Dashboard():
     headers = all_values[0]
     data_rows = all_values[1:]
     mobile_index = headers.index("Whatsapp")
+    order_product_index = headers.index("Product Name")
     order_id_index = headers.index("Order ID")
+    
     order_date_index = headers.index("Order Date")
     order_status_index = headers.index("Status")
     order_brand_index = headers.index("Brand Name")
+    order_amount_index = headers.index("Order Amount")
     order_refundAmount_index = headers.index("Refund Amount")
     order_reviewer_index = headers.index("Profile Name")
+    order_ss_index = headers.index("Order SS")
     user_orders = []
 
 
@@ -290,7 +294,7 @@ def Customer_Portal_Dashboard():
     for row in data_rows:
         if str(row[mobile_index]) == str(num):
             TO+=1
-            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index]))
+            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_amount_index],row[order_ss_index],row[order_product_index]))
     
     RO = 0
     Payout=0
