@@ -483,9 +483,15 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center mt-3">
+
                     <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#sortModal">
                         <i class="bi bi-sort-down"></i> Sort By
                     </button>
+
+                    <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#brandModal">
+                        <i class="bi bi-tags"></i> Filter by Brand
+                    </button>
+
                     <div class="ms-auto d-flex align-items-center">
                         <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3">
                             <input type="text" name="deal_code" class="form-control me-2 w-25"
@@ -609,6 +615,36 @@
                         <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort=oldFirst" class="sort-option">
                             <i class="bi bi-arrow-up"></i> Date (Oldest First)
                         </a>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="brandModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">Select Brand</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="modal-body">
+
+                        <!-- All -->
+                        <a href="/Customer_Portal/Dashboard" class="sort-option">
+                            <i class="bi bi-grid"></i> All Brands
+                        </a>
+
+                        <!-- Dynamic Brands -->
+                        {% for b in brands %}
+                        <a href="/Customer_Portal/Dashboard?brand={{ b[0] }}" class="sort-option">
+                            <i class="bi bi-tag"></i> {{ b[0] }}
+                        </a>
+                        {% endfor %}
 
                     </div>
 
