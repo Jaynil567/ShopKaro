@@ -414,7 +414,7 @@ def MPassword_Reset_Success():
 # ---------- MEDIATOR PORTAL ----------
 @app.route('/Mediator_Portal/Dashboard')
 def Mediator_Portal_Dashboard():
-    currentbrand = session.get('brand')
+    currentbrand = request.args.get('brand')
     sort = request.args.get("sort")
     rec = request.args.get("rec")
     Nmsg = request.args.get("Nmsg")
@@ -485,7 +485,7 @@ def Mediator_Portal_Dashboard():
     if currentbrand:
         filtered_orders = []
         for order in send_orders:
-            if order[3] == currentbrand:
+            if order[3] == str(currentbrand):
                 filtered_orders.append(order)
         send_orders=filtered_orders
     
