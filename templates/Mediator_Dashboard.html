@@ -635,14 +635,14 @@
                     </div>
 
                     <div class="modal-body">
-                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand="
+                        <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand="
                             class="sort-option">
                             All Brands
                         </a>
 
                         {% if brands %}
                         {% for b in brands %}
-                        <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand={{ b[0] }}"
+                        <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand={{ b[0] }}"
                             class="sort-option">
                             {{ b[0] }}
                         </a>
