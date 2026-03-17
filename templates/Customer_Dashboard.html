@@ -398,6 +398,7 @@
             color: #e5e7eb;
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
         }
+
         #brandModal .modal-content,
         #sortModal .modal-content {
             background: linear-gradient(145deg, #0b1220, #020617);
@@ -410,6 +411,7 @@
         #imageModal .modal-header {
             border-bottom: 1px solid #1e293b;
         }
+
         #brandModal .modal-header,
         #sortModal .modal-header {
             border-bottom: 1px solid #1e293b;
@@ -425,6 +427,7 @@
         #imageModal .btn-close {
             filter: invert(1);
         }
+
         #brandModal .btn-close,
         #sortModal .btn-close {
             filter: invert(1);
@@ -460,6 +463,14 @@
         .order-ss-img:hover {
             transform: scale(1.1);
             transition: 0.2s;
+        }
+
+        .product-name {
+            max-width: 200px;
+            /* adjust kar sakta hai */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -575,7 +586,7 @@
                             <td>{{ loop.index }}</td>
                             <td>{{ order[1] }}</td>
                             <td>{{ order[3] }}</td>
-                            <td>{{ order[8] }}</td>
+                            <td class="product-name">{{ order[8] }}</td>
                             <td class="order-id">
                                 {{ order[0] }}
                             </td>
