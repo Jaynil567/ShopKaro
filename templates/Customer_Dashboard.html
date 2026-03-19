@@ -472,6 +472,14 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
+        .dot {
+    height: 10px;
+    width: 10px;
+    background-color: #28a745; /* Green */
+    border-radius: 50%;
+    display: inline-block;
+        }
     </style>
 </head>
 
@@ -507,7 +515,7 @@
     <!-- MAIN -->
     <div class="main">
         <div class="welcome mb-3" onclick="showLoader();window.open('/customer/deals','_self')">
-            <h5>Live Deals</h5>
+            <h5><span class="dot"></span>Live Deals</h5>
         </div>
         <div class="stats">
             <div class="stat-card"
