@@ -476,10 +476,16 @@
         .dot {
     height: 10px;
     width: 10px;
-    background-color: #28a745; /* Green */
+    background-color: #28a745;
     border-radius: 50%;
-    display: inline-block;
-        }
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
     </style>
 </head>
 
@@ -515,7 +521,7 @@
     <!-- MAIN -->
     <div class="main">
         <div class="welcome mb-3" onclick="showLoader();window.open('/customer/deals','_self')">
-            <h5><span class="dot"></span>Live Deals</h5>
+            <h5><span class="dot"></span> Live Deals</h5>
         </div>
         <div class="stats">
             <div class="stat-card"
