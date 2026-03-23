@@ -84,6 +84,12 @@ def test():
 
 
 # ---------- HOME ----------
+
+@app.before_request
+def force_custom_domain():
+    if "onrender.com" in request.host:
+        return redirect("https://www.shopkarodeals.in", code=301)
+
 @app.route('/')
 def Home():
 
