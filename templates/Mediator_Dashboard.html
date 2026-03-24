@@ -618,7 +618,7 @@
                                     <td class="order-id">
                                         {{ order[0] }}
                                     </td>
-                                    <td>{{ order[10] }}</td>
+                                    <td>{{ order[5] }}</td>
 
                                     <td data-label="Order SS">
                                         {% if order[9] %}
@@ -638,7 +638,7 @@
                                     </td>
                                     <td>
                                         <button class="btn"
-                                            onclick="window.open('https://wa.me/91{{ order[7] }}?text={{ ('Order Date :- ' ~ order[1] ~ '\nBrand Name :- ' ~ order[3] ~ '\nOrder ID :- ' ~ order[0] ~ '\n\nYour Refund is Pending.\nPlease fill Refund Form.') | urlencode }}', '_blank')">
+                                            onclick="window.open('https://wa.me/91{{ order[7] }}?text={{ ('Order Date :- ' ~ order[1] ~ '\nBrand Name :- ' ~ order[3] ~ '\nProduct Name :- ' ~ order[10] ~'\nOrder ID :- ' ~ order[0] ~ '\nProfile Name :- ' ~ order[5] ~ '\nOrder Amount :- ' ~ order[11] ~ '\nRefund Amount :- ' ~ order[4] ~ '\n\nYour Refund is Pending.\nPlease fill Refund Form.') | urlencode }}', '_blank')">
                                             <i class="bi bi-whatsapp btn btn-success"></i>
                                         </button>
                                     </td>
