@@ -470,13 +470,15 @@ def Mediator_Portal_Dashboard():
     all_values = sheet.get_all_values()
     headers = all_values[0]
     data_rows = all_values[1:]
-    profile_index = headers.index("Profile Name")
+    
+    product_name_index = headers.index("Product Name")
     mobile_index = headers.index("Whatsapp")
     timestamp_index= headers.index("TimeStamp")
     order_id_index = headers.index("Order ID")
     order_date_index = headers.index("Order Date")
     order_status_index = headers.index("Status")
     order_brand_index = headers.index("Brand Name")
+    order_amount_index = headers.index("Order Amount")
     order_refundAmount_index = headers.index("Refund Amount")
     order_reviewer_index = headers.index("Profile Name")
     order_ss_index = headers.index("Order SS")
@@ -488,7 +490,7 @@ def Mediator_Portal_Dashboard():
     for row in data_rows:
         if row[order_status_index]:
             TO+=1
-            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_date_index], row[mobile_index],row[timestamp_index], row[order_ss_index], row[profile_index]))
+            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_date_index], row[mobile_index],row[timestamp_index], row[order_ss_index], row[product_name_index], row[order_amount_index]))
 
     
     CO=0
