@@ -469,6 +469,11 @@
                 justify-content: center;
             }
         }
+
+
+        .highlight-order {
+    background: #22c55e !important;
+        }
     </style>
 </head>
 
@@ -620,12 +625,12 @@
 
                             <tbody>
                                 {% for order in orders %}
-                                <tr>
+                                <tr id="order-{{ order[0] }}">
                                     <td>{{ loop.index }}</td>
                                     <td>{{ order[8] }}</td>
                                     <td>{{ order[1] }}</td>
                                     <td>{{ order[3] }}</td>
-                                    <td class="order-id" id="order-{{ order[0] }}">
+                                    <td class="order-id">
                                         {{ order[0] }}
                                     </td>
                                     <td>{{ order[5] }}</td>
@@ -753,21 +758,25 @@
 
     <script>
 
-        function searchOrder() {
+        let lastHighlighted = null;  // track karega last row
+
+function searchOrder() {
     let orderId = document.getElementById("searchOrderId").value.trim();
 
-    // Purana highlight remove
-    document.querySelectorAll("tr").forEach(row => {
-        row.style.background = "";
-    });
+    // ✅ OLD highlight remove
+    if (lastHighlighted) {
+        lastHighlighted.classList.remove("highlight-order");
+    }
 
     let target = document.getElementById("order-" + orderId);
 
     if (target) {
-        // Highlight
-        target.style.background = "#22c55e"; // green highlight
+        // ✅ NEW highlight
+        target.classList.add("highlight-order");
 
-        // Scroll to that row
+        // track this row
+        lastHighlighted = target;
+
         target.scrollIntoView({
             behavior: "smooth",
             block: "center"
@@ -775,7 +784,7 @@
     } else {
         alert("Order ID not found ❌");
     }
-        }
+}
 
         document.querySelectorAll(".order-ss-img").forEach(img => {
             img.addEventListener("click", function () {
