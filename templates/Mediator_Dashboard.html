@@ -625,7 +625,7 @@
                                     <td>{{ order[8] }}</td>
                                     <td>{{ order[1] }}</td>
                                     <td>{{ order[3] }}</td>
-                                    <td class="order-id">
+                                    <td class="order-id" id="order-{{ order[0] }}">
                                         {{ order[0] }}
                                     </td>
                                     <td>{{ order[5] }}</td>
@@ -752,6 +752,30 @@
 
 
     <script>
+
+        function searchOrder() {
+    let orderId = document.getElementById("searchOrderId").value.trim();
+
+    // Purana highlight remove
+    document.querySelectorAll("tr").forEach(row => {
+        row.style.background = "";
+    });
+
+    let target = document.getElementById("order-" + orderId);
+
+    if (target) {
+        // Highlight
+        target.style.background = "#22c55e"; // green highlight
+
+        // Scroll to that row
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    } else {
+        alert("Order ID not found ❌");
+    }
+        }
 
         document.querySelectorAll(".order-ss-img").forEach(img => {
             img.addEventListener("click", function () {
