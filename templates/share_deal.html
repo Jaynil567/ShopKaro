@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <!-- 🔥 WhatsApp Preview -->
+  <meta property="og:title" content="🔥 Deal Alert - {{ platform }}">
+  
+  <meta property="og:description" content="
+Product: {{ code }}
+Type: {{ dtype }}
+Price: ₹{{ price }}
+  ">
+
+  <meta property="og:image" content="{{ image }}">
+  <meta property="og:url" content="{{ request.url }}">
+  <meta property="og:type" content="website">
+
+  <title>Deal</title>
+
+</head>
+
+<body style="text-align:center;font-family:sans-serif;">
+
+  <h2>{{ platform }}</h2>
+
+  <img src="{{ image }}" width="300">
+
+  <h3>₹{{ price }}</h3>
+
+  <p>{{ code }}</p>
+
+</body>
+</html>
