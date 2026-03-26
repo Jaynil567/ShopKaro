@@ -45,27 +45,7 @@ client = gspread.authorize(creds)
 
 
 # ----------send email for password --------------
-def send_verification_email(to_email, code):
-    try:
-        message = Mail(
-            from_email='heavydeals07@gmail.com',
-            to_emails=to_email,
-            subject='Heavy Deals | Password Reset Code',
-            html_content=f'''
-                <h3>Heavy Deals – Password Reset</h3>
-                <p>Your verification code is:</p>
-                <h2>{code}</h2>
-                <p>If you did not request this, ignore this email.</p>
-            '''
-        )
 
-        sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
-        response = sg.send(message)
-
-        print("Email sent:", response.status_code)
-
-    except Exception as e:
-        print("SENDGRID ERROR:", str(e))
 # ---------- DB CONNECTION ----------
 def db():
     s=psycopg2.connect("postgresql://neondb_owner:npg_tYsv8cD9MVAu@ep-rough-grass-a1bedl2d-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
@@ -82,7 +62,42 @@ def test():
     
 
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
+def send_verification_email(to_email, code):
+    try:
+        sender_email = "heavydeals07@gmail.com"
+        app_password = "eohz xgbh ypyj hril"  # ⚠️ Gmail app password
+
+        # Email structure
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = "ShopKaro Deals | Password Reset Code"
+        msg["From"] = sender_email
+        msg["To"] = to_email
+
+        html = f"""
+        <h3>ShopKaro Deals – Password Reset</h3>
+        <p>Your verification code is:</p>
+        <h2 style="color:green;">{code}</h2>
+        <p>If you did not request this, ignore this email.</p>
+        """
+
+        msg.attach(MIMEText(html, "html"))
+
+        # SMTP connection
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(sender_email, app_password)
+
+        server.send_message(msg)
+        server.quit()
+
+        print("✅ Email sent successfully")
+
+    except Exception as e:
+        print("❌ SMTP ERROR:", str(e))
 # ---------- HOME ----------
 
 @app.before_request
