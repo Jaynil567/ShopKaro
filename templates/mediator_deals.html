@@ -357,12 +357,16 @@
                             <td>
 <a target="_blank"
 href="https://wa.me/?text={{ 
-    ('https://shopkarodeals.in/share_deal?img=' ~ d[0] 
-    ~ '&code=' ~ d[1] 
-    ~ '&platform=' ~ d[2] 
-    ~ '&type=' ~ d[3] 
-    ~ '&price=' ~ d[4]) 
-    | urlencode }}">
+('🔥 Deal Alert 🔥\n\n'
+~ 'Product: ' ~ d[1] ~ '\n'
+~ 'Type: ' ~ d[3] ~ '\n'
+~ 'Price: ₹' ~ d[4] ~ '\n\n'
+~ '👉 https://shopkarodeals.in/share_deal?img=' ~ d[0] 
+~ '&code=' ~ d[1] 
+~ '&platform=' ~ d[2] 
+~ '&type=' ~ d[3] 
+~ '&price=' ~ d[4]) 
+| urlencode }}">
     
     <i class="bi bi-whatsapp" style="color:#25D366;font-size:20px;"></i>
 </a>
