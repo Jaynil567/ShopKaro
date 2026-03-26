@@ -266,10 +266,9 @@ def Customer_Portal_Dashboard():
     num=session.get('Cust num')
     passw=session.get('Cust passw')
     email=session.get('Cust email')
-    if num == None:
+    if session.get('Cust num') == None:
         return redirect('/')
-    elif session.get('Med num') != None :
-        return redirect("/Mediator_Portal/Dashboard")
+    
     
     conn=db()
     cur=conn.cursor()
@@ -943,6 +942,8 @@ def upload_compressed_image(file):
 
 @app.route("/orderform", methods=["GET", "POST"])
 def orderform():
+    if session.get('Cust num') == None:
+        return redirect('/')
     conn = db()
     cursor = conn.cursor()
     cursor.execute(f"SELECT Seller FROM {NAME}_Sellers")
@@ -1036,6 +1037,8 @@ def orderform():
 
 @app.route("/refundform", methods=["GET", "POST"])
 def refundform():
+    if session.get('Cust num') == None:
+        return redirect('/')
     msg=""
     id = request.args.get("id")
     DC = request.args.get("DealCode")
@@ -1176,6 +1179,8 @@ def delete_order(order_id,brand):
 
 @app.route("/customer/deals")
 def customer_deals():
+    if session.get('Cust num') == None:
+        return redirect('/')
     name=session.get('Cust name')
     num=session.get('Cust num')
     passw=session.get('Cust passw')
