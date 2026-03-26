@@ -1287,22 +1287,13 @@ def delete_deal(code):
 
     return redirect("/mediator/deals")
 
-@app.route("/share_deal")
-def share_deal():
+@app.route("/share/<code>")
+def share_deal(code):
 
-    # Query params se data lena
-    image = request.args.get("img")
-    code = request.args.get("code")
-    platform = request.args.get("platform")
-    dtype = request.args.get("type")
-    price = request.args.get("price")
+    # sheet se data fetch kar
+    deal = get_deal_by_code(code)
 
-    return render_template("share_deal.html",
-                           image=image,
-                           code=code,
-                           platform=platform,
-                           dtype=dtype,
-                           price=price)
+    return render_template("share_deal.html", deal=deal)
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
