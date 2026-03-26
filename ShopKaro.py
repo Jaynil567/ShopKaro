@@ -62,42 +62,7 @@ def test():
     
 
 
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
-def send_verification_email(to_email, code):
-    try:
-        sender_email = "heavydeals07@gmail.com"
-        app_password = "eohz xgbh ypyj hril"  # ⚠️ Gmail app password
-
-        # Email structure
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = "ShopKaro Deals | Password Reset Code"
-        msg["From"] = sender_email
-        msg["To"] = to_email
-
-        html = f"""
-        <h3>ShopKaro Deals – Password Reset</h3>
-        <p>Your verification code is:</p>
-        <h2 style="color:green;">{code}</h2>
-        <p>If you did not request this, ignore this email.</p>
-        """
-
-        msg.attach(MIMEText(html, "html"))
-
-        # SMTP connection
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
-        server.login(sender_email, app_password)
-
-        server.send_message(msg)
-        server.quit()
-
-        print("✅ Email sent successfully")
-
-    except Exception as e:
-        print("❌ SMTP ERROR:", str(e))
 # ---------- HOME ----------
 
 @app.before_request
@@ -105,7 +70,40 @@ def force_custom_domain():
     
     if "onrender.com" in request.host:
         return redirect("https://www.shopkarodeals.in", code=301)
-    
+
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+def send_verification_email(to_email, code):
+    try:
+        sender_email = "heavydeals07@gmail.com"
+        app_password = "YOUR_APP_PASSWORD"
+
+        msg = MIMEMultipart()
+        msg["Subject"] = "Heavy Deals | Password Reset Code"
+        msg["From"] = sender_email
+        msg["To"] = to_email
+
+        html = f"""
+        <h3>Heavy Deals – Password Reset</h3>
+        <p>Your verification code is:</p>
+        <h2>{code}</h2>
+        """
+
+        msg.attach(MIMEText(html, "html"))
+
+        # 🔥 timeout add kiya
+        server = smtplib.SMTP("smtp.gmail.com", 587, timeout=10)
+        server.starttls()
+        server.login(sender_email, app_password)
+        server.send_message(msg)
+        server.quit()
+
+        print("✅ Email sent")
+
+    except Exception as e:
+        print("❌ ERROR:", e)
 
 @app.route('/')
 def Home():
