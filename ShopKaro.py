@@ -90,8 +90,7 @@ def force_custom_domain():
     
     if "onrender.com" in request.host:
         return redirect("https://www.shopkarodeals.in", code=301)
-    if not (session.get('Cust num') or session.get('Med Username')):
-        return redirect("/")
+    
 
 @app.route('/')
 def Home():
