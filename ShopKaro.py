@@ -1286,6 +1286,23 @@ def delete_deal(code):
             break
 
     return redirect("/mediator/deals")
+
+@app.route("/share_deal")
+def share_deal():
+
+    # Query params se data lena
+    image = request.args.get("img")
+    code = request.args.get("code")
+    platform = request.args.get("platform")
+    dtype = request.args.get("type")
+    price = request.args.get("price")
+
+    return render_template("share_deal.html",
+                           image=image,
+                           code=code,
+                           platform=platform,
+                           dtype=dtype,
+                           price=price)
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
