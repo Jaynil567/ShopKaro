@@ -1291,18 +1291,26 @@ def delete_deal(code):
 
 
 def get_deal_by_code(code):
-    for d in ALL_DEALS:
-        if d[1].replace(" ", "-") == code:
-            return d
-    return None
+    code = code.lower().replace("-", " ").strip()
 
+    for d in ALL_DEALS:
+        name = d[1].lower().strip()
+
+        if name == code:
+            return d
+
+    return None
 
 import urllib.parse
 
 @app.route("/share/<code>")
 def share_deal(code):
 
+    print("URL CODE:", code)
+
     deal = get_deal_by_code(code)
+
+    print("FOUND DEAL:", deal)
 
     if not deal:
         return "Deal not found", 404
