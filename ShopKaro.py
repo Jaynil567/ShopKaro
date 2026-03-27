@@ -1287,10 +1287,13 @@ def delete_deal(code):
 
     return redirect("/mediator/deals")
 
+import urllib.parse
+
 @app.route("/share/<code>")
 def share_deal(code):
 
-    # sheet se data fetch kar
+    code = urllib.parse.unquote(code)
+
     deal = get_deal_by_code(code)
 
     return render_template("share_deal.html", deal=deal)
