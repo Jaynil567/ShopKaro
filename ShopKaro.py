@@ -1215,7 +1215,7 @@ def customer_deals():
         email=email,
         url=sheeturl
     )
-
+ALL_DEALS = []
 @app.route("/mediator/deals")
 def mediator_deals():
     MUN = session.get('Med Username')
@@ -1226,11 +1226,12 @@ def mediator_deals():
     sheeturl=sheet.url
 
     deals = sheet.get_all_values()[1:]
-    deals = deals[::-1]  # Show latest deals first
+    global ALL_DEALS
+    ALL_DEALS = deals[::-1]  # Show latest deals first
 
     return render_template(
         "mediator_deals.html",
-        deals=deals,
+        deals=ALL_DEALS,
         NAME=NAME,
         MN=MN,
         MUN=MUN,
@@ -1290,12 +1291,9 @@ def delete_deal(code):
 
 
 def get_deal_by_code(code):
-    deals = get_all_deals()  # tera existing function
-
-    for d in deals:
+    for d in ALL_DEALS:
         if d[1].replace(" ", "-") == code:
             return d
-
     return None
 
 
