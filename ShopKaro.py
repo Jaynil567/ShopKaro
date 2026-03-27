@@ -1287,14 +1287,27 @@ def delete_deal(code):
 
     return redirect("/mediator/deals")
 
+
+
+def get_deal_by_code(code):
+    deals = get_all_deals()  # tera existing function
+
+    for d in deals:
+        if d[1].replace(" ", "-") == code:
+            return d
+
+    return None
+
+
 import urllib.parse
 
 @app.route("/share/<code>")
 def share_deal(code):
 
-    code = urllib.parse.unquote(code)
-
     deal = get_deal_by_code(code)
+
+    if not deal:
+        return "Deal not found", 404
 
     return render_template("share_deal.html", deal=deal)
 # ---------- RUN ----------
