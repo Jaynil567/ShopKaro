@@ -361,7 +361,7 @@ href="https://wa.me/?text={{
 ~ 'Product: ' ~ d[1] ~ '\n'
 ~ 'Type: ' ~ d[3] ~ '\n'
 ~ 'Price: ₹' ~ d[4] ~ '\n\n'
-~ '👉 https://shopkarodeals.in/share/' ~ d[1]) 
+~ '👉 https://shopkarodeals.in/share/' ~ d[1]|replace(' ', '-') ) 
 | urlencode }}">
     
     <i class="bi bi-whatsapp" style="color:#25D366;font-size:20px;"></i>
