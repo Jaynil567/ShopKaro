@@ -1542,7 +1542,7 @@ def Normal_orderform():
         Ramount = int(request.form.get("refund_amount"))
         med = request.form.get("mediator")
         upi = request.form.get("upi")
-        whatsapp = request.form.get("whatsapp")
+        whatsapp = request.form.get("W")
 
         global MainSheet
         OSheet = MainSheet
@@ -1634,8 +1634,6 @@ def Normal_orderform():
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
-
 
 
 
