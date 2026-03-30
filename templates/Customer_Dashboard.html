@@ -587,6 +587,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Refund Form</th>
                             <th>Order Date</th>
                             <th>Brand</th>
                             <th>Product Name</th>
@@ -595,7 +596,7 @@
                             <th>Order Amount</th>
                             <th>Payout</th>
                             <th>Order SS</th>
-                            <th>Refund Form</th>
+                            
                             <th class="text-end">Form Status</th>
                         </tr>
                     </thead>
@@ -605,6 +606,15 @@
                         <tr>
 
                             <td>{{ loop.index }}</td>
+                            <td>
+                                {% if order[2]=='Done'%}
+                                <i class="bi bi-check-circle-fill btn" style="color:green;"></i>
+                                {% else %}
+                                <button class="btn"
+                                    onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')"><i
+                                        class="bi bi-file-earmark-text btn btn-primary"></i></button>
+                                {% endif %}
+                            </td>
                             <td>{{ order[1] }}</td>
                             <td>{{ order[3] }}</td>
                             <td class="product-name">{{ order[8] }}</td>
@@ -624,15 +634,7 @@
                                 {% endif %}
                             </td>
 
-                            <td>
-                                {% if order[2]=='Done'%}
-                                <i class="bi bi-check-circle-fill btn" style="color:green;"></i>
-                                {% else %}
-                                <button class="btn"
-                                    onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')"><i
-                                        class="bi bi-file-earmark-text btn btn-primary"></i></button>
-                                {% endif %}
-                            </td>
+                            
                             <td class="text-end">{{ order[2] }}</td>
                         </tr>
                         {% endfor %}
