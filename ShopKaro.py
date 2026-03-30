@@ -1392,7 +1392,7 @@ def create_med_sheet(medName,medEmail,number):
         "Delivered SS",
         "Review SS",
         "Review Link",
-        "WhatsApp",
+        "Whatsapp",
         "UPI ID"
     ]]
 
@@ -1542,7 +1542,7 @@ def Normal_orderform():
         Ramount = int(request.form.get("refund_amount"))
         med = request.form.get("mediator")
         upi = request.form.get("upi")
-        whatsapp = request.form.get("whatspp")
+        whatsapp = request.form.get("whatsapp")
 
         global MainSheet
         OSheet = MainSheet
