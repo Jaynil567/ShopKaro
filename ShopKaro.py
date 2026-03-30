@@ -341,7 +341,7 @@ def Customer_Portal_Dashboard():
         send_orders=user_orders
 
 
-    if currentbrand:
+    if currentbrand and currentbrand != "None":
         filtered_orders = []
         for order in send_orders:
             if order[3] == str(currentbrand):
