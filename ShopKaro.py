@@ -1510,6 +1510,127 @@ def create_med_sheet(medName,medEmail,number):
     cur.close()
     conn.close()
     return redirect("/subMediators")
+
+
+@app.route("/Normal_orderform", methods=["GET", "POST"])
+def Normal_orderform():
+    conn = db()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT Seller FROM {NAME}_Sellers")
+    brands = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    conn = db()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM {NAME}_sub_mediator")
+    mediators = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    msg=""
+    
+    if request.method == "POST":
+
+        brand = request.form.get("brand")
+        order_id = request.form.get("order_id").replace(" ", "")
+        date_input = request.form.get("order_date")
+        order_date = datetime.strptime(date_input, "%Y-%m-%d").strftime("%d-%m-%Y")
+        reviewer_name = request.form.get("reviewer_name")
+        Product_name = request.form.get("PN")
+        Oamount = int(request.form.get("amount"))
+        Ramount = int(request.form.get("refund_amount"))
+        med = request.form.get("mediator")
+        upi = request.form.get("upi")
+        whatsapp = request.form.get("whatspp")
+
+        global MainSheet
+        OSheet = MainSheet
+        all_values = OSheet.get_all_values()
+        headers = all_values[0]
+        data_rows = all_values[1:]
+        order_id_index = headers.index("Order ID")
+        for row in data_rows:
+            if row[order_id_index] == order_id:
+                msg="This Order ID is already filled"
+                return render_template("OrderForm.html",brands=brands,msg=msg,NAME=NAME,mediators=mediators)
+            
+
+        conn = db()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM {NAME}_Sellers WHERE Seller=%s", (brand,))
+        brand_data = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        BrandSheet = client.open_by_key(brand_data[1]).sheet1
+
+        conn = db()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM {NAME}_sub_mediator where med_name=%s", (med,))
+        mediator_data = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        MedSheet=client.open_by_key(mediator_data[2]).sheet1
+    
+
+
+        now = datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")
+
+        url = ""   # 🔥 important fix (avoid undefined error)
+
+        Order_SS = request.files.get("screenshot")
+        if Order_SS:
+            url = upload_compressed_image(Order_SS)
+
+        # 🔥 Header-based mapping
+        data = {
+            "TimeStamp": str(now),
+            "Brand Name": brand,
+            "Profile Name": reviewer_name,
+            "Order Date": order_date,
+            "Product Name": Product_name,
+            "Order SS": url,
+            "Order Amount": Oamount,
+            "Order ID": order_id,
+            "Email": mediator_data[3],
+            "Whatsapp": mediator_data[4],
+            "Status": "Pending",
+            "UPI ID": "as per mediator",
+            "Refund Amount": 0,
+            "Mediator name": mediator_data[1]
+        }
+        safe_append(OSheet, data)
+        safe_append(BrandSheet, data)
+
+        med_data = {
+            "TimeStamp": str(now),
+            "Brand Name": brand,
+            "Profile Name": reviewer_name,
+            "Order Date": order_date,
+            "Product Name": Product_name,
+            "Order SS": url,
+            "Order Amount": Oamount,
+            "Order ID": order_id,
+            "Whatsapp": whatsapp,
+            "Status": "Pending",
+            "UPI ID": upi,
+            "Refund Amount": Ramount,
+            "Mediator name": NAME
+        }
+        safe_append(MedSheet, med_data)
+
+        
+
+        return render_template("order_success.html")
+    
+    return render_template(
+        "OrderForm.html",
+        
+        brands=brands,
+        mediators=mediators,
+        msg=msg,
+        NAME=NAME
+    )
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
