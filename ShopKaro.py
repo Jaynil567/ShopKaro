@@ -1,12 +1,10 @@
-from flask import Flask, render_template, request, redirect, session,url_for
+from flask import Flask, render_template, request, redirect, session
 import random
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import cloudinary
 import cloudinary.uploader
 from datetime import datetime
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -16,7 +14,6 @@ from datetime import timedelta
 from PIL import Image
 import io
 import json
-import os
 import pytz
 import psycopg2
 
@@ -63,7 +60,7 @@ def test():
 
 
 
-# ---------- HOME ----------
+
 
 @app.before_request
 def force_custom_domain():
@@ -105,6 +102,7 @@ def send_verification_email(to_email, code):
     except Exception as e:
         print("❌ ERROR:", e)
 
+# ---------- HOME ----------
 @app.route('/')
 def Home():
 
@@ -271,6 +269,9 @@ def Password_Reset_Success():
 # ---------- CUSTOMER PORTAL ----------
 @app.route('/Customer_Portal/Dashboard')
 def Customer_Portal_Dashboard():
+    if session.get('Cust num') == None:
+        return redirect('/')
+
     currentbrand = request.args.get('brand')
     sort = request.args.get("sort")
     rec = request.args.get("rec")
@@ -278,8 +279,7 @@ def Customer_Portal_Dashboard():
     num=session.get('Cust num')
     passw=session.get('Cust passw')
     email=session.get('Cust email')
-    if session.get('Cust num') == None:
-        return redirect('/')
+    
     
     
     conn=db()
@@ -458,6 +458,9 @@ def MPassword_Reset_Success():
 # ---------- MEDIATOR PORTAL ----------
 @app.route('/Mediator_Portal/Dashboard')
 def Mediator_Portal_Dashboard():
+    if session.get('Med Username') == None:
+        return redirect('/Mediator_Login')
+    
     currentbrand = request.args.get('brand')
     sort = request.args.get("sort")
     rec = request.args.get("rec")
@@ -467,8 +470,7 @@ def Mediator_Portal_Dashboard():
     MN = session.get('Med name')
     MNUM = session.get('Med num')
 
-    if MUN == None:
-        return redirect('/Mediator_Login')
+    
     
     conn=db()
     cur=conn.cursor()
@@ -546,6 +548,8 @@ def Mediator_Portal_Dashboard():
 
 @app.route("/add_deal_code", methods=["POST"])
 def add_deal_code():
+    if session.get('Med Username') == None:
+        return redirect('/Mediator_Login')
     Nmsg=""
     pmsg=""
     MUN = session.get('Med Username')
@@ -849,6 +853,8 @@ def create_sheet():
 
 @app.route("/Brands")
 def Brands():
+    if session.get('Med Username') == None:
+        return redirect('/Mediator_Login')
 
     MUN = session.get('Med Username')
     MN = session.get('Med name')
@@ -877,6 +883,8 @@ def Brands():
 
 @app.route("/delete-brand/<brand>")
 def delete_brand(brand):
+    if session.get('Med Username') == None:
+        return redirect('/Mediator_Login')
 
     conn = db()
     cur = conn.cursor()
@@ -1145,13 +1153,6 @@ def refundform():
     else :
         return render_template("Customer_Refund_Form.html",RN=RN,DC=DC, name=name,msg=msg, num=num, passw=passw, email=email, NAME=NAME)
 
-@app.route("/open-sheet/<Name>")
-def open_sheet(Name):
-
-    spreadsheet = client.open_by_key(Name)   # existing sheet open
-    sheet_url = spreadsheet.url        # get link
-
-    return redirect(sheet_url)
 
 # ---------------- Delete row ----------------
 @app.route("/delete_order/<order_id>/<brand>")
@@ -1215,9 +1216,12 @@ def customer_deals():
         email=email,
         url=sheeturl
     )
+
 ALL_DEALS = []
 @app.route("/mediator/deals")
 def mediator_deals():
+    if session.get('Med Username') == None:
+        return redirect('/Mediator_Login')
     MUN = session.get('Med Username')
     MN = session.get('Med name')
     MNUM = session.get('Med num')
@@ -1243,6 +1247,9 @@ def mediator_deals():
 
 @app.route("/add_deal", methods=["POST"])
 def add_deal():
+
+    if session.get('Med Username') == None:
+        return redirect('/Mediator_Login')
 
     sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").worksheet("Deals")
 
