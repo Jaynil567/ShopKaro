@@ -1119,8 +1119,14 @@ def refundform():
                     OrderSheet.update_cell(i, RL_col + 1, link)
                     break
 
-            
-            BrandSheet= client.open(deal_code).sheet1
+            conn = db()
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT * FROM {NAME}_Sellers WHERE Seller=%s", (deal_code,))
+            brand_data = cursor.fetchone()
+            cursor.close()
+            conn.close()
+
+            BrandSheet= client.open_by_key(brand_data[1]).sheet1
             Call_values = BrandSheet.get_all_values()
             Cheaders = Call_values[0]
             Cdata_rows = Call_values[1:]
