@@ -610,9 +610,8 @@
                                 {% if order[2]=='Done'%}
                                 <i class="bi bi-check-circle-fill btn" style="color:green;"></i>
                                 {% else %}
-                                <button class="btn"
-                                    onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')"><i
-                                        class="bi bi-file-earmark-text btn btn-primary"></i></button>
+                                <button class="btn btn-primary"
+                                    onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')">\Refund Form</button>
                                 {% endif %}
                             </td>
                             <td>{{ order[1] }}</td>
