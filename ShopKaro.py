@@ -1685,6 +1685,8 @@ def Normal_refundform(ID,Brand,PN,MED):
         Rss_col      = headers.index("Review SS")
         RL_col       = headers.index("Review Link")
 
+
+
         BrandSheet= client.open(Brand).sheet1
         Call_values = BrandSheet.get_all_values()
         Cheaders = Call_values[0]
@@ -1695,7 +1697,7 @@ def Normal_refundform(ID,Brand,PN,MED):
         CRss_col      = Cheaders.index("Review SS")
         CRL_col       = Cheaders.index("Review Link")
 
-        MEDSheet= client.open(Brand).sheet1
+        MEDSheet= client.open(f"{MED} By ShopKaro").sheet1
         Mall_values = MEDSheet.get_all_values()
         Mheaders = Mall_values[0]
         Mdata_rows = Mall_values[1:]
