@@ -9,14 +9,29 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        html {
+            height: 100%;
+        }
+
+        .success-card {
+            padding: 30px 20px;
+            /* mobile friendly */
+        }
+
         body {
             background: #0f172a;
             color: #e5e7eb;
             font-family: Inter, sans-serif;
+
+            margin: 0;
+            padding: 20px;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+
+            min-height: 100dvh;
+            /* IMPORTANT (vh → dvh) */
         }
 
         .success-card {
@@ -202,7 +217,8 @@
             <a href="/Customer_Portal/Dashboard" class="action-box">Dashboard</a>
             <a href="/customer/deals" class="action-box">Live Deals</a>
             <a href="https://wa.me/917440250871" target="_blank" class="action-box">Contact Us</a>
-            <a href="https://chat.whatsapp.com/GxZjR8YOfQ8JS0JeC1pFfd" target="_blank" class="action-box">Join WhatsApp</a>
+            <a href="https://chat.whatsapp.com/GxZjR8YOfQ8JS0JeC1pFfd" target="_blank" class="action-box">Join
+                WhatsApp</a>
         </div>
     </div>
     <script>
