@@ -77,6 +77,21 @@ body{
     animation: spin 1s linear infinite;
 }
 
+.success-text {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 12px;
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+
+
+.success-text ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
 @keyframes spin {
     100% { transform: rotate(360deg); }
 }
@@ -94,9 +109,16 @@ body{
     <div class="success-title">Order Submitted Successfully</div>
 
     <div class="success-text">
-        Your order form has been received.<br>
-        Our mediator will review your request and contact you if required. <br>
-    </div>
+    
+
+    <p>Thank you! Your order details have been submitted successfully.</p>
+
+    <ul>
+        <li>You can view your order entry anytime in your <b>Dashboard</b>.</li>
+        <li>After delivery, upload your <b>rating/review</b> using the <b>Refund Form</b> button available in the dashboard.</li>
+        <li>Please make sure to submit the review along with your order entry.</li>
+    </ul>
+</div>
 
     <a href="/Customer_Portal/Dashboard" class="btn btn-main" onclick="showLoader()">Back to Home</a>
 </div>
