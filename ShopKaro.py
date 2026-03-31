@@ -1623,7 +1623,7 @@ def Normal_orderform():
 
         
 
-        return render_template("order_success.html")
+        return render_template("NOrder_Success.html")
     
     return render_template(
         "OrderForm.html",
@@ -1753,7 +1753,7 @@ def Normal_refundform(ID,Brand,PN,MED):
                 BrandSheet.update_cell(i, MRL_col + 1, link)
                 break
 
-        return render_template("order_success.html")
+        return render_template("NOrder_Success.html")
     
     
     return render_template("RefundForm.html",MED=MED,RN=PN,DC=Brand,id=ID)
