@@ -1704,7 +1704,7 @@ def Normal_refundform(ID,Brand,PN,MED):
 
         conn = db()
         cursor = conn.cursor()
-        cursor.execute(f"SELECT key FROM {NAME}_sub_mediator WHERE med_name=%s",(MED,))
+        cursor.execute(f"SELECT sheet_id FROM {NAME}_sub_mediator WHERE med_name=%s",(MED,))
         med_key = cursor.fetchone()
         cursor.close()
         conn.close()
