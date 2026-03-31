@@ -1650,17 +1650,17 @@ def check_order():
         order_reviewer_index = headers.index("Profile Name")
         order_med_index = headers.index("Mediator name")
 
-    for row in data_rows:
-        if str(row[order_id_index]) == str(ID):
-            detail=(row[order_brand_index],row[order_id_index],row[order_reviewer_index],row[order_med_index]) 
+        for row in data_rows:
+            if str(row[order_id_index]) == str(ID):
+               detail=(row[order_brand_index],row[order_id_index],row[order_reviewer_index],row[order_med_index]) 
 
-    if detail:
-        return redirect(f"/Normal_refundform/{detail[1]}/{detail[0]}/{detail[2]}/{detail[3]}")
-    else:
-        msg="Order id is not Exist"
-        return render_template("order_check.html",msg=msg)
-
-
+        if detail:
+            return redirect(f"/Normal_refundform/{detail[1]}/{detail[0]}/{detail[2]}/{detail[3]}")
+        else:
+            msg="Order id is not Exist"
+            return render_template("order_check.html",msg=msg)
+        
+    return render_template("order_check.html")
 
 
 @app.route("/Normal_refundform/<ID>/<Brand>/<PN>/<MED>", methods=["GET", "POST"])
