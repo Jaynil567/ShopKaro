@@ -1692,7 +1692,7 @@ def Normal_refundform(ID,Brand,PN,MED):
         cursor.close()
         conn.close()
 
-        BrandSheet= client.open(brand_key[0]).sheet1
+        BrandSheet= client.open_by_key(brand_key[0]).sheet1
         Call_values = BrandSheet.get_all_values()
         Cheaders = Call_values[0]
         Cdata_rows = Call_values[1:]
@@ -1709,7 +1709,7 @@ def Normal_refundform(ID,Brand,PN,MED):
         cursor.close()
         conn.close()
 
-        MEDSheet= client.open(med_key[0]).sheet1
+        MEDSheet= client.open_by_key(med_key[0]).sheet1
         Mall_values = MEDSheet.get_all_values()
         Mheaders = Mall_values[0]
         Mdata_rows = Mall_values[1:]
@@ -1761,7 +1761,6 @@ def Normal_refundform(ID,Brand,PN,MED):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
 
 
 
