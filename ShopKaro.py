@@ -979,7 +979,7 @@ def orderform():
         return redirect('/')
     conn = db()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT Seller FROM {NAME}_Sellers")
+    cursor.execute(f"SELECT * FROM {NAME}_Sellers")
     brands = cursor.fetchall()
     cursor.close()
     conn.close()
