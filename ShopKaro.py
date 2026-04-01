@@ -1763,7 +1763,11 @@ def Normal_refundform(ID,Brand,PN,MED):
     
     
     return render_template("RefundForm.html",MED=MED,RN=PN,DC=Brand,id=ID)
-    
+
+
+@app.route("/pay")
+def pay():
+    return render_template("PAY.HTML")
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
