@@ -618,6 +618,7 @@
                                     <th>Order SS</th>
                                     <th>Form Status</th>
                                     <th>Payout</th>
+                                    <th>Pay</th>
                                     <th>Whatsapp</th>
                                     <th class="text-end">Delete</th>
 
@@ -651,6 +652,14 @@
                                         {% else %}
                                         <span class="payout-chip-pending">₹{{ order[4] }}</span>
                                         {% endif %}
+                                    </td>
+                                    <td>
+                                        <button
+                                            class="btn btn-success rounded-circle position-fixed bottom-0 end-0 m-4 shadow"
+                                            style="width:60px; height:60px; font-size:20px;"
+                                            onclick="pay('{{ order[12]}}','{{ order[4] }}')">
+                                            <i class="bi bi-currency-rupee"></i>
+                                        </button>
                                     </td>
                                     <td>
                                         <button class="btn"
@@ -758,6 +767,10 @@
 
 
     <script>
+
+        function pay(upi,Amount) {
+            window.location.href = "upi://pay?pa="+upi+"&am="+Amount+"&cu=INR";
+        }
 
         let lastHighlighted = null;  // track karega last row
 
