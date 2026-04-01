@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pay Now</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        text-align: center;
+        width: 90%;
+        max-width: 350px;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    button {
+        width: 100%;
+        padding: 15px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .phonepe {
+        background: #5f259f;
+        color: white;
+    }
+
+    .upi {
+        background: #0a8754;
+        color: white;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Pay Now</h2>
+
+    <button class="phonepe" onclick="payPhonePe()">
+        Pay with PhonePe
+    </button>
+
+    <button class="upi" onclick="payUPI()">
+        Pay with Any UPI App
+    </button>
+</div>
+
+<script>
+function payPhonePe() {
+    window.location.href = "intent://pay?pa=jaynil@okaxis&pn=Jaynil&cu=INR#Intent;scheme=upi;package=com.phonepe.app;end";
+}
+
+function payUPI() {
+    window.location.href = "upi://pay?pa=jaynil@okaxis&pn=Jaynil&cu=INR";
+}
+</script>
+
+</body>
+</html>
