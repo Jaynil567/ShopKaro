@@ -868,7 +868,7 @@ def Brands():
         url=brandSheet.url
         data = brandSheet.get_all_values()
         row = data[1:]
-        brands.append((b[0], len(row), url, db_brands[2]))
+        brands.append((b[0], len(row), url, b[2]))
 
     return render_template("Brands.html", MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=mainurl, NAME=NAME)
 
