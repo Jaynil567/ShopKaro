@@ -428,6 +428,7 @@
                             <th>#</th>
                             <th>Brand Name</th>
                             <th>No of Orders</th>
+                            <th>Hide/Unhide</th>
                             <th>Sheet</th>
                             <th class="text-end">Delete</th>
                         </tr>
@@ -441,6 +442,17 @@
                                 {{ b[0] }}
                             </td>
                             <td>{{ b[1] }}</td>
+                            
+                            <td>
+                                {% if b[3] == "Open" %}
+                                <button class="btn btn-success" onclick="window.open('/Brand_Hide/{{ b[0] }}', '_self')">
+                                    <i class="bi bi-eye-slash"></i>
+                                </button>
+                                {% else %}
+                                <button class="btn btn-danger" onclick="window.open('/Brand_Open/{{ b[0] }}', '_self')">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </td>
                             <td>
                                 <button class="btn btn-primary" onclick="window.open('{{ b[2] }}', '_blank')">
                                     <i class="bi bi-file-earmark-spreadsheet"></i>
