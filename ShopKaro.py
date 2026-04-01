@@ -95,10 +95,6 @@ def send_verification_email(to_email, code):
         print("❌ ERROR:", e)
 
 # ---------- HOME ----------
-@app.route("/ping")
-def ping():
-    return "ok"
-
 @app.route('/')
 def Home():
 
@@ -459,8 +455,6 @@ def Mediator_Portal_Dashboard():
     currentbrand = request.args.get('brand')
     sort = request.args.get("sort")
     rec = request.args.get("rec")
-    Nmsg = request.args.get("Nmsg")
-    Pmsg = request.args.get("Pmsg")
     MUN = session.get('Med Username')
     MN = session.get('Med name')
     MNUM = session.get('Med num')
@@ -538,7 +532,7 @@ def Mediator_Portal_Dashboard():
         send_orders=filtered_orders
     
 
-    return render_template('Mediator_Dashboard.html',brand=currentbrand,brands=brands,rec=rec,sort=sort,orders=send_orders, Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl, NAME=NAME)
+    return render_template('Mediator_Dashboard.html',brand=currentbrand,brands=brands,rec=rec,sort=sort,orders=send_orders, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl, NAME=NAME)
 
 
 
@@ -560,7 +554,7 @@ def add_deal_code():
             Nmsg = "This Brand is already exist"
             cur.close()
             conn.close()
-            return redirect(f'/Mediator_Portal/Dashboard?Nmsg={Nmsg}')
+            return redirect(f'/Brands?Nmsg={Nmsg}')
             
         else:
             
@@ -569,7 +563,7 @@ def add_deal_code():
             session['Brand'] = seller
             return redirect('/login')
         
-    return redirect('/Mediator_Portal/Dashboard')
+    return redirect('/Brands')
 @app.route("/login")
 def login():
 
@@ -844,14 +838,16 @@ def create_sheet():
     conn.commit()
     cur.close()
     conn.close()
-    return redirect(f'/Mediator_Portal/Dashboard?Pmsg={Pmsg}')
+    return redirect(f'/Brands?Pmsg={Pmsg}')
 
 
 @app.route("/Brands")
 def Brands():
     if session.get('Med Username') == None:
         return redirect('/Mediator_Login')
-
+    
+    Nmsg = request.args.get("Nmsg")
+    Pmsg = request.args.get("Pmsg")
     MUN = session.get('Med Username')
     MN = session.get('Med name')
     MNUM = session.get('Med num')
@@ -874,7 +870,7 @@ def Brands():
         row = data[1:]
         brands.append((b[0], len(row), url, b[2]))
 
-    return render_template("Brands.html", MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=mainurl, NAME=NAME)
+    return render_template("Brands.html", Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=mainurl, NAME=NAME)
 
 @app.route("/Brand_Hide/<BN>")
 def BrandHide(BN):
