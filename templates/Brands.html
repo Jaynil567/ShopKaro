@@ -445,14 +445,14 @@
                             
                             <td>
                                 {% if b[3] == "Open" %}
-                                <button class="btn btn-success" onclick="window.open('/Brand_Hide/{{ b[0] }}', '_self')">
+                                <button class="btn btn-success" onclick="showLoader();window.open('/Brand_Hide/{{ b[0] }}', '_self')">
                                     <i class="bi bi-eye-slash"></i>
                                 </button>
                                 {% else %}
-                                <button class="btn btn-danger" onclick="window.open('/Brand_Open/{{ b[0] }}', '_self')">
+                                <button class="btn btn-danger" onclick="showLoader();window.open('/Brand_Open/{{ b[0] }}', '_self')">
                                     <i class="bi bi-eye"></i>
                                 </button>
-                                {% endif %}
+                                {% endfor %}
                             </td>
                             <td>
                                 <button class="btn btn-primary" onclick="window.open('{{ b[2] }}', '_blank')">
