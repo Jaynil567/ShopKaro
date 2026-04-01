@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Mediator Dashboard</title>
+    <title>{{ NAME }} | Brands </title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -380,7 +380,7 @@
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <h4>{{ NAME }} Deals</h4>
-        <a href="/Mediator_Portal/Dashboard" ><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="/Mediator_Portal/Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
         <a href="/mediator/deals"><i class="bi bi-tag"></i> Live Deals</a>
         <a href="/subMediators"><i class="bi bi-person"></i> Mediators</a>
         <a href="{{ url }}" target="_blank"><i class="bi bi-mailbox"></i> Google Sheet</a>
@@ -407,6 +407,31 @@
 
     <!-- MAIN -->
     <div class="main">
+        <div class="ms-auto d-flex align-items-center">
+            <form method="POST" action="/add_deal_code" class="d-flex justify-content-end mt-3" onsubmit="showLoader()">
+                <input type="text" name="deal_code" class="form-control me-2 w-25" placeholder="Enter New Brand Name"
+                    required>
+                <button type="submit" class="btn btn-warning fw-semibold">
+                    <i class="bi bi-plus-circle"></i> Add Brand
+                </button>
+            </form>
+            <br>
+            {% if Nmsg %}
+            <div class="d-flex justify-content-end">
+                <div class="alert alert-danger text-center ">
+                    {{ Nmsg }}
+                </div>
+            </div>
+            {% endif %}
+            {% if Pmsg %}
+            <div class="d-flex justify-content-end">
+                <div class="alert alert-success text-center ">
+                    {{ Pmsg }}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
         <div class="orders-wrapper mt-5">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -442,14 +467,16 @@
                                 {{ b[0] }}
                             </td>
                             <td>{{ b[1] }}</td>
-                            
+
                             <td>
                                 {% if b[3] == "Open" %}
-                                <button class="btn btn-success" onclick="showLoader();window.open('/Brand_Hide/{{ b[0] }}', '_self')">
+                                <button class="btn btn-success"
+                                    onclick="showLoader();window.open('/Brand_Hide/{{ b[0] }}', '_self')">
                                     <i class="bi bi-eye-slash"></i>
                                 </button>
                                 {% else %}
-                                <button class="btn btn-danger" onclick="showLoader();window.open('/Brand_Open/{{ b[0] }}', '_self')">
+                                <button class="btn btn-danger"
+                                    onclick="showLoader();window.open('/Brand_Open/{{ b[0] }}', '_self')">
                                     <i class="bi bi-eye"></i>
                                 </button>
                                 {% endif %}
@@ -565,4 +592,3 @@
 
 
 </html>
-
