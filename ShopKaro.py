@@ -836,7 +836,7 @@ def create_sheet():
     Pmsg=f"Added :- {Brand}"
     conn = db()
     cur=conn.cursor()
-    cur.execute(f"INSERT INTO {NAME}_Sellers (Seller,key) VALUES (%s,%s)",(Brand,sheet_id))
+    cur.execute(f"INSERT INTO {NAME}_Sellers (Seller,key,status) VALUES (%s,%s,%s)",(Brand,sheet_id,"Open"))
     conn.commit()
     cur.close()
     conn.close()
@@ -868,10 +868,31 @@ def Brands():
         url=brandSheet.url
         data = brandSheet.get_all_values()
         row = data[1:]
-        brands.append((b[0], len(row),url))
+        brands.append((b[0], len(row), url, db_brands[2]))
 
     return render_template("Brands.html", MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=mainurl, NAME=NAME)
-   
+
+@app.route("/Brand_Hide/<BN>")
+def BrandHide(BN):
+    conn = db()
+    cur = conn.cursor()
+    cur.execute(f"UPDATE {NAME}_Sellers SET status=%s WHERE seller=%s", (BN,"Hide"))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect("/Brands")
+
+@app.route("/Brand_Open/<BN>")
+def BrandHide(BN):
+    conn = db()
+    cur = conn.cursor()
+    cur.execute(f"UPDATE {NAME}_Sellers SET status=%s WHERE seller=%s", (BN,"Open"))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect("/Brands")
 
 @app.route("/delete-brand/<brand>")
 def delete_brand(brand):
