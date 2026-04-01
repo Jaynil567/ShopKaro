@@ -485,6 +485,12 @@
         .highlight-order {
             background: #22c55e !important;
         }
+
+        @media (max-width: 768px) {
+            #searchOrderId {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -565,12 +571,9 @@
                         <span class="btn-text">Filter by Brand</span>
                     </button>
 
-                    <div style="display:flex; gap:10px; margin:10px;">
-                        <input type="text" id="searchOrderId" placeholder="Enter Order ID"
-                            style="padding:8px; border-radius:6px; border:none; outline:none; width:200px;">
-
-                        <button onclick="searchOrder()"
-                            style="background:#facc15; border:none; padding:8px 12px; border-radius:6px; font-weight:600;">
+                    <div class="d-flex gap-2 mt-3 flex-wrap">
+                        <input type="text" id="searchOrderId" class="form-control" placeholder="Enter Order ID">
+                        <button onclick="searchOrder()" class="btn btn-warning">
                             🔍
                         </button>
                     </div>
