@@ -491,6 +491,21 @@
                 width: 100%;
             }
         }
+
+        /* Mobile → full width */
+        #searchOrderId {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Desktop → limited width */
+        @media (min-width: 768px) {
+            #searchOrderId {
+                flex: unset;
+                width: 300px;
+                /* 👉 adjust 250-400 as per taste */
+            }
+        }
     </style>
 </head>
 
