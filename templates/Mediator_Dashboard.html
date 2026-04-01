@@ -768,7 +768,7 @@
     <script>
 
         function pay(upi,Amount,brand,orderId) {
-            window.location.href = "upi://pay?pa="+upi+"&am="+Amount+"&mam=1&tn=Brand%3A-%20"+brand+"%20ID%3A-%20"+orderId+"%20From%20ShopKaro&cu=INR";
+            window.location.href = "upi://pay?pa="+upi+"&am="+Amount+"&mam=1&tn="+brand+"%2B"+orderId+"%2BShopKaro&cu=INR";
         }
 
         let lastHighlighted = null;  // track karega last row
