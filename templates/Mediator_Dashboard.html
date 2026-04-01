@@ -656,7 +656,7 @@
                                     <td>
                                         <button
                                             class="btn"
-                                            onclick="pay('{{ order[12]}}','{{ order[4] }}')">
+                                            onclick="pay('{{ order[12]}}','{{ order[4] }}','{{ order[3] }}','{{ order[0] }}')">
                                             <i class="bi bi-currency-rupee btn btn-primary"></i>
                                         </button>
                                     </td>
@@ -767,8 +767,8 @@
 
     <script>
 
-        function pay(upi,Amount) {
-            window.location.href = "upi://pay?pa="+upi+"&am="+Amount+"&mam=1&cu=INR";
+        function pay(upi,Amount,brand,orderId) {
+            window.location.href = "upi://pay?pa="+upi+"&am="+Amount+"&mam=1&tn=Brand%3A-%20"+brand+"%20ID%3A-%20"+orderId+"%20From%20ShopKaro&cu=INR";
         }
 
         let lastHighlighted = null;  // track karega last row
