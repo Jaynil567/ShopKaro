@@ -489,6 +489,7 @@ def Mediator_Portal_Dashboard():
     order_refundAmount_index = headers.index("Refund Amount")
     order_reviewer_index = headers.index("Profile Name")
     order_ss_index = headers.index("Order SS")
+    order_upi_index = headers.index("UPI ID")
 
     user_orders = []
 
@@ -497,7 +498,7 @@ def Mediator_Portal_Dashboard():
     for row in data_rows:
         if row[order_status_index]:
             TO+=1
-            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_date_index], row[mobile_index],row[timestamp_index], row[order_ss_index], row[product_name_index], row[order_amount_index]))
+            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_date_index], row[mobile_index],row[timestamp_index], row[order_ss_index], row[product_name_index], row[order_amount_index],row[order_upi_index]))
 
     
     CO=0
