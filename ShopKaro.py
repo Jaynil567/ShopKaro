@@ -884,7 +884,7 @@ def BrandHide(BN):
     return redirect("/Brands")
 
 @app.route("/Brand_Open/<BN>")
-def BrandHide(BN):
+def BrandOpen(BN):
     conn = db()
     cur = conn.cursor()
     cur.execute(f"UPDATE {NAME}_Sellers SET status=%s WHERE seller=%s", (BN,"Open"))
