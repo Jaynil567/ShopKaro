@@ -378,7 +378,12 @@
             color: white;
         }
 
-        #qrModal .modal-content,
+        #qrModal .modal-content {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+        }
+
         #imageModal .modal-content {
             background: #020617;
             border: 1px solid #1e293b;
@@ -401,7 +406,7 @@
             border-bottom: 1px solid #1e293b;
         }
 
-       
+
         #brandModal .modal-header,
         #sortModal .modal-header {
             border-bottom: 1px solid #1e293b;
@@ -420,7 +425,7 @@
             filter: invert(1);
         }
 
-        
+
         #brandModal .btn-close,
         #sortModal .btn-close {
             filter: invert(1);
@@ -769,15 +774,18 @@
 
         <div class="modal fade" id="qrModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-header">
-                    <h5 class="modal-title">Scan & Pay</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Scan & Pay</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body text-center">
+                        <img id="qrImage" style="width:100%; max-height:400px; object-fit:contain; border-radius:10px;">
+                    </div>
+
                 </div>
-                <div class="modal-body text-center">
-                    <img id="qrImage" src="" 
-                        style="width:100%; max-height:400px; object-fit:contain; border-radius:10px;">
-                </div>
-                
             </div>
         </div>
     </div>
