@@ -876,7 +876,7 @@ def Brands():
 def BrandHide(BN):
     conn = db()
     cur = conn.cursor()
-    cur.execute(f"UPDATE {NAME}_Sellers SET status=%s WHERE seller=%s", (BN,"Hide"))
+    cur.execute(f"UPDATE {NAME}_Sellers SET status=%s WHERE seller=%s", ("Hide",BN))
     conn.commit()
     cur.close()
     conn.close()
@@ -887,7 +887,7 @@ def BrandHide(BN):
 def BrandOpen(BN):
     conn = db()
     cur = conn.cursor()
-    cur.execute(f"UPDATE {NAME}_Sellers SET status=%s WHERE seller=%s", (BN,"Open"))
+    cur.execute(f"UPDATE {NAME}_Sellers SET status=%s WHERE seller=%s", ("Open",BN))
     conn.commit()
     cur.close()
     conn.close()
