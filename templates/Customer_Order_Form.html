@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <title>Customer Dashboard</title>
@@ -11,105 +10,321 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:'Inter',sans-serif;
+    background:#0f172a;
+    color:#e5e7eb;
 }
 
-body {
-    font-family: 'Inter', sans-serif;
-    background: #0f172a;
-    color: #e5e7eb;
+/* ===== SIDEBAR ===== */
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:230px;
+    height:100vh;
+    background:linear-gradient(180deg,#020617,#020617);
+    padding:20px;
+}
+.sidebar h4{
+    color:#facc15;
+    margin-bottom:30px;
+    font-weight:700;
+}
+.sidebar a{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px;
+    color:#cbd5f5;
+    text-decoration:none;
+    border-radius:8px;
+    margin-bottom:6px;
+    font-size:14px;
+}
+.sidebar a:hover,
+.sidebar a.active{
+    background:#1e293b;
+    color:#ffffff;
 }
 
-/* ✅ MAIN FIXED */
-.main {
-    margin-left: 0;
-    padding: 16px;
+/* ===== TOPBAR ===== */
+.topbar{
+    height:56px;
+    margin-left:230px;
+    background:#020617;
+    border-bottom:1px solid #1e293b;
+    display:flex;
+    align-items:center;
+    padding:0 18px;
+}
+.menu-btn{
+    font-size:1.5rem;
+    cursor:pointer;
+    display:none;
+    color:#f8fafc;
+}
+.top-title{
+    font-weight:600;
+    font-size:16px;
+}
+
+/* ===== PROFILE ===== */
+.profile{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+}
+.profile-name{
+    font-size:14px;
+    font-weight:600;
+}
+.profile-role{
+    font-size:11px;
+    color:#94a3b8;
+}
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#6366f1,#22d3ee);
+    color:#020617;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    margin-left:10px;
+}
+
+/* ===== MAIN ===== */
+.main{
+    margin-left:230px;
+    padding:24px;
+}
+
+/* ===== STATS CARDS ===== */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+    margin-bottom:24px;
+}
+.stat-card{
+    background:#020617;
+    border:1px solid #1e293b;
+    border-radius:14px;
+    padding:18px;
+    transition:.3s;
+}
+.stat-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 0 0 1px #38bdf8;
+}
+.stat-icon{
+    font-size:22px;
+    margin-bottom:10px;
+}
+.stat-value{
+    font-size:22px;
+    font-weight:700;
+}
+.stat-label{
+    font-size:13px;
+    color:#94a3b8;
 }
 
 /* ===== WELCOME CARD ===== */
-.welcome {
-    background: linear-gradient(135deg, #1e293b, #020617);
-    border-radius: 16px;
-    padding: 22px;
-    border: 1px solid #1e293b;
+.welcome{
+    background:linear-gradient(135deg,#1e293b,#020617);
+    border-radius:16px;
+    padding:22px;
+    border:1px solid #1e293b;
 }
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+    .sidebar{left:-240px}
+    .sidebar.active{left:0}
+    .topbar,.main{margin-left:0}
+    .menu-btn{display:block}
+}
+
+/* Sidebar */
+@media (max-width: 768px) {
+#sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    width: 260px;
+    height: 100%;
+    background: #111;
+    transition: 0.3s;
+    z-index: 1000;
+}
+
+/* Open sidebar */
+#sidebar.active {
+    left: 0;
+}
+}
+
+/* Overlay */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 999;
+}
+
+#overlay.active {
+    display: block;
+}
+    #global-loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #1e293b;
+    border-top: 6px solid #38bdf8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+    
 </style>
 </head>
 
 <body>
-
-<div id="global-loader" style="display:none;">
+    <div id="global-loader" style="display:none;">
     <div class="spinner"></div>
+</div>
+<div id="overlay"></div>
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+        <h4>{{ NAME }} Deals</h4>
+        <a href="/Customer_Portal/Dashboard" onclick="showLoader()" ><i class="bi bi-speedometer2"></i>
+            Dashboard</a>
+        <a href="/orderform" class="active" onclick="showLoader()"><i class="bi bi-file-earmark-text"></i> Add Order</a>
+        <a href="/customer/deals" onclick="showLoader()"><i class="bi bi-tag"></i> Live Deals</a>
+    </div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <i class="bi bi-list menu-btn" onclick="openSidebar()"></i>
+    <div class="top-title">Order Form</div>
+
+    <div class="profile">
+        <div class="text-end me-2">
+            <div class="profile-name">{{ name }}</div>
+            <div class="profile-role">Customer</div>
+        </div>
+        <div class="avatar">{{ name[0] }}</div>
+    </div>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
     <div class="welcome mb-4">
-        <h5>Submit Your Refund Requist</h5>
+        <h5>Submit Your Order</h5>
         <p class="text-secondary mb-0">
             Please fill correct details for fast processing
         </p>
     </div>
 
-    <div class="card p-4" style="background:#020617;border:1px solid #1e293b;border-radius:16px;">
-
-        {% if msg %}
-        <div class="alert alert-danger text-center py-2">{{ msg }}</div>
-        {% endif %}
-
-        <form method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
+    <div class="card p-4"
+         style="background:#020617;border:1px solid #1e293b;border-radius:16px;">
+{% if msg %}
+<div class="alert alert-danger text-center py-2">
+    {{ msg }}
+</div>
+{% endif %}
+        <form method="POST" enctype="multipart/form-data">
 
             <div class="row g-3">
 
                 <div class="col-md-6">
-                    <label class="form-label text-warning">Deal Code *</label>
-                    {% if DC %}
-                    <input type="text" class="form-control" value="{{ DC }}" name="order_id" required disabled>
-                    {% else %}
-                    <input type="text" class="form-control" name="deal_code" required>
-                    {% endif %}
+                    <label class="form-label text-warning">Brand Name (given with link)*</label><br>
+                    <select class="form-select" name="brand" required>
+                        <option value="" hidden>-- Select Brand Name --</option>
+                        {% for brand in brands %}
+                        {% if brand[2] == "Open" %}
+                            <option value="{{ brand[0] }}">{{ brand[0] }}</option>
+                        {% else %}
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-warning">Order Date *</label>
+                    <input type="date" class="form-control" name="order_date"  required>
                 </div>
 
+                <div class="col-md-6">
+                    <label class="form-label text-warning">Product Name (given with link)*</label>
+                    <input type="text" class="form-control" name="PN" placeholder="Enter Product Name" required>
+                </div>
+                
                 <div class="col-md-6">
                     <label class="form-label text-warning">Order ID *</label>
-                    {% if id %}
-                    <input type="text" class="form-control" value="{{ id }}" name="order_id" required disabled>
-                    {% else %}
-                    <input type="text" class="form-control" name="order_id_p" required>
-                    {% endif %}
+                    <input type="text" class="form-control" name="order_id" placeholder="Enetr Your Order ID" required>
+                </div>
+
+                
+
+                <div class="col-md-6">
+                    <label class="form-label text-warning">Profile Name *</label>
+                    <input type="text" class="form-control" name="reviewer_name" placeholder="Enter Profile Name" required>
+                </div>
+
+                
+
+
+                <div class="col-md-6">
+                    <label class="form-label text-warning">Order Amount *</label>
+                    <input type="number" class="form-control" name="amount" placeholder="Enter Order Amount" required>
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label text-warning">Reviewer Name *</label>
-                    {% if RN %}
-                    <input type="text" class="form-control" value="{{ RN }}" name="reviewer_name" required>
-                    {% else %}
-                    <input type="text" class="form-control" name="reviewer_name" required>
-                    {% endif %}
+                    <label class="form-label text-warning">Refund Amount *</label>
+                    <input type="number" class="form-control" name="refund_amount" placeholder="Enter Refund Amount" required>
                 </div>
 
+                
                 <div class="col-md-6">
-                    <label class="form-label text-warning">Delivered Screenshot *</label>
-                    <input type="file" class="form-control" name="D-screenshot" required>
+                    <label class="form-label text-warning">UPI ID *</label>
+                    <input type="text" class="form-control" name="upi" {% if upi %} value="{{ upi }}" {% endif %} placeholder="Enter UPI ID" required>
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label text-warning">Review Screenshot *</label>
-                    <input type="file" class="form-control" name="Review-screenshot" required>
+                
+
+                <div class="col-md-12">
+                    <label class="form-label text-warning">Order Screenshot *</label>
+                    <input type="file" class="form-control" name="screenshot" required>
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label text-warning">Review Link</label>
-                    <input type="text" class="form-control" name="link">
-                </div>
+                
 
             </div>
 
-            <button class="btn btn-primary mt-4 w-100">
+            <button class="btn btn-primary mt-4 w-100" onclick="showLoader()">
                 Submit Order
             </button>
 
@@ -119,11 +334,67 @@ body {
 
 </div>
 
+
 <script>
 function showLoader() {
     document.getElementById("global-loader").style.display = "flex";
+}
+document.addEventListener("click", function(e) {
+    let sidebar = document.querySelector(".sidebar");
+
+    // ONLY mobile par close hoga
+    if (window.innerWidth <= 768) {
+        if (!e.target.closest(".sidebar") && !e.target.closest(".menu-btn")) {
+            sidebar.classList.remove("active");
+        }
+    }
+});
+
+
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+// open sidebar
+function openSidebar() {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+}
+
+// close sidebar
+function closeSidebar() {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+}
+
+// overlay click -> close sidebar
+overlay.addEventListener("click", closeSidebar);
+
+// outside click (optional advanced)
+document.addEventListener("click", function(e) {
+    if (!sidebar.contains(e.target) && !e.target.closest(".menu-btn")) {
+        closeSidebar();
+    }
+});
+
+    
+function toggleSidebar(){
+    document.getElementById("sidebar").classList.toggle("active");
 }
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
