@@ -94,6 +94,10 @@ def send_verification_email(to_email, code):
     except Exception as e:
         print("❌ ERROR:", e)
 
+@app.route('/ping')
+def Ping():
+    return "OK"
+
 # ---------- HOME ----------
 @app.route('/')
 def Home():
