@@ -69,15 +69,14 @@ function startScanner() {
 
             try {
                 let url = new URL(decoded);
-
-                let pa = url.searchParams.get("pa"); // UPI ID
+                let pa = url.searchParams.get("pa");
 
                 if (!pa) {
                     alert("❌ Invalid UPI QR");
                     return;
                 }
 
-            } catch (e) {
+            } catch {
                 alert("❌ Invalid QR format");
                 return;
             }
@@ -87,19 +86,23 @@ function startScanner() {
 
             setTimeout(() => {
 
-                // 🔥 Try opening UPI app
-                window.location.href = decoded;
+                // 🔥 BEST METHOD (anchor click)
+                let a = document.createElement("a");
+                a.href = decoded;
+                a.style.display = "none";
+                document.body.appendChild(a);
+                a.click();
 
-                // 🔥 fallback
+                // optional backup
                 setTimeout(() => {
-                    alert("If payment app not opened, please use GPay / PhonePe.");
-                }, 1500);
+                    window.location.replace(decoded);
+                }, 1000);
 
             }, 300);
         },
 
         (error) => {
-            // ignore scan errors
+            // ignore
         }
     );
 }
