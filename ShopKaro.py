@@ -28,41 +28,31 @@ def parse_timestamp(ts):
 
 
 def merge_images(images):
-    """
-    images = list of file objects (Flask request.files.getlist())
-    return = PIL Image object (final merged image)
-    """
 
     if not images or images[0].filename == "":
         return None
 
     img_list = []
 
-    # Open images
+    # Open images (original size)
     for img in images:
         image = Image.open(img).convert("RGBA")
         img_list.append(image)
 
-    # Max height
+    # 🔥 Final height = max height
     max_height = max(img.height for img in img_list)
 
-    resized_images = []
-    total_width = 0
+    # Total width = sum of all widths (original)
+    total_width = sum(img.width for img in img_list)
 
-    # Resize images
-    for img in img_list:
-        new_width = int((max_height / img.height) * img.width)
-        resized = img.resize((new_width, max_height))
-        resized_images.append(resized)
-        total_width += new_width
-
-    # Black background
+    # Create black background
     final_img = Image.new("RGB", (total_width, max_height), (0, 0, 0))
 
-    # Merge
+    # Paste images (center vertically)
     x_offset = 0
-    for img in resized_images:
-        final_img.paste(img, (x_offset, 0))
+    for img in img_list:
+        y_offset = (max_height - img.height) // 2   # 🔥 center vertically
+        final_img.paste(img, (x_offset, y_offset))
         x_offset += img.width
 
     return final_img
@@ -1024,7 +1014,7 @@ def upload_compressed_image(file):
     else:
         img = Image.open(file).convert("RGB")
 
-        
+
     # resize large images
     img.thumbnail((1000, 1000))
 
