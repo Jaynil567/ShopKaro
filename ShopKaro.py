@@ -16,6 +16,15 @@ import io
 import json
 import pytz
 import psycopg2
+from datetime import datetime
+
+def parse_timestamp(ts):
+    try:
+        return datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+    except:
+        return datetime.min
+
+# 🔥 sort by timestamp
 
 
 
@@ -305,6 +314,7 @@ def Customer_Portal_Dashboard():
     order_refundAmount_index = headers.index("Refund Amount")
     order_reviewer_index = headers.index("Profile Name")
     order_ss_index = headers.index("Order SS")
+    timestamp_index= headers.index("TimeStamp")
     user_orders = []
 
 
@@ -312,7 +322,7 @@ def Customer_Portal_Dashboard():
     for row in data_rows:
         if str(row[mobile_index]) == str(num):
             TO+=1
-            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_amount_index],row[order_ss_index],row[order_product_index]))
+            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_amount_index],row[order_ss_index],row[order_product_index], row[timestamp_index]))
     
     RO = 0
     Payout=0
@@ -322,9 +332,10 @@ def Customer_Portal_Dashboard():
             RO+=1
     
     if sort == "oldFirst":
-        user_orders=user_orders
+        user_orders = sorted(user_orders, key=lambda x: parse_timestamp(x[9]))
     else:
-        user_orders=user_orders[::-1]
+        user_orders = sorted(user_orders, key=lambda x: parse_timestamp(x[9]), reverse=True)
+    
 
     send_orders=[]
     if rec=="Done":
@@ -514,9 +525,9 @@ def Mediator_Portal_Dashboard():
             CO+=1
     
     if sort == "oldFirst":
-        user_orders=user_orders
+        user_orders = sorted(user_orders, key=lambda x: parse_timestamp(x[8]))
     else:
-        user_orders=user_orders[::-1]
+        user_orders = sorted(user_orders, key=lambda x: parse_timestamp(x[8]), reverse=True)
 
     send_orders=[]
     if rec=="Done":
