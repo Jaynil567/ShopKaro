@@ -53,12 +53,15 @@ def db():
 NAME="ShopKaro"
 MainSheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
     
-
+paymant=True
 @app.before_request
 def force_custom_domain():
-    
-    if "onrender.com" in request.host:
-        return redirect("https://www.shopkarodeals.in", code=301)
+    if paymant:
+        if "onrender.com" in request.host:
+            return redirect("https://www.shopkarodeals.in", code=301)
+    else :
+        return render_template("suspend.html")
+
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
