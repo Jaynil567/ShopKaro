@@ -1076,14 +1076,41 @@ def orderform():
         NAME=NAME
     )
 
+@app.route("/directrefundform", methods=["GET", "POST"])
+def directrefundform():
+    msg=""
+    if request.method == "POST":
+        ID = request.form.get("order_id")
+
+        global MainSheet
+        OrderSheet = MainSheet
+        all_values = OrderSheet.get_all_values()
+        headers = all_values[0]
+        data_rows = all_values[1:]
+        order_id_index = headers.index("Order ID")
+        order_brand_index = headers.index("Brand Name")
+        order_reviewer_index = headers.index("Profile Name")
+        
+
+        for row in data_rows:
+            if str(row[order_id_index]) == str(ID):
+               detail=(row[order_brand_index],row[order_id_index],row[order_reviewer_index]) 
+
+        if detail:
+            return redirect(f"/refundform?id={detail[1]}&DealCode={detail[0]}&ProfileName={detail[2]}&direct=1")
+        else:
+            msg="Order id is not Exist"
+            return render_template("order_check.html",msg=msg)
+        
+    return render_template("order_check.html")
+
 @app.route("/refundform", methods=["GET", "POST"])
 def refundform():
-    if session.get('Cust num') == None:
-        return redirect('/')
     msg=""
     id = request.args.get("id")
     DC = request.args.get("DealCode")
     RN = request.args.get("ProfileName")
+    D = str(request.args.get("direct"))
     name=session.get('Cust name')
     num=session.get('Cust num')
     passw=session.get('Cust passw')
@@ -1127,9 +1154,9 @@ def refundform():
         if flag == 0:
             msg="Invalid Order-ID"
             if id != 'undefined' :
-                return render_template("Customer_Refund_Form.html",RN=RN,DC=DC,msg=msg,id=id, name=name, num=num, passw=passw, email=email, NAME=NAME)
+                return render_template("Customer_Refund_Form.html",D=D,RN=RN,DC=DC,msg=msg,id=id, name=name, num=num, passw=passw, email=email, NAME=NAME)
             else :
-                return render_template("Customer_Refund_Form.html",RN=RN,DC=DC,msg=msg, name=name, num=num, passw=passw, email=email,NAME=NAME)
+                return render_template("Customer_Refund_Form.html",D=D,RN=RN,DC=DC,msg=msg, name=name, num=num, passw=passw, email=email,NAME=NAME)
 
         else:
             Review_SS = request.files.get("Review-screenshot")
@@ -1176,9 +1203,9 @@ def refundform():
             return render_template("order_success.html")
     
     if id != 'undefined' :
-        return render_template("Customer_Refund_Form.html",RN=RN,DC=DC,id=id,msg=msg, name=name, num=num, passw=passw, email=email, NAME=NAME)
+        return render_template("Customer_Refund_Form.html",D=D,RN=RN,DC=DC,id=id,msg=msg, name=name, num=num, passw=passw, email=email, NAME=NAME)
     else :
-        return render_template("Customer_Refund_Form.html",RN=RN,DC=DC, name=name,msg=msg, num=num, passw=passw, email=email, NAME=NAME)
+        return render_template("Customer_Refund_Form.html",D=D,RN=RN,DC=DC, name=name,msg=msg, num=num, passw=passw, email=email, NAME=NAME)
 
 
 # ---------------- Delete row ----------------
