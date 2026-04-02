@@ -52,44 +52,59 @@ function startScanner() {
 
             console.log("Scanned:", decodedText);
 
+            let decoded;
+
+            try {
+                decoded = decodeURIComponent(decodedText);
+            } catch {
+                alert("❌ Invalid QR");
+                return;
+            }
+
             // ✅ Only allow UPI QR
-            if (!decodedText.startsWith("upi://pay")) {
+            if (!decoded.startsWith("upi://pay")) {
                 alert("❌ Only UPI QR allowed");
                 return;
             }
 
-            // ✅ (Optional) Only your UPI ID
-            // change this to your UPI
-            let allowedUpi = "yourupi@okaxis";
+            try {
+                let url = new URL(decoded);
 
-            if (!decodedText.includes("pa=" + allowedUpi)) {
-                alert("❌ Invalid UPI QR");
+                let pa = url.searchParams.get("pa"); // UPI ID
+
+                if (!pa) {
+                    alert("❌ Invalid UPI QR");
+                    return;
+                }
+
+            } catch (e) {
+                alert("❌ Invalid QR format");
                 return;
             }
 
-            // stop scanner
+            // ✅ stop scanner
             html5QrCode.stop();
 
             setTimeout(() => {
 
-                // 🔥 Try open UPI app
-                window.location.href = decodedText;
+                // 🔥 Try opening UPI app
+                window.location.href = decoded;
 
-                // 🔥 Fallback
+                // 🔥 fallback
                 setTimeout(() => {
-                    alert("If payment app not opened, please open GPay / PhonePe manually.");
+                    alert("If payment app not opened, please use GPay / PhonePe.");
                 }, 1500);
 
             }, 300);
         },
 
         (error) => {
-            // ignore errors
+            // ignore scan errors
         }
     );
 }
 
-// 🔥 AUTO START (no button)
+// 🔥 AUTO START
 window.onload = startScanner;
 
 </script>
