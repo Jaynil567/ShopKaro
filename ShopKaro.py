@@ -27,6 +27,46 @@ def parse_timestamp(ts):
 # 🔥 sort by timestamp
 
 
+def merge_images(images):
+    """
+    images = list of file objects (Flask request.files.getlist())
+    return = PIL Image object (final merged image)
+    """
+
+    if not images or images[0].filename == "":
+        return None
+
+    img_list = []
+
+    # Open images
+    for img in images:
+        image = Image.open(img).convert("RGBA")
+        img_list.append(image)
+
+    # Max height
+    max_height = max(img.height for img in img_list)
+
+    resized_images = []
+    total_width = 0
+
+    # Resize images
+    for img in img_list:
+        new_width = int((max_height / img.height) * img.width)
+        resized = img.resize((new_width, max_height))
+        resized_images.append(resized)
+        total_width += new_width
+
+    # Black background
+    final_img = Image.new("RGB", (total_width, max_height), (0, 0, 0))
+
+    # Merge
+    x_offset = 0
+    for img in resized_images:
+        final_img.paste(img, (x_offset, 0))
+        x_offset += img.width
+
+    return final_img
+
 
 app = Flask(__name__)
 app.secret_key = "heavy-secret"
@@ -1173,13 +1213,15 @@ def refundform():
                 return render_template("Customer_Refund_Form.html",D=D,RN=RN,DC=DC,msg=msg, name=name, num=num, passw=passw, email=email,NAME=NAME)
 
         else:
-            Review_SS = request.files.get("Review-screenshot")
+            Review_SS = request.files.getlist("Review-screenshot")
             if Review_SS:
-                Review_url = upload_compressed_image(Review_SS)
+                Murged_Review_SS = merge_images(Review_SS)
+                Review_url = upload_compressed_image(Murged_Review_SS)
 
-            D_SS = request.files.get("D-screenshot")
+            D_SS = request.files.getlist("D-screenshot")
             if D_SS:
-                D_url = upload_compressed_image(D_SS)
+                Murged_D_SS = merge_images(D_SS)
+                D_url = upload_compressed_image(Murged_D_SS)
 
 
             for i, row in enumerate(data_rows, start=2):
