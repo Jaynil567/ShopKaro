@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>QR Scanner</title>
+<title>UPI QR Scanner</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://unpkg.com/html5-qrcode"></script>
@@ -16,53 +16,82 @@
         text-align: center;
     }
 
+    h2 {
+        margin-top: 20px;
+    }
+
     #reader {
         width: 100%;
         max-width: 400px;
-        margin: 50px auto;
+        margin: 30px auto;
         border-radius: 12px;
         overflow: hidden;
-    }
-
-    h2 {
-        margin-top: 20px;
     }
 </style>
 </head>
 
 <body>
 
-<h2>Scan QR Code</h2>
+<h2>Scan & Pay</h2>
 <div id="reader"></div>
 
 <script>
-    function startScanner() {
 
-        let html5QrCode = new Html5Qrcode("reader");
+function startScanner() {
 
-        html5QrCode.start(
-            { facingMode: "environment" }, // back camera
-            {
-                fps: 10,
-                qrbox: 250
-            },
-            (decodedText) => {
-                console.log("Scanned:", decodedText);
+    let html5QrCode = new Html5Qrcode("reader");
 
-                // 🔥 AUTO REDIRECT
-                window.location.href = decodedText,'_blank';
+    html5QrCode.start(
+        { facingMode: "environment" },
+        {
+            fps: 10,
+            qrbox: 250
+        },
 
-                // stop scanner
-                html5QrCode.stop();
-            },
-            (error) => {
-                // ignore scan errors
+        (decodedText) => {
+
+            console.log("Scanned:", decodedText);
+
+            // ✅ Only allow UPI QR
+            if (!decodedText.startsWith("upi://pay")) {
+                alert("❌ Only UPI QR allowed");
+                return;
             }
-        );
-    }
 
-    // 🔥 AUTO START (no button)
-    window.onload = startScanner;
+            // ✅ (Optional) Only your UPI ID
+            // change this to your UPI
+            let allowedUpi = "yourupi@okaxis";
+
+            if (!decodedText.includes("pa=" + allowedUpi)) {
+                alert("❌ Invalid UPI QR");
+                return;
+            }
+
+            // stop scanner
+            html5QrCode.stop();
+
+            setTimeout(() => {
+
+                // 🔥 Try open UPI app
+                window.location.href = decodedText;
+
+                // 🔥 Fallback
+                setTimeout(() => {
+                    alert("If payment app not opened, please open GPay / PhonePe manually.");
+                }, 1500);
+
+            }, 300);
+        },
+
+        (error) => {
+            // ignore errors
+        }
+    );
+}
+
+// 🔥 AUTO START (no button)
+window.onload = startScanner;
+
 </script>
 
 </body>
