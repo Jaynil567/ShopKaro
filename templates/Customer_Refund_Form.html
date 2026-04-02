@@ -2,128 +2,141 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<title>Customer Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Customer Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    font-family: 'Inter', sans-serif;
-    background: #0f172a;
-    color: #e5e7eb;
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+        }
 
-/* ✅ MAIN FIXED */
-.main {
-    margin-left: 0;
-    padding: 16px;
-}
+        /* ✅ MAIN FIXED */
+        .main {
+            margin-left: 0;
+            padding: 16px;
+        }
 
-/* ===== WELCOME CARD ===== */
-.welcome {
-    background: linear-gradient(135deg, #1e293b, #020617);
-    border-radius: 16px;
-    padding: 22px;
-    border: 1px solid #1e293b;
-}
-</style>
+        /* ===== WELCOME CARD ===== */
+        .welcome {
+            background: linear-gradient(135deg, #1e293b, #020617);
+            border-radius: 16px;
+            padding: 22px;
+            border: 1px solid #1e293b;
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="global-loader" style="display:none;">
-    <div class="spinner"></div>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-    <div class="welcome mb-4">
-        <h5>Submit Your Refund Requist</h5>
-        <p class="text-secondary mb-0">
-            Please fill correct details for fast processing
-        </p>
+    <div id="global-loader" style="display:none;">
+        <div class="spinner"></div>
     </div>
 
-    <div class="card p-4" style="background:#020617;border:1px solid #1e293b;border-radius:16px;">
+    <!-- MAIN -->
+    <div class="main">
 
-        {% if msg %}
-        <div class="alert alert-danger text-center py-2">{{ msg }}</div>
-        {% endif %}
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:10px;">
 
-        <form method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
+            <a href="/" class="btn btn-light btn-sm" style="border-radius:10px;">
+                🏠 Home
+            </a>
 
-            <div class="row g-3">
+            <a href="/Customer_Portal/Dashboard" class="btn btn-warning btn-sm" style="border-radius:10px;">
+                📊 Dashboard
+            </a>
 
-                <div class="col-md-6">
-                    <label class="form-label text-warning">Deal Code *</label>
-                    {% if DC %}
-                    <input type="text" class="form-control" value="{{ DC }}" name="order_id" required disabled>
-                    {% else %}
-                    <input type="text" class="form-control" name="deal_code" required>
-                    {% endif %}
+        </div>
+
+        <div class="welcome mb-4">
+            <h5>Submit Your Refund Requist</h5>
+            <p class="text-secondary mb-0">
+                Please fill correct details for fast processing
+            </p>
+        </div>
+
+        <div class="card p-4" style="background:#020617;border:1px solid #1e293b;border-radius:16px;">
+
+            {% if msg %}
+            <div class="alert alert-danger text-center py-2">{{ msg }}</div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label text-warning">Deal Code *</label>
+                        {% if DC %}
+                        <input type="text" class="form-control" value="{{ DC }}" name="order_id" required disabled>
+                        {% else %}
+                        <input type="text" class="form-control" name="deal_code" required>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-warning">Order ID *</label>
+                        {% if id %}
+                        <input type="text" class="form-control" value="{{ id }}" name="order_id" required disabled>
+                        {% else %}
+                        <input type="text" class="form-control" name="order_id_p" required>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-warning">Reviewer Name *</label>
+                        {% if RN %}
+                        <input type="text" class="form-control" value="{{ RN }}" name="reviewer_name" required>
+                        {% else %}
+                        <input type="text" class="form-control" name="reviewer_name" required>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-warning">Delivered Screenshot *</label>
+                        <input type="file" class="form-control" name="D-screenshot" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-warning">Review Screenshot *</label>
+                        <input type="file" class="form-control" name="Review-screenshot" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-warning">Review Link</label>
+                        <input type="text" class="form-control" name="link" placeholder="Enter Review Link">
+                    </div>
+
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label text-warning">Order ID *</label>
-                    {% if id %}
-                    <input type="text" class="form-control" value="{{ id }}" name="order_id" required disabled>
-                    {% else %}
-                    <input type="text" class="form-control" name="order_id_p" required>
-                    {% endif %}
-                </div>
+                <button class="btn btn-primary mt-4 w-100">
+                    Submit Order
+                </button>
 
-                <div class="col-md-6">
-                    <label class="form-label text-warning">Reviewer Name *</label>
-                    {% if RN %}
-                    <input type="text" class="form-control" value="{{ RN }}" name="reviewer_name" required>
-                    {% else %}
-                    <input type="text" class="form-control" name="reviewer_name" required>
-                    {% endif %}
-                </div>
+            </form>
 
-                <div class="col-md-6">
-                    <label class="form-label text-warning">Delivered Screenshot *</label>
-                    <input type="file" class="form-control" name="D-screenshot" required>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label text-warning">Review Screenshot *</label>
-                    <input type="file" class="form-control" name="Review-screenshot" required>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label text-warning">Review Link</label>
-                    <input type="text" class="form-control" name="link" placeholder="Enter Review Link">
-                </div>
-
-            </div>
-
-            <button class="btn btn-primary mt-4 w-100">
-                Submit Order
-            </button>
-
-        </form>
+        </div>
 
     </div>
 
-</div>
-
-<script>
-function showLoader() {
-    document.getElementById("global-loader").style.display = "flex";
-}
-</script>
+    <script>
+        function showLoader() {
+            document.getElementById("global-loader").style.display = "flex";
+        }
+    </script>
 
 </body>
+
 </html>
