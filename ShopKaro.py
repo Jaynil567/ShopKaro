@@ -1019,8 +1019,12 @@ def safe_append(sheet, data_dict):
 
 def upload_compressed_image(file):
 
-    img = Image.open(file).convert("RGB")
+    if isinstance(file, Image.Image):
+        img = file.convert("RGB")
+    else:
+        img = Image.open(file).convert("RGB")
 
+        
     # resize large images
     img.thumbnail((1000, 1000))
 
