@@ -841,6 +841,10 @@ def create_sheet():
     return redirect(f'/Brands?Pmsg={Pmsg}')
 
 
+@app.route("/Scanner")
+def Scanner():
+    return render_template("scanner.html")
+
 @app.route("/Brands")
 def Brands():
     if session.get('Med Username') == None:
