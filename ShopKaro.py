@@ -13,6 +13,7 @@ from google.oauth2.service_account import Credentials as SACredentials
 from datetime import timedelta
 from PIL import Image
 import io
+import os
 import json
 import pytz
 import psycopg2
@@ -1929,7 +1930,8 @@ def pay():
     return render_template("PAY.HTML")
 # ---------- RUN ----------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    port = int(os.environ.get("PORT",8080))
+    app.run(host="0.0.0.0", port=port)
 
 
 
