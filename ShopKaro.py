@@ -834,7 +834,8 @@ def create_sheet():
         "Delivered SS",
         "Review SS",
         "Review Link",
-        "Status"
+        "Status",
+        "Type"
     ]]
 
     body = {
@@ -1108,6 +1109,7 @@ def orderform():
         Product_name = request.form.get("PN")
         Oamount = int(request.form.get("amount"))
         Ramount = int(request.form.get("refund_amount"))
+        type = request.form.get("type")
         upi = request.form.get("upi")
 
         global MainSheet
@@ -1154,7 +1156,8 @@ def orderform():
             "Status": "Pending",
             "UPI ID": upi,
             "Refund Amount": Ramount,
-            "Mediator name": NAME
+            "Mediator name": NAME,
+            "Type" : type
         }
 
         safe_append(OSheet, data)
