@@ -200,15 +200,12 @@ def Customer_Login():
     msg = ""
     if request.method == 'POST':
         num = request.form['Num']
-        passw = request.form['P']
         conn = db()
         cur = conn.cursor()
         cur.execute(f"SELECT * FROM {NAME}_Customers WHERE Number=%s", (num,))
         row = cur.fetchone()
         if row is None:
             msg = "Mobile number not registered"
-        elif row[3] != passw:
-            msg = "Incorrect password"
         else:
             cur.close()
             conn.close()
