@@ -162,7 +162,7 @@ def Customer_Ragistration():
     if request.method == 'POST':
         name = request.form['N']
         num = request.form['Num']
-        passw = request.form['P']
+        passw = None
         email = request.form['E']
         upi = request.form['upi']
         conn = db()
