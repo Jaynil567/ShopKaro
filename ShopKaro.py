@@ -65,6 +65,61 @@ app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.permanent_session_lifetime = timedelta(days=1500)
 
+
+from flask import Response
+
+@app.route("/sitemap.xml", methods=["GET"])
+def sitemap():
+
+    base_url = "https://www.shopkarodeals.in"
+
+    pages = []
+
+    # 🔹 Static Pages
+    static_urls = [
+        "/",
+        "/Customer_Login",
+        "/Customer_Ragistration",
+        "/Mediator_Login",
+        "/orderform",
+        "/directrefundform",
+        "/customer/deals",
+        "/Scanner",
+        "/pay"
+    ]
+
+    for url in static_urls:
+        pages.append(base_url + url)
+
+    # 🔹 Dynamic Pages (Brands)
+    try:
+        conn = db()
+        cur = conn.cursor()
+        cur.execute(f"SELECT Seller FROM {NAME}_Sellers")
+        brands = cur.fetchall()
+        cur.close()
+        conn.close()
+
+        for b in brands:
+            brand_name = b[0]
+            pages.append(f"{base_url}/Customer_Portal/Dashboard?brand={brand_name}")
+
+    except:
+        pass
+
+    # 🔹 XML Generate
+    sitemap_xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+    sitemap_xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+
+    for page in pages:
+        sitemap_xml.append("<url>")
+        sitemap_xml.append(f"<loc>{page}</loc>")
+        sitemap_xml.append("</url>")
+
+    sitemap_xml.append("</urlset>")
+
+    return Response("\n".join(sitemap_xml), mimetype="application/xml")
+
 cloudinary.config(
     cloud_name="dajnnvznf",
     api_key="949949375829316",
