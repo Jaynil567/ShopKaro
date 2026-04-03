@@ -67,27 +67,27 @@ body{
 
         <div class="mb-3 position-relative">
             <i class="bi bi-person input-icon"></i>
-            <input type="text" name="N" class="form-control" placeholder="Full Name" required>
+            <input type="text" name="N" class="form-control" placeholder="Enter Full Name" required>
         </div>
 
         <div class="mb-3 position-relative">
             <i class="bi bi-phone input-icon"></i>
             <input type="text" name="Num" class="form-control ps-5"
-                   placeholder="Whatsapp Number" maxlength="10" minlength="10" required>
+                   placeholder="Enter Whatsapp Number" maxlength="10" minlength="10" required>
         </div>
 
         <div class="mb-3 position-relative">
             <i class="bi bi-envelope input-icon"></i>
             <input type="email" name="E" class="form-control"
-                   placeholder="Email Address" required>
+                   placeholder="Enter Email Address" required>
         </div>
 
         <div class="mb-3 position-relative">
             <i class="bi bi-envelope input-icon"></i>
             <input type="email" name="upi" class="form-control"
-                   placeholder="UPI ID" required>
+                   placeholder="Enter UPI ID" required>
         </div>
-
+<!--
         <div class="mb-3 position-relative">
             <i class="bi bi-lock input-icon"></i>
             <input type="password" id="password" name="P"
@@ -99,7 +99,7 @@ body{
             <input type="password" id="confirmPassword"
                    class="form-control" placeholder="Confirm Password" required>
         </div>
-
+-->
         <button type="submit" class="btn btn-success w-100 mb-3">
             Register
         </button>
@@ -116,15 +116,7 @@ body{
 </div>
 
 <script>
-document.getElementById("registerForm").addEventListener("submit", function(e){
-    let pass = document.getElementById("password").value;
-    let cpass = document.getElementById("confirmPassword").value;
 
-    if(pass !== cpass){
-        alert("Passwords do not match");
-        e.preventDefault();
-    }
-});
 </script>
 
 </body>
