@@ -398,14 +398,16 @@ def Customer_Portal_Dashboard():
     order_reviewer_index = headers.index("Profile Name")
     order_ss_index = headers.index("Order SS")
     timestamp_index= headers.index("TimeStamp")
+    order_type_index= headers.index("Type")
     user_orders = []
+    
 
 
     TO = 0
     for row in data_rows:
         if str(row[mobile_index]) == str(num):
             TO+=1
-            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_amount_index],row[order_ss_index],row[order_product_index], row[timestamp_index]))
+            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_amount_index],row[order_ss_index],row[order_product_index], row[timestamp_index], row[order_type_index=]))
     
     RO = 0
     Payout=0
