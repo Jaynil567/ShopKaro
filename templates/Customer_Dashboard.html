@@ -588,6 +588,7 @@
                         <tr>
                             <th>#</th>
                             <th>Refund Form</th>
+                            <th>Deal Type</th>
                             <th>Order Date</th>
                             <th>Brand</th>
                             <th>Product Name</th>
@@ -614,6 +615,7 @@
                                     onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')">Refund Form</button>
                                 {% endif %}
                             </td>
+                            <td>{{ order[10] }}</td>
                             <td>{{ order[1] }}</td>
                             <td>{{ order[3] }}</td>
                             <td class="product-name">{{ order[8] }}</td>
