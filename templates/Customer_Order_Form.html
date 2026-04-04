@@ -308,9 +308,15 @@ body{
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label text-warning">Deal Type *</label>
-                    <input type="text" class="form-control" name="type" value="Enter Deal Type" required>
+                    <label class="form-label text-warning">Deal Type *</label><br>
+                    <select class="form-select" name="type" required>
+                        <option value="" hidden>-- Select Deal Type --</option>
+                        <option value="Review">Review</option>
+                        <option value="Rating">Rating</option>
+                    </select>
                 </div>
+
+                
                 
                 <div class="col-md-6">
                     <label class="form-label text-warning">UPI ID *</label>
