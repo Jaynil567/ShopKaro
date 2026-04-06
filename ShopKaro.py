@@ -27,6 +27,25 @@ SCOPES = [
 creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
+# ===== GOOGLE SHEET CACHE =====
+import time
+
+sheet_cache = {}
+last_fetch_time = {}
+
+CACHE_DURATION = 60   # seconds
+
+def get_cached_sheet(sheet, key):
+    now = time.time()
+
+    if key not in sheet_cache or now - last_fetch_time.get(key, 0) > CACHE_DURATION:
+        sheet_cache[key] = sheet.get_all_values()
+        last_fetch_time[key] = now
+
+    return sheet_cache[key]
+
+# ===== sort by timestamp =====
+
 def parse_timestamp(ts):
     try:
         return datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
@@ -76,6 +95,8 @@ app.permanent_session_lifetime = timedelta(days=1500)
 
 
 from flask import Response
+
+
 
 @app.route("/sitemap.xml", methods=["GET"])
 def sitemap():
@@ -148,7 +169,8 @@ def db():
 
 
 NAME="ShopKaro"
-MainSheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").sheet1
+shopkaro_sheet_key="1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA"
+MainSheet = client.open_by_key(shopkaro_sheet_key).sheet1
     
 paymant=True
 @app.before_request
@@ -237,7 +259,7 @@ def Customer_Ragistration():
             cur.close()
             conn.close()
 
-            CustomerSheet=client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").get_worksheet(1)
+            CustomerSheet=client.open_by_key(shopkaro_sheet_key).get_worksheet(1)
             data = {"Name":name,"Whatsapp":num,"Email":email,"UPI ID":upi,"Password":passw}
             safe_append(CustomerSheet, data)
 
@@ -386,7 +408,7 @@ def Customer_Portal_Dashboard():
 
     global MainSheet
     sheet = MainSheet
-    all_values = sheet.get_all_values()
+    all_values = get_cached_sheet(sheet, "main")
     headers = all_values[0]
     data_rows = all_values[1:]
     mobile_index = headers.index("Whatsapp")
@@ -577,7 +599,7 @@ def Mediator_Portal_Dashboard():
     global MainSheet
     sheet = MainSheet
     sheeturl=sheet.url
-    all_values = sheet.get_all_values()
+    all_values = get_cached_sheet(sheet, "main")
     headers = all_values[0]
     data_rows = all_values[1:]
     
@@ -1127,7 +1149,7 @@ def orderform():
         conn.close()
         
         BrandSheet = client.open_by_key(brand_data[1]).sheet1
-        all_values = OSheet.get_all_values()
+        all_values = get_cached_sheet(OSheet, "main")
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1169,6 +1191,8 @@ def orderform():
         safe_append(OSheet, data)
         safe_append(BrandSheet, data)
 
+        sheet_cache.pop("main", None)
+
         return render_template("order_success.html")
 
     # -------- GET REQUEST PART --------
@@ -1194,7 +1218,7 @@ def directrefundform():
 
         global MainSheet
         OrderSheet = MainSheet
-        all_values = OrderSheet.get_all_values()
+        all_values = get_cached_sheet(OrderSheet, "main")
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1244,7 +1268,7 @@ def refundform():
         reviewer_name  = request.form.get("reviewer_name")
         link           = request.form.get("link")
 
-        all_values = OrderSheet.get_all_values()
+        all_values = get_cached_sheet(OrderSheet, "main")
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1312,6 +1336,7 @@ def refundform():
                     BrandSheet.update_cell(i, CRL_col + 1, link)
                     break
 
+            sheet_cache.pop("main", None)
             return render_template("order_success.html")
     
     if id != 'undefined' :
@@ -1334,6 +1359,8 @@ def delete_order(order_id,brand):
         if row[order_id_index] == order_id:
             sheet.delete_rows(i+1)
             break
+
+    sheet_cache.pop("main", None)
 
     # ----- Brand Sheet -----
     conn = db()
@@ -1366,10 +1393,10 @@ def customer_deals():
     email=session.get('Cust email')
     
 
-    sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").worksheet("Deals")
+    sheet = client.open_by_key(shopkaro_sheet_key).worksheet("Deals")
     sheeturl=sheet.url
 
-    deals = sheet.get_all_values()[1:]
+    deals = get_cached_sheet(sheet, "deals")[1:]
     deals = deals[::-1]  # Show latest deals first
 
     return render_template(
@@ -1392,10 +1419,10 @@ def mediator_deals():
     MN = session.get('Med name')
     MNUM = session.get('Med num')
 
-    sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").worksheet("Deals")
+    sheet = client.open_by_key(shopkaro_sheet_key).worksheet("Deals")
     sheeturl=sheet.url
 
-    deals = sheet.get_all_values()[1:]
+    deals = get_cached_sheet(sheet, "deals")[1:]
     global ALL_DEALS
     ALL_DEALS = deals[::-1]  # Show latest deals first
 
@@ -1417,7 +1444,7 @@ def add_deal():
     if session.get('Med Username') == None:
         return redirect('/Mediator_Login')
 
-    sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").worksheet("Deals")
+    sheet = client.open_by_key(shopkaro_sheet_key).worksheet("Deals")
 
     product_code = request.form.get("product_code")
     platform = request.form.get("platform")
@@ -1444,14 +1471,15 @@ def add_deal():
     }
 
     safe_append(sheet, data)
-    
+
+    sheet_cache.pop("deals", None)
 
     return redirect("/mediator/deals")
 
 @app.route("/delete_deal/<code>")
 def delete_deal(code):
 
-    sheet = client.open_by_key("1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA").worksheet("Deals")
+    sheet = client.open_by_key(shopkaro_sheet_key).worksheet("Deals")
     data = sheet.get_all_values()
 
     for i,row in enumerate(data):
@@ -1459,6 +1487,7 @@ def delete_deal(code):
             sheet.delete_rows(i+1)
             break
 
+    sheet_cache.pop("deals", None)
     return redirect("/mediator/deals")
 
 
@@ -1723,7 +1752,7 @@ def Normal_orderform():
 
         global MainSheet
         OSheet = MainSheet
-        all_values = OSheet.get_all_values()
+        all_values = get_cached_sheet(OSheet, "main")
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1779,6 +1808,8 @@ def Normal_orderform():
         safe_append(OSheet, data)
         safe_append(BrandSheet, data)
 
+        sheet_cache.pop("main", None)
+
         med_data = {
             "TimeStamp": str(now),
             "Brand Name": brand,
@@ -1817,7 +1848,7 @@ def check_order():
 
         global MainSheet
         OrderSheet = MainSheet
-        all_values = OrderSheet.get_all_values()
+        all_values = get_cached_sheet(OrderSheet, "main")
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1840,18 +1871,14 @@ def check_order():
 
 @app.route("/Normal_refundform/<ID>/<Brand>/<PN>/<MED>", methods=["GET", "POST"])
 def Normal_refundform(ID,Brand,PN,MED):
-
     msg=""
-    
-    
-    
     if request.method == "POST":
 
         link           = request.form.get("link")
 
         global MainSheet
         OrderSheet = MainSheet
-        all_values = OrderSheet.get_all_values()
+        all_values = get_cached_sheet(OrderSheet, "main")
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1910,7 +1937,8 @@ def Normal_refundform(ID,Brand,PN,MED):
                 OrderSheet.update_cell(i, Rss_col + 1, Review_url)
                 OrderSheet.update_cell(i, RL_col + 1, link)
                 break
-        
+
+        sheet_cache.pop("main", None)
         
         for i, row in enumerate(Cdata_rows, start=2):
             if row[Corder_id_index] == ID:
@@ -1922,10 +1950,10 @@ def Normal_refundform(ID,Brand,PN,MED):
 
         for i, row in enumerate(Mdata_rows, start=2):
             if row[Morder_id_index] == ID:
-                BrandSheet.update_cell(i, Mstatus_col + 1, "Done")
-                BrandSheet.update_cell(i, MDss_col + 1, D_url)
-                BrandSheet.update_cell(i, MRss_col + 1, Review_url)
-                BrandSheet.update_cell(i, MRL_col + 1, link)
+                MEDSheet.update_cell(i, Mstatus_col + 1, "Done")
+                MEDSheet.update_cell(i, MDss_col + 1, D_url)
+                MEDSheet.update_cell(i, MRss_col + 1, Review_url)
+                MEDSheet.update_cell(i, MRL_col + 1, link)
                 break
 
         return render_template("NOrder_Success.html")
