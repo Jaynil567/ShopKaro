@@ -19,8 +19,6 @@ import pytz
 import psycopg2
 from datetime import datetime
 
-
-
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file"
@@ -28,33 +26,6 @@ SCOPES = [
 
 creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
-
-NAME="ShopKaro"
-shopkaro_sheet_key="1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA"
-MainSheet = client.open_by_key(shopkaro_sheet_key).sheet1
-
-MAIN_SHEET_DATA = []
-LAST_FETCH = 0
-
-import threading
-import time
-
-def auto_update_main_sheet():
-    global MAIN_SHEET_DATA, LAST_FETCH, MainSheet
-
-    while True:
-        try:
-            data = MainSheet.get_all_values()
-            MAIN_SHEET_DATA = data
-            LAST_FETCH = time.time()
-            print("✅ MainSheet Updated")
-        except Exception as e:
-            print("❌ Sheet Fetch Error:", e)
-
-        if len(MAIN_SHEET_DATA) > 0:
-            time.sleep(35)
-        else:
-            time.sleep(2)   # 🔥 every 60 sec
 
 def parse_timestamp(ts):
     try:
@@ -102,8 +73,6 @@ app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.permanent_session_lifetime = timedelta(days=1500)
-
-threading.Thread(target=auto_update_main_sheet, daemon=True).start()
 
 
 from flask import Response
@@ -176,6 +145,11 @@ def db():
     s=psycopg2.connect("postgresql://neondb_owner:npg_tYsv8cD9MVAu@ep-rough-grass-a1bedl2d-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
     return s
 
+
+
+NAME="ShopKaro"
+shopkaro_sheet_key="1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA"
+MainSheet = client.open_by_key(shopkaro_sheet_key).sheet1
     
 paymant=True
 @app.before_request
@@ -409,7 +383,11 @@ def Customer_Portal_Dashboard():
     cur.close()
     conn.close()
     
-    all_values = MAIN_SHEET_DATA
+
+
+    global MainSheet
+    sheet = MainSheet
+    all_values = sheet.get_all_values()
     headers = all_values[0]
     data_rows = all_values[1:]
     mobile_index = headers.index("Whatsapp")
@@ -600,7 +578,7 @@ def Mediator_Portal_Dashboard():
     global MainSheet
     sheet = MainSheet
     sheeturl=sheet.url
-    all_values = MAIN_SHEET_DATA
+    all_values = sheet.get_all_values()
     headers = all_values[0]
     data_rows = all_values[1:]
     
@@ -999,7 +977,7 @@ def Brands():
     for b in db_brands:
         brandSheet = client.open_by_key(b[1]).sheet1
         url = brandSheet.url
-
+    
         # 🔥 ONLY COUNT COLUMN A (FAST)
         col = brandSheet.col_values(1)   # A column
         row_count = len(col) - 1         # minus header
@@ -1085,7 +1063,7 @@ def safe_append(sheet, data_dict):
         row.append(data_dict.get(header, ""))
 
     # find next empty row
-    data = MAIN_SHEET_DATA
+    data = sheet.get_all_values()
     next_row = len(data) + 1
 
     sheet.insert_row(row, next_row)
@@ -1153,7 +1131,7 @@ def orderform():
         conn.close()
         
         BrandSheet = client.open_by_key(brand_data[1]).sheet1
-        all_values = MAIN_SHEET_DATA
+        all_values = OSheet.get_all_values()
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1218,8 +1196,9 @@ def directrefundform():
     if request.method == "POST":
         ID = request.form.get("order_id")
 
-        
-        all_values = MAIN_SHEET_DATA
+        global MainSheet
+        OrderSheet = MainSheet
+        all_values = OrderSheet.get_all_values()
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1269,7 +1248,7 @@ def refundform():
         reviewer_name  = request.form.get("reviewer_name")
         link           = request.form.get("link")
 
-        all_values = MAIN_SHEET_DATA
+        all_values = OrderSheet.get_all_values()
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1350,7 +1329,7 @@ def refundform():
 def delete_order(order_id,brand):
     global MainSheet
     sheet = MainSheet
-    data = MAIN_SHEET_DATA
+    data = sheet.get_all_values()
 
     headers = data[0]
     order_id_index = headers.index("Order ID")
@@ -1748,7 +1727,7 @@ def Normal_orderform():
 
         global MainSheet
         OSheet = MainSheet
-        all_values = MAIN_SHEET_DATA
+        all_values = OSheet.get_all_values()
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1840,8 +1819,9 @@ def check_order():
     if request.method == "POST":
         ID = request.form.get("order_id")
 
-        
-        all_values = MAIN_SHEET_DATA
+        global MainSheet
+        OrderSheet = MainSheet
+        all_values = OrderSheet.get_all_values()
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
@@ -1875,7 +1855,7 @@ def Normal_refundform(ID,Brand,PN,MED):
 
         global MainSheet
         OrderSheet = MainSheet
-        all_values = MAIN_SHEET_DATA
+        all_values = OrderSheet.get_all_values()
         headers = all_values[0]
         data_rows = all_values[1:]
         order_id_index = headers.index("Order ID")
