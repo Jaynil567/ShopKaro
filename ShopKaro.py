@@ -19,6 +19,14 @@ import pytz
 import psycopg2
 from datetime import datetime
 
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive.file"
+]
+
+creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
+client = gspread.authorize(creds)
+
 def parse_timestamp(ts):
     try:
         return datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
@@ -127,13 +135,7 @@ cloudinary.config(
     api_secret="BQ1CJTtlscFnilZ1OnU-MBgZ6vA"
 )
 
-SCOPES = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive.file"
-]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
-client = gspread.authorize(creds)
 
 
 # ----------send email for password --------------
@@ -1113,6 +1115,7 @@ def orderform():
         Ramount = int(request.form.get("refund_amount"))
         type = request.form.get("type")
         upi = request.form.get("upi")
+        insta_link = request.form.get("insta_link")
 
         global MainSheet
         OSheet = MainSheet
@@ -1159,6 +1162,7 @@ def orderform():
             "UPI ID": upi,
             "Refund Amount": Ramount,
             "Mediator name": NAME,
+            "Instagram Profile Link" : insta_link,
             "Type" : type
         }
 
@@ -1930,9 +1934,10 @@ def Normal_refundform(ID,Brand,PN,MED):
     return render_template("RefundForm.html",MED=MED,RN=PN,DC=Brand,id=ID)
 
 
-@app.route("/pay")
-def pay():
-    return render_template("PAY.HTML")
+
+
+
+
 # ---------- RUN ----------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT",8080))
