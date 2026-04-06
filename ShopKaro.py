@@ -976,10 +976,13 @@ def Brands():
 
     for b in db_brands:
         brandSheet = client.open_by_key(b[1]).sheet1
-        url=brandSheet.url
-        data = brandSheet.get_all_values()
-        row = data[1:]
-        brands.append((b[0], len(row), url, b[2]))
+        url = brandSheet.url
+    
+        # 🔥 ONLY COUNT COLUMN A (FAST)
+        col = brandSheet.col_values(1)   # A column
+        row_count = len(col) - 1         # minus header
+
+    brands.append((b[0], row_count, url, b[2]))
 
     return render_template("Brands.html", Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=mainurl, NAME=NAME)
 
