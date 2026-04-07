@@ -116,7 +116,7 @@
 
                     <div class="col-md-6">
                         <label class="form-label text-warning" id="link_lable">Review Link</label>
-                        <input type="text" class="form-control" name="link" placeholder="Enter Review Link">
+                        <input type="text" class="form-control" name="link" placeholder="Enter Review Link" id="link_input">
                     </div>
 
                 </div>
@@ -134,9 +134,11 @@
     <script>
         if("{{DC}}"==='Bob&bae'){
             document.getElementById("link_lable").innerHTML="Instagram Post Link *"
+            document.getElementById("link_input").setAttribute("placeholder","Enter Instagram Post Link")
         }
         else{
             document.getElementById("link_lable").innerHTML="Review Link"
+            document.getElementById("link_input").setAttribute("placeholder","Enter Review Link")
         }
         
         function showLoader() {
