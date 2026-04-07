@@ -982,7 +982,7 @@ def Brands():
         col = brandSheet.col_values(1)   # A column
         row_count = len(col) - 1         # minus header
 
-    brands.append((b[0], row_count, url, b[2]))
+        brands.append((b[0], row_count, url, b[2]))
 
     return render_template("Brands.html", Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=mainurl, NAME=NAME)
 
