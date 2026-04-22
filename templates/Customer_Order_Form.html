@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Form | ShopKaroDeals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #F5F5F5; color: #333; }
+
+        .sidebar {
+            position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+            background: #FFFFFF; border-right: 1px solid #E0E0E0;
+            padding: 2rem 1.5rem; z-index: 1000; overflow-y: auto;
+        }
+        .sidebar h4 { font-size: 1.5rem; font-weight: 800; color: #000; margin-bottom: 2rem; position: relative; display: inline-block; }
+        .sidebar h4 span { color: #FF6B35; }
+        .sidebar h4::before {
+            content: ''; position: absolute; left: -25px; top: 50%; transform: translateY(-50%);
+            width: 18px; height: 18px; border: 2px solid #FF6B35; border-right: none; border-bottom: none;
+        }
+        .sidebar a {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            color: #666; text-decoration: none; border-radius: 16px;
+            margin-bottom: 8px; font-size: 0.9rem; font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .sidebar a:hover, .sidebar a.active { background: #FFF3F0; color: #FF6B35; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #FFFFFF; border-top: 1px solid #E0E0E0;
+            display: none; justify-content: space-around;
+            padding: 0.6rem 0.8rem; z-index: 1000;
+        }
+        .bottom-nav a, .bottom-nav button {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            text-decoration: none; color: #999; font-size: 0.65rem;
+            padding: 0.4rem 0.6rem; border-radius: 12px;
+            background: none; border: none; cursor: pointer;
+        }
+        .bottom-nav a i, .bottom-nav button i { font-size: 1.3rem; }
+        .bottom-nav a.active, .bottom-nav button.active { color: #FF6B35; background: #FFF3F0; }
+        .bottom-nav a:hover, .bottom-nav button:hover { color: #FF6B35; }
+
+        .more-modal {
+            display: none; position: fixed; bottom: 70px; right: 10px;
+            background: #FFFFFF; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 1001; min-width: 180px; border: 1px solid #E0E0E0;
+        }
+        .more-modal.active { display: block; }
+        .more-modal a {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            color: #333; text-decoration: none; border-bottom: 1px solid #F5F5F5;
+        }
+        .more-modal a:hover { background: #FFF3F0; color: #FF6B35; }
+        .more-modal a:last-child { border-bottom: none; }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .bottom-nav { display: flex; }
+            .topbar { margin-left: 0; }
+            .main { margin-left: 0; padding-bottom: 80px; }
+        }
+
+        .topbar {
+            margin-left: 280px; background: #FFFFFF; border-bottom: 1px solid #E0E0E0;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem 2rem; position: sticky; top: 0; z-index: 999;
+        }
+        .top-title { font-weight: 700; font-size: 1.1rem; color: #000; }
+        .profile { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 45px; height: 45px; background: #FF6B35; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: white; }
+
+        .main { margin-left: 280px; padding: 2rem; max-width: 900px; }
+        .welcome-banner { background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .welcome-banner h5 { margin: 0; font-weight: 700; color: #000; }
+        .welcome-banner p { margin: 0.5rem 0 0 0; color: #888; font-size: 0.85rem; }
+        .form-card { background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 24px; padding: 2rem; }
+        .form-label { font-weight: 600; color: #333; margin-bottom: 0.5rem; }
+        .form-control, .form-select {
+            background: #F5F5F5; border: 1px solid #E0E0E0; border-radius: 60px;
+            padding: 0.75rem 1.25rem; color: #333; transition: all 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            outline: none; border-color: #FF6B35; box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+            background: #FFFFFF;
+        }
+        .btn-submit { background: #000; border: none; padding: 1rem; border-radius: 60px; font-weight: 700; font-size: 1rem; transition: all 0.3s ease; width: 100%; color: white; margin-top: 1rem; }
+        .btn-submit:hover { background: #FF6B35; transform: translateY(-2px); }
+        .alert-custom { background: #FFF3F0; border: 1px solid #FF6B35; border-radius: 60px; color: #FF6B35; font-size: 0.85rem; text-align: center; }
+
+        #global-loader { position: fixed; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; gap: 1rem; }
+        .modern-loader { width: 50px; height: 50px; border: 3px solid #E0E0E0; border-top: 3px solid #FF6B35; border-radius: 50%; animation: spin 0.8s ease infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) { .form-card { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+    <div id="global-loader" style="display:none;"><div class="modern-loader"></div><div style="color:#666;">Submitting your order...</div></div>
+
+    <div class="sidebar">
+        <h4>Shop<span>Karo</span></h4>
+        <a href="/Customer_Portal/Dashboard" onclick="showLoader()"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="/orderform" class="active" onclick="showLoader()"><i class="bi bi-file-earmark-text"></i> Add Order</a>
+        <a href="/customer/deals" onclick="showLoader()"><i class="bi bi-tag"></i> Live Deals</a>
+        <a href="/Logout" onclick="showLoader()" style="margin-top: 2rem; color: #999;"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="/Customer_Portal/Dashboard" onclick="showLoader()"><i class="bi bi-speedometer2"></i><span>Home</span></a>
+        <a href="/orderform" class="active" onclick="showLoader()"><i class="bi bi-file-earmark-text"></i><span>Order</span></a>
+        <a href="/customer/deals" onclick="showLoader()"><i class="bi bi-tag"></i><span>Deals</span></a>
+        <button onclick="toggleMoreMenu()"><i class="bi bi-grid-3x3-gap-fill"></i><span>More</span></button>
+    </div>
+
+    <div id="moreMenu" class="more-modal">
+        <a href="/Logout" onclick="showLoader()" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </div>
+
+    <div class="topbar">
+        <div class="top-title">Order Form</div>
+        <div class="profile">
+            <div class="text-end"><div class="profile-name" style="font-weight:600;">{{ name }}</div><div class="profile-role" style="font-size:0.7rem; color:#888;">Customer</div></div>
+            <div class="avatar">{{ name[0]|upper }}</div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="welcome-banner"><h5><i class="bi bi-file-earmark-text me-2"></i>Submit Your Order</h5><p>Please fill correct details for fast processing</p></div>
+        <div class="form-card">
+            {% if msg %}<div class="alert alert-custom text-center py-2 mb-4">{{ msg }}</div>{% endif %}
+            <form method="POST" enctype="multipart/form-data">
+                <div class="row g-3">
+                    <div class="col-md-6"><label class="form-label">Brand Name *</label><select class="form-select" name="brand" required id="Brand"><option value="" hidden>-- Select Brand Name --</option>{% for brand in brands %}{% if brand[2] == "Open" %}<option value="{{ brand[0] }}">{{ brand[0] }}</option>{% endif %}{% endfor %}</select></div>
+                    <div class="col-md-6"><label class="form-label">Order Date *</label><input type="date" class="form-control" name="order_date" required></div>
+                    <div class="col-md-6"><label class="form-label">Product Name *</label><input type="text" class="form-control" name="PN" placeholder="Enter Product Name" required></div>
+                    <div class="col-md-6"><label class="form-label">Order ID *</label><input type="text" class="form-control" name="order_id" placeholder="Enter Your Order ID" required></div>
+                    <div class="col-md-6"><label class="form-label">Profile Name *</label><input type="text" class="form-control" name="reviewer_name" placeholder="Enter Profile Name" required></div>
+                    <div class="col-md-6"><label class="form-label">Order Amount *</label><input type="number" class="form-control" name="amount" placeholder="Enter Order Amount" required></div>
+                    <div class="col-md-6"><label class="form-label">Refund Amount *</label><input type="number" class="form-control" name="refund_amount" placeholder="Enter Refund Amount" required></div>
+                    <div class="col-md-6"><label class="form-label">Deal Type *</label><select class="form-select" name="type" required><option value="" hidden>-- Select Deal Type --</option><option value="Review">Review</option><option value="Rating">Rating</option></select></div>
+                    <div class="col-md-6"><label class="form-label">UPI ID *</label><input type="text" class="form-control" name="upi" {% if upi %} value="{{ upi }}" {% endif %} placeholder="Enter UPI ID" required></div>
+                    <div class="col-md-6"><label class="form-label">Order Screenshot *</label><input type="file" class="form-control" name="screenshot" required accept="image/*"></div>
+                    <div class="col-md-12" id="insta_profile_link"></div>
+                </div>
+                <button class="btn-submit" onclick="showLoader()">Submit Order <i class="bi bi-arrow-right ms-2"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const brandSelect = document.getElementById("Brand");
+        brandSelect.addEventListener("change", function() { const selectedBrand = this.value.trim().toLowerCase(); const instaField = document.getElementById("insta_profile_link"); if (selectedBrand === "bob&bae") { instaField.innerHTML = `<label class="form-label">Instagram Profile Link *</label><input type="text" class="form-control" name="insta_link" placeholder="Enter Instagram Profile Link" required>`; } else { instaField.innerHTML = ""; } });
+        function showLoader() { document.getElementById("global-loader").style.display = "flex"; }
+        function toggleMoreMenu() { document.getElementById('moreMenu').classList.toggle('active'); }
+        document.addEventListener('click', function(e) {
+            var menu = document.getElementById('moreMenu');
+            var btn = document.querySelector('.bottom-nav button');
+            if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
