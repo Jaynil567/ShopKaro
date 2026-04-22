@@ -206,14 +206,14 @@
             {% if orders %}
             <div class="orders-table-container">
                 <table class="orders-table">
-                    <thead><tr><th>#</th><th>Status</th><th>Type</th><th>Date</th><th>Brand</th><th>Product</th><th>Order ID</th><th>Profile</th><th>Amount</th><th>Refund</th><th>SS</th></tr></thead>
+                    <thead><tr><th>#</th><th>Type</th><th>Date</th><th>Brand</th><th>Product</th><th>Order ID</th><th>Profile</th><th>Amount</th><th>Refund</th><th>SS</th><th>Status</th></tr></thead>
                     <tbody>{% for order in orders %}
                     <tr><td>{{ loop.index }}</td><td><span style="background:#FFF3F0; padding:2px 8px; border-radius:20px; font-size:0.7rem; color:#FF6B35;">{{ order[10] }}</span></td>
-                    <td>{% if order[2]=='Done' %}<span class="badge-done">Done</span>{% else %}<button class="btn" style="background:#FF6B35; border:none; border-radius:50px; padding:0.3rem 1rem; color:white; font-size:0.7rem;" onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')">Refund form</button>{% endif %}</td></tr>
                     <td>{{ order[1] }}</td><td>{{ order[3] }}</td><td style="max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ order[8] }}</td>
                     <td class="order-id">{{ order[0] }}</td><td>{{ order[5] }}</td><td><span class="payout-chip">₹{{ order[6] }}</span></td>
                     <td><span class="payout-chip" style="background:#FF6B35;">₹{{ order[4] }}</span></td>
                     <td><img src="{{ order[7] if order[7] else '/static/logo.jpeg' }}" class="order-ss-img" onclick="previewImage(this.src)"></td>
+                    <td>{% if order[2]=='Done' %}<span class="badge-done">Done</span>{% else %}<button class="btn" style="background:#FF6B35; border:none; border-radius:50px; padding:0.3rem 1rem; color:white; font-size:0.7rem;" onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')">Refund form</button>{% endif %}</td></tr>
                     {% endfor %}</tbody>
                 </table>
             </div>
