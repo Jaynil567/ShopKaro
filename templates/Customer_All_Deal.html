@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Deals | ShopKaroDeals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #F5F5F5; color: #333; }
+        
+        .sidebar {
+            position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+            background: #FFFFFF; border-right: 1px solid #E0E0E0;
+            padding: 2rem 1.5rem; z-index: 1000; transition: all 0.3s ease;
+        }
+        .sidebar h4 { font-size: 1.5rem; font-weight: 800; color: #000; margin-bottom: 2rem; position: relative; display: inline-block; }
+        .sidebar h4 span { color: #FF6B35; }
+        .sidebar h4::before {
+            content: '';
+            position: absolute;
+            left: -25px; top: 50%; transform: translateY(-50%);
+            width: 18px; height: 18px; border: 2px solid #FF6B35;
+            border-right: none; border-bottom: none;
+        }
+        .sidebar a {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            color: #666; text-decoration: none; border-radius: 16px;
+            margin-bottom: 8px; font-size: 0.9rem; font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .sidebar a:hover, .sidebar a.active { background: #FFF3F0; color: #FF6B35; }
+        
+        .topbar {
+            margin-left: 280px; background: #FFFFFF; border-bottom: 1px solid #E0E0E0;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem 2rem; position: sticky; top: 0; z-index: 999;
+        }
+        .menu-btn { font-size: 1.5rem; cursor: pointer; display: none; color: #333; }
+        .top-title { font-weight: 700; font-size: 1.1rem; color: #000; }
+        .profile { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 45px; height: 45px; background: #FF6B35; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: white; }
+        
+        .main { margin-left: 280px; padding: 2rem; }
+        
+        .deals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+        .deal-card {
+            background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 24px;
+            overflow: hidden; transition: all 0.3s ease;
+        }
+        .deal-card:hover { transform: translateY(-8px); border-color: #FF6B35; box-shadow: 0 15px 35px rgba(255,107,53,0.1); }
+        .deal-image { width: 100%; height: 200px; object-fit: cover; transition: all 0.3s ease; }
+        .deal-card:hover .deal-image { transform: scale(1.05); }
+        .deal-content { padding: 1.5rem; }
+        .deal-code { font-size: 0.7rem; color: #888; font-family: monospace; background: #F5F5F5; display: inline-block; padding: 0.2rem 0.6rem; border-radius: 50px; margin-bottom: 0.5rem; }
+        .deal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .deal-platform { font-size: 0.8rem; color: #888; margin-bottom: 1rem; }
+        .price-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; }
+        .order-price { font-size: 0.9rem; color: #888; }
+        .refund-price { font-size: 1.5rem; font-weight: 700; color: #FF6B35; }
+        .btn-buy { width: 100%; background: #000; border: none; padding: 0.75rem; border-radius: 50px; font-weight: 600; color: white; transition: all 0.3s ease; }
+        .btn-buy:hover { background: #FF6B35; transform: scale(1.02); }
+        
+        .custom-modal { display: none; position: fixed; z-index: 9999; inset: 0; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
+        .modal-box { max-width: 90%; max-height: 90%; }
+        .modal-box img { max-width: 100%; max-height: 80vh; border-radius: 24px; }
+        .close-modal { position: absolute; top: 20px; right: 30px; font-size: 2rem; color: white; cursor: pointer; }
+        
+        #global-loader { position: fixed; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; gap: 1rem; }
+        .modern-loader { width: 50px; height: 50px; border: 3px solid #E0E0E0; border-top: 3px solid #FF6B35; border-radius: 50%; animation: spin 0.8s ease infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        @media (max-width: 768px) {
+            .sidebar { left: -280px; } .sidebar.active { left: 0; }
+            .topbar, .main { margin-left: 0; } .menu-btn { display: block; }
+            .deals-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="global-loader" style="display:none;"><div class="modern-loader"></div><div style="color:#666;">Loading amazing deals...</div></div>
+    
+    <div class="sidebar" id="sidebar">
+        <h4>Shop<span>Karo</span></h4>
+        <a href="/Customer_Portal/Dashboard" onclick="showLoader()"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="/orderform" onclick="showLoader()"><i class="bi bi-file-earmark-text"></i> Add Order</a>
+        <a href="/customer/deals" class="active" onclick="showLoader()"><i class="bi bi-tag"></i> Live Deals</a>
+        <a href="/Logout" onclick="showLoader()" style="margin-top: 2rem; color: #999;"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </div>
+    
+    <div class="topbar">
+        <i class="bi bi-list menu-btn" onclick="toggleSidebar()"></i>
+        <div class="top-title">Live Deals</div>
+        <div class="profile">
+            <div class="text-end"><div class="profile-name" style="font-weight:600;">{{ name }}</div><div class="profile-role" style="font-size:0.7rem; color:#888;">Customer</div></div>
+            <div class="avatar">{{ name[0]|upper }}</div>
+        </div>
+    </div>
+    
+    <div class="main">
+        <div class="d-flex justify-content-between align-items-center mb-4"><h2 style="font-weight:700;">🔥 Hot Deals</h2><span style="background:#FFF3F0; padding:0.3rem 1rem; border-radius:50px; font-size:0.8rem; color:#FF6B35;">{{ deals|length }} Active Deals</span></div>
+        <div class="deals-grid">
+            {% for d in deals %}
+            <div class="deal-card">
+                <img src="{{ d[0] if d[0] else '/static/logo.jpeg' }}" class="deal-image" onclick="openImageModal(this.src)">
+                <div class="deal-content">
+                    <span class="deal-code">{{ d[1] }}</span>
+                    <h4 class="deal-title">{{ d[2] }}</h4>
+                    <p class="deal-platform"><i class="bi bi-shop"></i> {{ d[3] }} Deal</p>
+                    <div class="price-row"><span class="order-price">Order: ₹{{ d[4] }}</span><span class="refund-price">You Get: ₹{{ d[5] }}</span></div>
+                    <a href="https://wa.me/917440250871?text=Hi%20ShopKaro!%20I%20am%20interested%20in%20this%20deal!%0A%0AProduct%20code:%20{{d[1]}}%0APlatform:%20{{d[2]}}%0ADeal%20type:%20{{d[3]}}%0AOrder%20price:%20{{d[4]}}%0ARefund:%20{{d[5]}}" target="_blank" class="btn-buy"><i class="bi bi-whatsapp me-2"></i> Grab Deal Now →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div id="imgModal" class="custom-modal" onclick="closeImageModal()"><span class="close-modal">&times;</span><div class="modal-box"><img id="modalImg"></div></div>
+    
+    <script>
+        function openImageModal(src) { document.getElementById("imgModal").style.display = "flex"; document.getElementById("modalImg").src = src; }
+        function closeImageModal() { document.getElementById("imgModal").style.display = "none"; }
+        function showLoader() { document.getElementById("global-loader").style.display = "flex"; }
+        const sidebar = document.getElementById("sidebar");
+        function toggleSidebar() { sidebar.classList.toggle("active"); }
+        document.addEventListener("click", function(e) { if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !e.target.closest(".menu-btn")) { sidebar.classList.remove("active"); } });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
