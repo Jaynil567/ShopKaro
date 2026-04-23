@@ -24,7 +24,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_name('etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
 def parse_timestamp(ts):
@@ -1153,6 +1153,7 @@ def orderform():
     passw = session.get('Cust passw')
     email = session.get('Cust email')
     upi = session.get("Cust upi")
+    
     if request.method == "POST":
 
         brand = request.form.get("brand")
@@ -1190,13 +1191,12 @@ def orderform():
 
         now = datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")
 
-        url = ""   # 🔥 important fix (avoid undefined error)
+        url = ""
 
         Order_SS = request.files.get("screenshot")
         if Order_SS:
             url = upload_compressed_image(Order_SS)
 
-        # 🔥 Header-based mapping
         data = {
             "TimeStamp": str(now),
             "Brand Name": brand,
@@ -1219,10 +1219,13 @@ def orderform():
         safe_append(OSheet, data)
         safe_append(BrandSheet, data)
 
-        return render_template("order_success.html")
-
-    # -------- GET REQUEST PART --------
-    
+        # ========== NEW: Pass order details to success page ==========
+        return render_template("order_success.html", 
+            order_id=order_id, 
+            brand_name=brand,
+            refund_amount=Ramount,
+            NAME=NAME
+        )
 
     return render_template(
         "Customer_Order_Form.html",
@@ -1275,6 +1278,7 @@ def refundform():
     num=session.get('Cust num')
     passw=session.get('Cust passw')
     email=session.get('Cust email')
+    
     if request.method == "POST":
         
         global MainSheet
@@ -1303,12 +1307,19 @@ def refundform():
         Dss_col      = headers.index("Delivered SS")
         Rss_col      = headers.index("Review SS")
         RL_col       = headers.index("Review Link")
+        order_brand_index = headers.index("Brand Name")
+        order_refundAmount_index = headers.index("Refund Amount")
 
 
         flag = 0
+        brand_name = ""
+        refund_amount = 0
+        
         for row in data_rows:
-            if row[order_id_index] == order_id and row[order_mobile_index]==num:
+            if row[order_id_index] == order_id and row[order_mobile_index]==str(num):
                 flag=1
+                brand_name = row[order_brand_index]
+                refund_amount = row[order_refundAmount_index]
                 break
             
         if flag == 0:
@@ -1362,13 +1373,18 @@ def refundform():
                     BrandSheet.update_cell(i, CRL_col + 1, link)
                     break
 
-            return render_template("order_success.html")
+            # ========== UPDATE: Pass order details to success page ==========
+            return render_template("order_success.html", 
+                order_id=order_id, 
+                brand_name=brand_name,
+                refund_amount=refund_amount,
+                NAME=NAME
+            )
     
     if id != 'undefined' :
         return render_template("Customer_Refund_Form.html",D=D,RN=RN,DC=DC,id=id,msg=msg, name=name, num=num, passw=passw, email=email, NAME=NAME)
     else :
         return render_template("Customer_Refund_Form.html",D=D,RN=RN,DC=DC, name=name,msg=msg, num=num, passw=passw, email=email, NAME=NAME)
-
 
 # ---------------- Delete row ----------------
 @app.route("/delete_order/<order_id>/<brand>")
