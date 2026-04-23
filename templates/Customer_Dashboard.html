@@ -11,59 +11,27 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #F5F5F5; color: #333; }
 
-        /* ========== DESKTOP SIDEBAR ========== */
+        /* Desktop Sidebar - 4 buttons */
         .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            background: #FFFFFF;
-            border-right: 1px solid #E0E0E0;
-            padding: 2rem 1.5rem;
-            z-index: 1000;
-            overflow-y: auto;
+            position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+            background: #FFFFFF; border-right: 1px solid #E0E0E0;
+            padding: 2rem 1.5rem; z-index: 1000; overflow-y: auto;
         }
-        .sidebar h4 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #000000;
-            margin-bottom: 2rem;
-            position: relative;
-            display: inline-block;
-        }
+        .sidebar h4 { font-size: 1.5rem; font-weight: 800; color: #000; margin-bottom: 2rem; position: relative; display: inline-block; }
         .sidebar h4 span { color: #FF6B35; }
         .sidebar h4::before {
-            content: '';
-            position: absolute;
-            left: -25px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 18px;
-            height: 18px;
-            border: 2px solid #FF6B35;
-            border-right: none;
-            border-bottom: none;
+            content: ''; position: absolute; left: -25px; top: 50%; transform: translateY(-50%);
+            width: 18px; height: 18px; border: 2px solid #FF6B35; border-right: none; border-bottom: none;
         }
         .sidebar a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            color: #666;
-            text-decoration: none;
-            border-radius: 16px;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            color: #666; text-decoration: none; border-radius: 16px;
+            margin-bottom: 8px; font-size: 0.9rem; font-weight: 500;
             transition: all 0.3s ease;
         }
-        .sidebar a:hover, .sidebar a.active {
-            background: #FFF3F0;
-            color: #FF6B35;
-        }
+        .sidebar a:hover, .sidebar a.active { background: #FFF3F0; color: #FF6B35; }
 
-        /* ========== MOBILE BOTTOM NAV ========== */
+        /* Mobile Bottom Nav - 4 buttons + Profile */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -74,35 +42,37 @@
             display: none;
             justify-content: space-around;
             align-items: center;
-            padding: 0.6rem 0.8rem;
+            padding: 0.5rem 0.3rem;
             z-index: 1000;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
-        .bottom-nav a, .bottom-nav button {
+        .bottom-nav a, .bottom-nav .profile-dropdown {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             text-decoration: none;
             color: #999;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             transition: all 0.3s ease;
-            padding: 0.4rem 0.6rem;
+            padding: 0.3rem 0.4rem;
             border-radius: 12px;
             background: none;
             border: none;
             cursor: pointer;
+            flex: 1;
+            text-align: center;
+            position: relative;
         }
-        .bottom-nav a i, .bottom-nav button i { font-size: 1.3rem; }
-        .bottom-nav a.active, .bottom-nav button.active {
+        .bottom-nav a i, .bottom-nav .profile-dropdown i { font-size: 1.2rem; }
+        .bottom-nav a.active, .bottom-nav .profile-dropdown.active {
             color: #FF6B35;
             background: #FFF3F0;
         }
-        .bottom-nav a:hover, .bottom-nav button:hover { color: #FF6B35; }
+        .bottom-nav a:hover, .bottom-nav .profile-dropdown:hover { color: #FF6B35; }
 
-        /* More Menu Modal */
-        .more-modal {
-            display: none;
+        /* Profile Dropdown Menu */
+        .profile-menu {
             position: fixed;
             bottom: 70px;
             right: 10px;
@@ -113,9 +83,23 @@
             min-width: 180px;
             overflow: hidden;
             border: 1px solid #E0E0E0;
+            display: none;
         }
-        .more-modal.active { display: block; }
-        .more-modal a {
+        .profile-menu.active { display: block; }
+        .profile-menu .user-info {
+            padding: 12px 16px;
+            background: #FFF3F0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .profile-menu .user-info .name {
+            font-weight: 700;
+            color: #000;
+        }
+        .profile-menu .user-info .email {
+            font-size: 0.7rem;
+            color: #888;
+        }
+        .profile-menu a {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -125,9 +109,54 @@
             transition: all 0.3s ease;
             border-bottom: 1px solid #F5F5F5;
         }
-        .more-modal a:last-child { border-bottom: none; }
-        .more-modal a:hover { background: #FFF3F0; color: #FF6B35; }
-        .more-modal a.text-danger:hover { background: #FFF3F0; color: #FF6B35; }
+        .profile-menu a:last-child { border-bottom: none; }
+        .profile-menu a:hover { background: #FFF3F0; color: #FF6B35; }
+        .profile-menu .text-danger:hover { background: #FFF3F0; color: #FF6B35; }
+
+        /* Desktop topbar profile dropdown */
+        .desktop-profile-dropdown {
+            position: relative;
+            cursor: pointer;
+        }
+        .desktop-profile-menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: #FFFFFF;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 1001;
+            min-width: 200px;
+            overflow: hidden;
+            border: 1px solid #E0E0E0;
+            display: none;
+        }
+        .desktop-profile-menu.active { display: block; }
+        .desktop-profile-menu .user-info {
+            padding: 12px 16px;
+            background: #FFF3F0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .desktop-profile-menu .user-info .name {
+            font-weight: 700;
+            color: #000;
+        }
+        .desktop-profile-menu .user-info .email {
+            font-size: 0.7rem;
+            color: #888;
+        }
+        .desktop-profile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #F5F5F5;
+        }
+        .desktop-profile-menu a:last-child { border-bottom: none; }
+        .desktop-profile-menu a:hover { background: #FFF3F0; color: #FF6B35; }
 
         /* Desktop styles */
         .topbar {
@@ -147,19 +176,29 @@
             padding: 2rem;
         }
 
-        /* Mobile styles - OVERRIDE margins */
+        /* Mobile override */
         @media (max-width: 768px) {
             .sidebar { display: none; }
             .bottom-nav { display: flex; }
             .topbar { margin-left: 0 !important; }
-            .main { margin-left: 0 !important; padding-bottom: 80px; }
+            .main { margin-left: 0 !important; padding-bottom: 75px; }
+            .desktop-profile-menu { display: none !important; }
+        }
+        @media (min-width: 769px) {
+            .bottom-nav { display: none; }
+            .profile-menu { display: none !important; }
         }
 
         .top-title { font-weight: 700; font-size: 1.1rem; color: #000; }
-        .profile { display: flex; align-items: center; gap: 15px; }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            position: relative;
+        }
         .avatar {
-            width: 45px;
-            height: 45px;
+            width: 45px; height: 45px;
             background: #FF6B35;
             border-radius: 50%;
             display: flex;
@@ -170,7 +209,6 @@
             color: white;
         }
 
-        /* Stats */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
         .stat-card { background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 20px; padding: 1.5rem; transition: all 0.3s ease; cursor: pointer; }
         .stat-card:hover { transform: translateY(-4px); border-color: #FF6B35; box-shadow: 0 10px 25px rgba(255,107,53,0.05); }
@@ -178,7 +216,6 @@
         .stat-value { font-size: 2rem; font-weight: 800; color: #000; }
         .stat-label { font-size: 0.8rem; color: #888; margin-top: 0.5rem; }
 
-        /* Welcome Banner */
         .welcome-banner {
             background: linear-gradient(135deg, #FFF3F0, #FFFFFF);
             border: 1px solid #FF6B35;
@@ -192,7 +229,6 @@
         .welcome-banner h5 { margin: 0; font-weight: 600; color: #333; }
         .welcome-banner h5 i { color: #FF6B35; margin-right: 8px; }
 
-        /* Buttons */
         .btn-modern {
             background: #FFFFFF;
             border: 1px solid #E0E0E0;
@@ -204,7 +240,6 @@
         }
         .btn-modern:hover { background: #FF6B35; border-color: #FF6B35; color: white; transform: translateY(-2px); }
 
-        /* Orders Table */
         .orders-wrapper {
             background: #FFFFFF;
             border: 1px solid #E0E0E0;
@@ -239,7 +274,6 @@
         .payout-chip { background: #000; color: white; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
         .order-ss-img { width: 45px; height: 45px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 1px solid #E0E0E0; }
 
-        /* Modal */
         .modal-content { background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 24px; }
         .modal-header { border-bottom: 1px solid #E0E0E0; }
         .modal-title { font-weight: 700; color: #FF6B35; }
@@ -256,7 +290,6 @@
         }
         .sort-option:hover { background: #FF6B35; color: white; border-color: #FF6B35; transform: translateX(5px); }
 
-        /* Loader */
         #global-loader {
             position: fixed;
             width: 100%;
@@ -306,16 +339,16 @@
         <div style="color:#666;">Loading your dashboard...</div>
     </div>
 
-    <!-- Desktop Sidebar -->
+    <!-- Desktop Sidebar - 4 buttons -->
     <div class="sidebar">
         <h4>Shop<span>Karo</span></h4>
         <a href="/Customer_Portal/Dashboard" class="active" onclick="showLoader()"><i class="bi bi-speedometer2"></i> Dashboard</a>
         <a href="/orderform" onclick="showLoader()"><i class="bi bi-file-earmark-text"></i> Add Order</a>
         <a href="/customer/deals" onclick="showLoader()"><i class="bi bi-tag"></i> Live Deals</a>
-        <a href="/Logout" onclick="showLoader()" style="margin-top: 2rem; color: #999;"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        <a href="/directrefundform" onclick="showLoader()"><i class="bi bi-arrow-repeat"></i> Refund Form</a>
     </div>
 
-    <!-- Mobile Bottom Navigation -->
+    <!-- Mobile Bottom Navigation - 4 buttons + Profile -->
     <div class="bottom-nav">
         <a href="/Customer_Portal/Dashboard" class="active" onclick="showLoader()">
             <i class="bi bi-speedometer2"></i>
@@ -329,14 +362,22 @@
             <i class="bi bi-tag"></i>
             <span>Deals</span>
         </a>
-        <button onclick="toggleMoreMenu()">
-            <i class="bi bi-grid-3x3-gap-fill"></i>
-            <span>More</span>
-        </button>
+        <a href="/directrefundform" onclick="showLoader()">
+            <i class="bi bi-arrow-repeat"></i>
+            <span>Refund</span>
+        </a>
+        <div class="profile-dropdown" onclick="toggleMobileProfileMenu(event)">
+            <i class="bi bi-person-circle"></i>
+            <span>Profile</span>
+        </div>
     </div>
 
-    <!-- More Menu Modal -->
-    <div id="moreMenu" class="more-modal">
+    <!-- Mobile Profile Menu -->
+    <div id="mobileProfileMenu" class="profile-menu">
+        <div class="user-info">
+            <div class="name">{{ name }}</div>
+            <div class="email">{{ email }}</div>
+        </div>
         <a href="/Logout" onclick="showLoader()" class="text-danger">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
@@ -345,13 +386,24 @@
     <!-- Topbar -->
     <div class="topbar">
         <div class="top-title">Dashboard</div>
-        <div class="profile">
+        <div class="profile" onclick="toggleDesktopProfileMenu(event)">
             <div class="text-end">
                 <div class="profile-name" style="font-weight:600;">{{ name }}</div>
                 <div class="profile-role" style="font-size:0.7rem; color:#888;">Customer</div>
             </div>
             <div class="avatar">{{ name[0]|upper }}</div>
         </div>
+    </div>
+
+    <!-- Desktop Profile Menu -->
+    <div id="desktopProfileMenu" class="desktop-profile-menu">
+        <div class="user-info">
+            <div class="name">{{ name }}</div>
+            <div class="email">{{ email }}</div>
+        </div>
+        <a href="/Logout" onclick="showLoader()" class="text-danger">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
     </div>
 
     <div class="main">
@@ -400,22 +452,21 @@
                         <tr><th>#</th><th>Status</th><th>Type</th><th>Date</th><th>Brand</th><th>Product</th><th>Order ID</th><th>Profile</th><th>Amount</th><th>Refund</th><th>SS</th></tr>
                     </thead>
                     <tbody>{% for order in orders %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{% if order[2]=='Done' %}<span class="badge-done">Done</span>{% else %}<button class="btn" style="background:#FF6B35; border:none; border-radius:50px; padding:0.3rem 1rem; color:white; font-size:0.7rem;" onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')">Refund Form</button>{% endif %}
-                            </td>
-                            <td><span style="background:#FFF3F0; padding:2px 8px; border-radius:20px; font-size:0.7rem; color:#FF6B35;">{{ order[10] }}</span></td>
-                            <td>{{ order[1] }}</td>
-                            <td>{{ order[3] }}</td>
-                            <td style="max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ order[8] }}</td>
-                            <td class="order-id">{{ order[0] }}</td>
-                            <td>{{ order[5] }}</td>
-                            <td><span class="payout-chip">₹{{ order[6] }}</span></td>
-                            <td><span class="payout-chip" style="background:#FF6B35;">₹{{ order[4] }}</span></td>
-                            <td><img src="{{ order[7] if order[7] else '/static/logo.jpeg' }}" class="order-ss-img" onclick="previewImage(this.src)"></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{% if order[2]=='Done' %}<span class="badge-done">Done</span>{% else %}<button class="btn" style="background:#FF6B35; border:none; border-radius:50px; padding:0.3rem 1rem; color:white; font-size:0.7rem;" onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')">Refund</button>{% endif %}
+                        </td>
+                        <td><span style="background:#FFF3F0; padding:2px 8px; border-radius:20px; font-size:0.7rem; color:#FF6B35;">{{ order[10] }}</span></td>
+                        <td>{{ order[1] }}</td>
+                        <td>{{ order[3] }}</td>
+                        <td style="max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ order[8] }}</td>
+                        <td class="order-id">{{ order[0] }}</td>
+                        <td>{{ order[5] }}</td>
+                        <td><span class="payout-chip">₹{{ order[6] }}</span></td>
+                        <td><span class="payout-chip" style="background:#FF6B35;">₹{{ order[4] }}</span></td>
+                        <td><img src="{{ order[7] if order[7] else '/static/logo.jpeg' }}" class="order-ss-img" onclick="previewImage(this.src)"></td>
+                    </tr>
+                    {% endfor %}</tbody>
                 </table>
             </div>
             {% else %}<div class="text-center py-5"><i class="bi bi-inbox" style="font-size: 3rem; color: #CCC;"></i><p class="mt-3 text-muted">No orders yet. Start your first order!</p></div>{% endif %}
@@ -460,17 +511,32 @@
         function goOF() { window.location.href = "{{ url_for('orderform')}}"; }
         function goRF(OI, DC, RN) { window.location.href = "/refundform?id=" + OI + "&DealCode=" + DC + "&ProfileName=" + RN + "&direct=0"; }
         
-        // More menu toggle
-        function toggleMoreMenu() {
-            var menu = document.getElementById('moreMenu');
+        // Toggle desktop profile menu
+        function toggleDesktopProfileMenu(event) {
+            event.stopPropagation();
+            var menu = document.getElementById('desktopProfileMenu');
             menu.classList.toggle('active');
         }
-        // Close more menu when clicking outside
+        
+        // Toggle mobile profile menu
+        function toggleMobileProfileMenu(event) {
+            event.stopPropagation();
+            var menu = document.getElementById('mobileProfileMenu');
+            menu.classList.toggle('active');
+        }
+        
+        // Close menus when clicking outside
         document.addEventListener('click', function(event) {
-            var menu = document.getElementById('moreMenu');
-            var moreBtn = document.querySelector('.bottom-nav button');
-            if (menu && moreBtn && !menu.contains(event.target) && !moreBtn.contains(event.target)) {
-                menu.classList.remove('active');
+            var desktopMenu = document.getElementById('desktopProfileMenu');
+            var mobileMenu = document.getElementById('mobileProfileMenu');
+            var desktopProfile = document.querySelector('.profile');
+            var mobileProfile = document.querySelector('.profile-dropdown');
+            
+            if (desktopMenu && desktopProfile && !desktopProfile.contains(event.target)) {
+                desktopMenu.classList.remove('active');
+            }
+            if (mobileMenu && mobileProfile && !mobileProfile.contains(event.target)) {
+                mobileMenu.classList.remove('active');
             }
         });
     </script>
