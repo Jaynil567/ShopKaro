@@ -24,7 +24,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_name('etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
 def parse_timestamp(ts):
@@ -637,9 +637,55 @@ def Mediator_Portal_Dashboard():
                 filtered_orders.append(order)
         send_orders=filtered_orders
     
+    # ========== NEW CODE: TODAY'S ORDERS BY BRAND ==========
+    from datetime import datetime
+    
+    # Get today's date in the same format as order_date (DD-MM-YYYY)
+    today_date = datetime.now().strftime("%d-%m-%Y")
+    
+    # Dictionary to count orders by brand for today
+    today_brand_counts = {}
+    
+    # Loop through all orders to find today's orders
+    for order in user_orders:
+        order_date = order[1]  # order date is at index 1 (second element)
+        brand_name = order[3]  # brand name is at index 3
+        order_status = order[2]  # status is at index 2
+        
+        # Check if order date is today
+        if order_date == today_date:
+            if brand_name in today_brand_counts:
+                today_brand_counts[brand_name] += 1
+            else:
+                today_brand_counts[brand_name] = 1
+    
+    # Convert to list for template (brand wise sorted by count)
+    today_brand_orders = [{"brand": k, "count": v} for k, v in today_brand_counts.items()]
+    today_brand_orders.sort(key=lambda x: x['count'], reverse=True)
+    
+    # Total orders today
+    today_total_orders = sum(today_brand_counts.values())
+    # ========== END NEW CODE ==========
 
-    return render_template('Mediator_Dashboard.html',brand=currentbrand,brands=brands,rec=rec,sort=sort,orders=send_orders, MUN=MUN, MN=MN, MNUM=MNUM, TO=TO, CO=CO,PF=(TO-CO), TP=Payout, url=sheeturl, NAME=NAME)
-
+    return render_template('Mediator_Dashboard.html',
+        brand=currentbrand,
+        brands=brands,
+        rec=rec,
+        sort=sort,
+        orders=send_orders,
+        MUN=MUN,
+        MN=MN,
+        MNUM=MNUM,
+        TO=TO,
+        CO=CO,
+        PF=(TO-CO),
+        TP=Payout,
+        url=sheeturl,
+        NAME=NAME,
+        # New variables for today's orders
+        today_brand_orders=today_brand_orders,
+        today_total_orders=today_total_orders
+    )
 
 
 @app.route("/add_deal_code", methods=["POST"])
@@ -1945,7 +1991,7 @@ def Normal_refundform(ID,Brand,PN,MED):
 # ---------- RUN ----------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT",8080))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port,  debug=True)
 
 
 
