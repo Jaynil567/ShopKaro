@@ -2099,66 +2099,129 @@ def send_reminder_emails():
                     
                     # Email body
                     body = f"""
+                    <!DOCTYPE html>
                     <html>
                     <head>
-                        <style>
-                            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-                            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                            .header {{ background: #FF6B35; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }}
-                            .content {{ background: #F5F5F5; padding: 20px; border-radius: 0 0 10px 10px; }}
-                            .order-details {{ background: white; padding: 15px; border-radius: 10px; margin: 15px 0; }}
-                            .btn {{ background: #FF6B35; color: white; padding: 12px 25px; text-decoration: none; border-radius: 30px; display: inline-block; margin-top: 15px; }}
-                            .footer {{ text-align: center; padding: 15px; font-size: 12px; color: #888; }}
-                            table {{ width: 100%; border-collapse: collapse; }}
-                            td {{ padding: 8px; border-bottom: 1px solid #E0E0E0; }}
-                            .label {{ font-weight: bold; width: 40%; }}
-                        </style>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Refund Reminder</title>
                     </head>
-                    <body>
-                        <div class="container">
-                            <div class="header">
-                                <h2>🔄 Refund Request Reminder</h2>
+                    <body style="margin:0; padding:0; background-color:#F5F5F5; font-family: Arial, Helvetica, sans-serif; line-height:1.6; color:#333333;">
+
+                        <center style="width:100%; table-layout:fixed;">
+                            <div style="max-width:600px; margin:0 auto; background-color:#F5F5F5;">
+
+                                <!-- Header -->
+                                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                                    <tr>
+                                        <td style="background:#FF6B35; padding:20px; text-align:center; border-radius:10px 10px 0 0;">
+                                            <h2 style="color:#FFFFFF; margin:0; font-size:22px;">🔄 Refund Request Reminder</h2>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <!-- Content -->
+                                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; background:#F5F5F5;">
+                                    <tr>
+                                        <td style="padding:20px;">
+
+                                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                    <td style="padding-bottom:15px;">
+                                                        <p style="margin:0 0 10px 0; font-size:16px;">Dear <strong style="color:#333;">{customer['reviewer_name']}</strong>,</p>
+                                                        <p style="margin:0; font-size:14px; color:#666666;">We hope you're enjoying your purchase! This is a gentle reminder that your order is due for refund.</p>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td style="background:#FFFFFF; padding:15px; border-radius:10px; margin-bottom:15px;">
+                                                        <h3 style="color:#FF6B35; margin:0 0 15px 0; font-size:16px;">📋 Order Details</h3>
+
+                                                        <table width="100%" cellpadding="8" cellspacing="0" border="0" style="border-collapse:collapse;">
+                                                            <tr style="border-bottom:1px solid #E0E0E0;">
+                                                                <td width="40%" style="padding:8px 8px 8px 0; font-weight:bold; color:#666;">Order ID:</td>
+                                                                <td style="padding:8px 0; font-weight:bold; color:#FF6B35;">{customer['order_id']}</td>
+                                                            </tr>
+                                                            <tr style="border-bottom:1px solid #E0E0E0;">
+                                                                <td style="padding:8px 8px 8px 0; font-weight:bold; color:#666;">Brand:</td>
+                                                                <td style="padding:8px 0;">{customer['brand_name']}</td>
+                                                            </tr>
+                                                            <tr style="border-bottom:1px solid #E0E0E0;">
+                                                                <td style="padding:8px 8px 8px 0; font-weight:bold; color:#666;">Order Date:</td>
+                                                                <td style="padding:8px 0;">{customer['order_date']}</td>
+                                                            </tr>
+                                                            <tr style="border-bottom:1px solid #E0E0E0;">
+                                                                <td style="padding:8px 8px 8px 0; font-weight:bold; color:#666;">Order Amount:</td>
+                                                                <td style="padding:8px 0;">₹{customer['order_amount']}</td>
+                                                            </tr>
+                                                            <tr style="border-bottom:1px solid #E0E0E0;">
+                                                                <td style="padding:8px 8px 8px 0; font-weight:bold; color:#666;">Refund Amount:</td>
+                                                                <td style="padding:8px 0;"><strong style="color:#FF6B35;">₹{customer['refund_amount']}</strong></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding:8px 8px 8px 0; font-weight:bold; color:#666;">Days Pending:</td>
+                                                                <td style="padding:8px 0;">{customer['days_ago']} days</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td style="padding:15px 0 10px 0;">
+                                                        <p style="margin:0 0 10px 0; font-size:14px;"><strong>Why is this important?</strong><br>
+                                                        Your refund of <strong style="color:#FF6B35;">₹{customer['refund_amount']}</strong> is waiting for you! Please submit the refund form at your earliest convenience.</p>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td style="text-align:center; padding:15px 0;">
+                                                        <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+                                                            <tr>
+                                                                <td style="background:#FF6B35; border-radius:30px; text-align:center;">
+                                                                    <a href="{refund_form_link}" style="display:inline-block; background:#FF6B35; color:#FFFFFF; font-weight:bold; text-decoration:none; padding:12px 25px; border-radius:30px; font-size:14px;">📝 Click Here to Fill Refund Form</a>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td style="padding:15px 0 10px 0;">
+                                                        <p style="margin:0 0 10px 0; font-size:14px;"><strong>Steps to complete:</strong></p>
+                                                        <ol style="margin:0; padding-left:20px; font-size:14px; color:#666;">
+                                                            <li style="margin-bottom:5px;">Click the button above</li>
+                                                            <li style="margin-bottom:5px;">Enter your Order ID: <strong>{customer['order_id']}</strong></li>
+                                                            <li style="margin-bottom:5px;">Upload delivery and review screenshots</li>
+                                                            <li style="margin-bottom:5px;">Submit the form</li>
+                                                        </ol>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td style="padding:10px 0;">
+                                                        <p style="margin:0; font-size:14px; color:#666;">Need help? Contact us on WhatsApp: <a href="https://wa.me/917440250871" style="color:#FF6B35; text-decoration:none;">+91 74402 50871</a></p>
+                                                    </td>
+                                                </tr>
+
+                                            </table>
+
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <!-- Footer -->
+                                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                                    <tr>
+                                        <td style="background:#F5F5F5; padding:20px; text-align:center;">
+                                            <p style="margin:0 0 5px 0; font-size:11px; color:#999999;">&copy; 2025 ShopKaroDeals • All Rights Reserved</p>
+                                            <p style="margin:0; font-size:11px; color:#999999;">If you've already submitted the refund form, please ignore this reminder.</p>
+                                        </td>
+                                    </tr>
+                                </table>
+
                             </div>
-                            <div class="content">
-                                <p>Dear <strong>{customer['reviewer_name']}</strong>,</p>
-                                <p>We hope you're enjoying your purchase! This is a gentle reminder that your order is due for refund.</p>
-                                
-                                <div class="order-details">
-                                    <h3 style="color:#FF6B35; margin-bottom:15px;">📋 Order Details</h3>
-                                    <table>
-                                        <tr><td class="label">Order ID:</td><td><strong>{customer['order_id']}</strong></td></tr>
-                                        <tr><td class="label">Brand:</td><td>{customer['brand_name']}</td></tr>
-                                        <tr><td class="label">Order Date:</td><td>{customer['order_date']}</td></tr>
-                                        <tr><td class="label">Order Amount:</td><td>₹{customer['order_amount']}</td></tr>
-                                        <tr><td class="label">Refund Amount:</td><td><strong style="color:#FF6B35;">₹{customer['refund_amount']}</strong></td></tr>
-                                        <tr><td class="label">Days Pending:</td><td>{customer['days_ago']} days</td></tr>
-                                    </table>
-                                </div>
-                                
-                                <p><strong>Why is this important?</strong><br>
-                                Your refund of <strong>₹{customer['refund_amount']}</strong> is waiting for you! Please submit the refund form at your earliest convenience.</p>
-                                
-                                <div style="text-align: center;">
-                                    <a href="{refund_form_link}" class="btn" style="color:white;">📝 Click Here to Fill Refund Form</a>
-                                </div>
-                                
-                                <p style="margin-top: 20px;"><strong>Steps to complete:</strong></p>
-                                <ol>
-                                    <li>Click the button above</li>
-                                    <li>Enter your Order ID: <strong>{customer['order_id']}</strong></li>
-                                    <li>Upload delivery and review screenshots</li>
-                                    <li>Submit the form</li>
-                                </ol>
-                                
-                                <p>Once submitted, your refund will be processed within 3-5 business days.</p>
-                                
-                                <p>Need help? Contact us on WhatsApp: <a href="https://wa.me/917440250871">+91 74402 50871</a></p>
-                            </div>
-                            <div class="footer">
-                                <p>&copy; 2025 ShopKaroDeals • All Rights Reserved</p>
-                                <p>If you've already submitted the refund form, please ignore this reminder.</p>
-                            </div>
-                        </div>
+                        </center>
+
                     </body>
                     </html>
                     """
