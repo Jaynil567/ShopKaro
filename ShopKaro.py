@@ -24,7 +24,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_name('etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
 def parse_timestamp(ts):
@@ -2000,7 +2000,221 @@ def Normal_refundform(ID,Brand,PN,MED):
     return render_template("RefundForm.html",MED=MED,RN=PN,DC=Brand,id=ID)
 
 
+# ========== BULK EMAIL SENDING ==========
+import yagmail
+from datetime import datetime, timedelta
 
+def send_bulk_reminder_emails():
+    """Send reminder emails to customers who ordered more than 20 days ago but haven't submitted refund form"""
+    
+    global MainSheet
+    sheet = MainSheet
+    all_values = sheet.get_all_values()
+    headers = all_values[0]
+    data_rows = all_values[1:]
+    
+    # Get column indices
+    order_id_index = headers.index("Order ID")
+    order_date_index = headers.index("Order Date")
+    order_status_index = headers.index("Status")
+    order_brand_index = headers.index("Brand Name")
+    order_amount_index = headers.index("Order Amount")
+    order_refundAmount_index = headers.index("Refund Amount")
+    order_reviewer_index = headers.index("Profile Name")
+    email_index = headers.index("Email")
+    whatsapp_index = headers.index("Whatsapp")
+    
+    # Get today's date
+    today = datetime.now()
+    
+    # List to store eligible customers
+    eligible_customers = []
+    
+    for row in data_rows:
+        # Check if status is "Pending" (refund form not filled)
+        if row[order_status_index] == "Pending":
+            try:
+                # Parse order date (format: DD-MM-YYYY)
+                order_date = datetime.strptime(row[order_date_index], "%d-%m-%Y")
+                days_diff = (today - order_date).days
+                
+                # If order is 20+ days old
+                if days_diff >= 20:
+                    customer_email = row[email_index]
+                    if customer_email and customer_email.strip():
+                        eligible_customers.append({
+                            'email': customer_email,
+                            'order_id': row[order_id_index],
+                            'brand_name': row[order_brand_index],
+                            'reviewer_name': row[order_reviewer_index],
+                            'order_date': row[order_date_index],
+                            'order_amount': row[order_amount_index],
+                            'refund_amount': row[order_refundAmount_index],
+                            'whatsapp': row[whatsapp_index],
+                            'days_ago': days_diff
+                        })
+            except Exception as e:
+                print(f"Error parsing date for order {row[order_id_index]}: {e}")
+                continue
+    
+    return eligible_customers
+
+@app.route("/send-reminder-emails", methods=["GET", "POST"])
+def send_reminder_emails():
+    if session.get('Med Username') == None:
+        return redirect('/Mediator_Login')
+    
+    msg = ""
+    success_count = 0
+    fail_count = 0
+    sent_emails = []
+    
+    if request.method == "POST":
+        # Get email credentials from form or use environment variables
+        sender_email = request.form.get("sender_email")
+        sender_password = request.form.get("sender_password")
+        
+        if not sender_email or not sender_password:
+            msg = "Please enter email credentials"
+            return render_template("bulk_email.html", msg=msg, NAME=NAME, MN=session.get('Med name'))
+        
+        # Get eligible customers
+        customers = send_bulk_reminder_emails()
+        
+        if not customers:
+            msg = "No pending orders older than 20 days found."
+            return render_template("bulk_email.html", msg=msg, NAME=NAME, MN=session.get('Med name'))
+        
+        # Refund form link
+        refund_form_link = "https://www.shopkarodeals.in/directrefundform"
+        
+        # Send emails using yagmail
+        try:
+            yag = yagmail.SMTP(sender_email, sender_password)
+            
+            for customer in customers:
+                try:
+                    # Email subject
+                    subject = f"Reminder: Complete Your Refund Request - Order #{customer['order_id']}"
+                    
+                    # Email body
+                    body = f"""
+                    <html>
+                    <head>
+                        <style>
+                            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                            .header {{ background: #FF6B35; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }}
+                            .content {{ background: #F5F5F5; padding: 20px; border-radius: 0 0 10px 10px; }}
+                            .order-details {{ background: white; padding: 15px; border-radius: 10px; margin: 15px 0; }}
+                            .btn {{ background: #FF6B35; color: white; padding: 12px 25px; text-decoration: none; border-radius: 30px; display: inline-block; margin-top: 15px; }}
+                            .footer {{ text-align: center; padding: 15px; font-size: 12px; color: #888; }}
+                            table {{ width: 100%; border-collapse: collapse; }}
+                            td {{ padding: 8px; border-bottom: 1px solid #E0E0E0; }}
+                            .label {{ font-weight: bold; width: 40%; }}
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <div class="header">
+                                <h2>🔄 Refund Request Reminder</h2>
+                            </div>
+                            <div class="content">
+                                <p>Dear <strong>{customer['reviewer_name']}</strong>,</p>
+                                <p>We hope you're enjoying your purchase! This is a gentle reminder that your order is due for refund.</p>
+                                
+                                <div class="order-details">
+                                    <h3 style="color:#FF6B35; margin-bottom:15px;">📋 Order Details</h3>
+                                    <table>
+                                        <tr><td class="label">Order ID:</td><td><strong>{customer['order_id']}</strong></td></tr>
+                                        <tr><td class="label">Brand:</td><td>{customer['brand_name']}</td></tr>
+                                        <tr><td class="label">Order Date:</td><td>{customer['order_date']}</td></tr>
+                                        <tr><td class="label">Order Amount:</td><td>₹{customer['order_amount']}</td></tr>
+                                        <tr><td class="label">Refund Amount:</td><td><strong style="color:#FF6B35;">₹{customer['refund_amount']}</strong></td></tr>
+                                        <tr><td class="label">Days Pending:</td><td>{customer['days_ago']} days</td></tr>
+                                    </table>
+                                </div>
+                                
+                                <p><strong>Why is this important?</strong><br>
+                                Your refund of <strong>₹{customer['refund_amount']}</strong> is waiting for you! Please submit the refund form at your earliest convenience.</p>
+                                
+                                <div style="text-align: center;">
+                                    <a href="{refund_form_link}" class="btn" style="color:white;">📝 Click Here to Fill Refund Form</a>
+                                </div>
+                                
+                                <p style="margin-top: 20px;"><strong>Steps to complete:</strong></p>
+                                <ol>
+                                    <li>Click the button above</li>
+                                    <li>Enter your Order ID: <strong>{customer['order_id']}</strong></li>
+                                    <li>Upload delivery and review screenshots</li>
+                                    <li>Submit the form</li>
+                                </ol>
+                                
+                                <p>Once submitted, your refund will be processed within 3-5 business days.</p>
+                                
+                                <p>Need help? Contact us on WhatsApp: <a href="https://wa.me/917440250871">+91 74402 50871</a></p>
+                            </div>
+                            <div class="footer">
+                                <p>&copy; 2025 ShopKaroDeals • All Rights Reserved</p>
+                                <p>If you've already submitted the refund form, please ignore this reminder.</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                    """
+                    
+                    # Send email
+                    yag.send(
+                        to=customer['email'],
+                        subject=subject,
+                        contents=body
+                    )
+                    success_count += 1
+                    sent_emails.append({
+                        'email': customer['email'],
+                        'order_id': customer['order_id'],
+                        'status': 'Sent'
+                    })
+                    print(f"✅ Email sent to {customer['email']} for order {customer['order_id']}")
+                    
+                except Exception as e:
+                    fail_count += 1
+                    sent_emails.append({
+                        'email': customer['email'],
+                        'order_id': customer['order_id'],
+                        'status': f'Failed: {str(e)[:50]}'
+                    })
+                    print(f"❌ Failed to send to {customer['email']}: {e}")
+            
+            yag.close()
+            
+            msg = f"Emails sent! Success: {success_count}, Failed: {fail_count}"
+            
+        except Exception as e:
+            msg = f"Error with email service: {str(e)}"
+        
+        return render_template("bulk_email.html", 
+            msg=msg, 
+            success_count=success_count, 
+            fail_count=fail_count,
+            total_count=len(customers),
+            sent_emails=sent_emails,
+            customers=customers,
+            NAME=NAME, 
+            MN=session.get('Med name')
+        )
+    
+    # GET request - show eligible customers
+    customers = send_bulk_reminder_emails()
+    pending_count = len(customers)
+    
+    return render_template("bulk_email.html", 
+        customers=customers, 
+        pending_count=pending_count,
+        NAME=NAME, 
+        MN=session.get('Med name'),
+        msg=msg
+    )
 
 
 
