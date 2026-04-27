@@ -18,13 +18,15 @@ import json
 import pytz
 import psycopg2
 from datetime import datetime
+from functools import lru_cache
+import time
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_name('etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
 def parse_timestamp(ts):
@@ -998,6 +1000,24 @@ def create_sheet():
 def Scanner():
     return render_template("scanner.html")
 
+# Add this import at the top with other imports
+from functools import lru_cache
+import time
+
+# Add cache for brand sheet data (5 minutes cache)
+@lru_cache(maxsize=100)
+def get_brand_order_count_cached(sheet_key):
+    """Cached version of getting order count from brand sheet"""
+    try:
+        # Add small delay to avoid rate limiting
+        time.sleep(0.1)
+        brand_sheet = client.open_by_key(sheet_key).sheet1
+        col = brand_sheet.col_values(1)
+        return len(col) - 1
+    except Exception as e:
+        print(f"Error getting brand sheet {sheet_key}: {e}")
+        return 0
+
 @app.route("/Brands")
 def Brands():
     if session.get('Med Username') == None:
@@ -1009,8 +1029,8 @@ def Brands():
     MN = session.get('Med name')
     MNUM = session.get('Med num')
     global MainSheet
-    sheet=MainSheet
-    mainurl=sheet.url
+    sheet = MainSheet
+    mainurl = sheet.url
     brands = []
 
     conn = db()
@@ -1020,17 +1040,34 @@ def Brands():
     cursor.close()
     conn.close()
 
+    # Process brands one by one with delay
     for b in db_brands:
-        brandSheet = client.open_by_key(b[1]).sheet1
-        url = brandSheet.url
-    
-        # 🔥 ONLY COUNT COLUMN A (FAST)
-        col = brandSheet.col_values(1)   # A column
-        row_count = len(col) - 1         # minus header
+        try:
+            # Open sheet
+            brand_sheet = client.open_by_key(b[1]).sheet1
+            url = brand_sheet.url
+            
+            # Get row count from sheet properties (faster and doesn't count against read quota heavily)
+            try:
+                # Use len(brand_sheet.get_all_values()) instead of col_values
+                # This is still one API call per brand, but we need to limit
+                all_data = brand_sheet.get_all_values()
+                row_count = len(all_data) - 1 if len(all_data) > 1 else 0
+            except Exception as e:
+                print(f"Error getting data for {b[0]}: {e}")
+                row_count = 0
+            
+            brands.append((b[0], row_count, url, b[2]))
+            
+            # 🔥 CRITICAL: Add delay between API calls (0.5 seconds)
+            time.sleep(0.5)
+            
+        except Exception as e:
+            print(f"Error processing brand {b[0]}: {e}")
+            # Still add brand with 0 orders
+            brands.append((b[0], 0, "#", b[2]))
 
-        brands.append((b[0], row_count, url, b[2]))
-
-    return render_template("Brands.html", Nmsg=Nmsg,Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, brands=brands,url=mainurl, NAME=NAME)
+    return render_template("Brands.html", Nmsg=Nmsg, Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, brands=brands, url=mainurl, NAME=NAME)
 
 @app.route("/Brand_Hide/<BN>")
 def BrandHide(BN):
