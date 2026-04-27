@@ -26,7 +26,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_name('etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
 def parse_timestamp(ts):
@@ -1670,7 +1670,8 @@ def create_med_sheet(medName,medEmail,number):
         "Review SS",
         "Review Link",
         "Whatsapp",
-        "UPI ID"
+        "UPI ID",
+        "Instagram Profile Link"
     ]]
 
     body = {
@@ -1823,6 +1824,7 @@ def Normal_orderform():
         med = request.form.get("mediator")
         upi = request.form.get("upi")
         whatsapp = request.form.get("W")
+        insta_link = request.form.get("insta_link")
 
         global MainSheet
         OSheet = MainSheet
@@ -1877,6 +1879,7 @@ def Normal_orderform():
             "Status": "Pending",
             "UPI ID": "as per mediator",
             "Refund Amount": 0,
+            "Instagram Profile Link" : insta_link,
             "Mediator name": mediator_data[1]
         }
         safe_append(OSheet, data)
@@ -1895,6 +1898,7 @@ def Normal_orderform():
             "Status": "Pending",
             "UPI ID": upi,
             "Refund Amount": Ramount,
+            "Instagram Profile Link" : insta_link,
             "Mediator name": NAME
         }
         safe_append(MedSheet, med_data)
