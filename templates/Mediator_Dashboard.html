@@ -731,10 +731,22 @@
                                     style="background:#FF6B35; border:none; border-radius:50px; padding:0.3rem 0.8rem; color:white; font-size:0.7rem;"
                                     onclick="pay('{{ order[12] }}','{{ order[4] }}','{{ order[3] }}','{{ order[0] }}')"><i
                                         class="bi bi-currency-rupee"></i></button></td>
-                            <td><button class="btn"
+                            <td>
+                                <button class="btn"
                                     style="background:#25D366; border:none; border-radius:50px; padding:0.3rem 0.8rem; color:white; font-size:0.7rem;"
-                                    onclick="window.open('https://wa.me/91{{ order[7] }}?text={{ ('Order Date :- ' ~ order[1] ~ '\nBrand Name :- ' ~ order[3] ~ '\nOrder ID :- ' ~ order[0] ~ '\nProfile Name :- ' ~ order[5] ~ '\nOrder Amount :- ' ~ order[11] ~ '\nRefund Amount :- ' ~ order[4]) | urlencode }}', '_blank')"><i
-                                        class="bi bi-whatsapp"></i></button></td>
+                                    onclick="sendWhatsApp({
+                                        id: '{{ order[0] }}',
+                                        date: '{{ order[1] }}',
+                                        dealCode: '{{ order[3] }}',
+                                        refund: '{{ order[4] }}',
+                                        profileName: '{{ order[5] }}',
+                                        mobile: '{{ order[7] }}',
+                                        amount: '{{ order[11] }}',
+                                        brand: '{{ order[3] }}'
+                                    })">
+                                    <i class="bi bi-whatsapp"></i>
+                                </button>
+                            </td>
                             <td class="text-end"><a href="/delete_order/{{ order[0] }}/{{ order[3] }}"
                                     onclick="return confirm('Delete this order?')" class="btn text-danger"><i
                                         class="bi bi-trash"></i></a></td>
@@ -863,6 +875,39 @@
             var btn = document.querySelector('.bottom-nav button');
             if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.remove('active');
         });
+
+
+        function sendWhatsApp(order) {
+
+            // 🔥 Double encode for safety
+            let encodedName = encodeURIComponent(encodeURIComponent(order.profileName));
+
+            let link = "https://shopkarodeals.in/refundform?" +
+                "id=" + order.id +
+                "&DealCode=" + order.dealCode +
+                "&ProfileName=" + encodedName +
+                "&direct=1";
+
+            let message =
+                `This is a reminder message to fill the refund form regarding your order details below ⬇️
+
+            Order Date :- ${order.date}
+            Brand Name :- ${order.brand}
+            Order ID :- ${order.id}
+            Profile Name :- ${order.profileName}
+            Order Amount :- ${order.amount}
+            Refund Amount :- ${order.refund}
+
+            Pls fill refund form in our app or website 👇
+            ${link}`;
+
+            let whatsappURL =
+                "https://wa.me/91" + order.mobile +
+                "?text=" + encodeURIComponent(message);
+
+            window.open(whatsappURL, "_blank");
+        }
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
