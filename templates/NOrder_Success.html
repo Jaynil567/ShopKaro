@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='logo.jpeg') }}">
+    <meta charset="UTF-8">
+    <title>Order Submitted | ShopKaroDeals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        body { background: #F5F5F5; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1rem; }
+        .success-card { background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 32px; padding: 2.5rem; max-width: 450px; width: 100%; text-align: center; }
+        .success-icon { width: 80px; height: 80px; background: #10B981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+        .success-icon i { font-size: 2.5rem; color: white; }
+        .success-title { font-size: 1.5rem; font-weight: 800; color: #000; margin-bottom: 0.5rem; }
+        .success-text { background: #F5F5F5; border-radius: 20px; padding: 1.5rem; margin: 1.5rem 0; color: #666; }
+        .btn-home { background: #FF6B35; border: none; padding: 0.875rem; border-radius: 60px; font-weight: 600; text-decoration: none; display: inline-block; width: 100%; color: white; transition: all 0.3s ease; }
+        .btn-home:hover { transform: translateY(-2px); background: #000; }
+        #global-loader { position: fixed; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; gap: 1rem; }
+        .modern-loader { width: 50px; height: 50px; border: 3px solid #E0E0E0; border-top: 3px solid #FF6B35; border-radius: 50%; animation: spin 0.8s ease infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div id="global-loader" style="display:none;"><div class="modern-loader"></div><div style="color:#666;">Processing...</div></div>
+    <div class="success-card"><div class="success-icon"><i class="bi bi-check-lg"></i></div><div class="success-title">Order Submitted Successfully</div><div class="success-text">Your order form has been received.<br>Our mediator will review your request and contact you if required.</div><a href="/gfd7dhgf6gjhs" class="btn-home" onclick="showLoader()">Back to Home</a></div>
+    <script>function showLoader() { document.getElementById("global-loader").style.display = "flex"; }</script>
+</body>
+</html>
