@@ -888,18 +888,17 @@
                 "&ProfileName=" + encodedName +
                 "&direct=1";
 
-            let message =
-                `This is a reminder message to fill the refund form regarding your order details below ⬇️
+            let message = `This is a reminder message to fill the refund form regarding your order details below ⬇️
 
-            Order Date :- ${order.date}
-            Brand Name :- ${order.brand}
-            Order ID :- ${order.id}
-            Profile Name :- ${order.profileName}
-            Order Amount :- ${order.amount}
-            Refund Amount :- ${order.refund}
+Order Date :- ${order.date}
+Brand Name :- ${order.brand}
+Order ID :- ${order.id}
+Profile Name :- ${order.profileName}
+Order Amount :- ${order.amount}
+Refund Amount :- ${order.refund}
 
-            Pls fill refund form in our app or website 👇
-            ${link}`;
+Pls fill refund form in our app or website 👇
+${link}`;
 
             let whatsappURL =
                 "https://wa.me/91" + order.mobile +
