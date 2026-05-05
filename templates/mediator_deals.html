@@ -432,7 +432,7 @@
                                     class="btn"
                                     style="background:#25D366; border:none; border-radius:50px; padding:0.3rem 0.8rem; color:white; font-size:0.7rem;"><i
                                         class="bi bi-whatsapp"></i> Share</a></td>
-                            <td><a href="/delete_deal/{{ d[1] }}" onclick="return confirm('Delete this deal?')"
+                            <td><a href="/delete_deal/{{ d[1] | urlencode }}" onclick="return confirm('Delete this deal?')"
                                     class="btn text-danger"><i class="bi bi-trash"></i> Delete</a></td>
                         </tr>{% endfor %}
                     </tbody>
