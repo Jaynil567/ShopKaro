@@ -336,6 +336,67 @@
             color: white;
         }
 
+        /* Download Button in Sidebar */
+        .download-sidebar {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #E0E0E0;
+        }
+        .download-sidebar a {
+            background: linear-gradient(135deg, #FF6B35, #FF8C5A);
+            color: white !important;
+            justify-content: center;
+        }
+        .download-sidebar a:hover {
+            background: #000;
+            transform: translateX(5px);
+        }
+        .download-sidebar a i {
+            color: white;
+        }
+
+        /* Download Button in Topbar (Desktop) */
+        .download-topbar-btn {
+            background: #FF6B35;
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+        .download-topbar-btn:hover {
+            background: #000;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        /* Mobile Download Button (Bottom Nav style) */
+        .download-mobile {
+            display: flex;
+            justify-content: center;
+            margin: 0.5rem 1rem;
+        }
+        .download-mobile a {
+            background: linear-gradient(135deg, #FF6B35, #FF8C5A);
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            width: 100%;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -626,7 +687,7 @@
         <div style="color:#666;">Loading your dashboard...</div>
     </div>
 
-    <!-- Desktop Sidebar - 4 buttons -->
+    <!-- Desktop Sidebar - 5 buttons now (including Download) -->
     <div class="sidebar">
         <h4>Shop<span>Karo</span></h4>
         <a href="/Customer_Portal/Dashboard" class="active" onclick="showLoader()"><i class="bi bi-speedometer2"></i>
@@ -634,6 +695,13 @@
         <a href="/orderform" onclick="showLoader()"><i class="bi bi-file-earmark-text"></i> Add Order</a>
         <a href="/customer/deals" onclick="showLoader()"><i class="bi bi-tag"></i> Live Deals</a>
         <a href="/directrefundform" onclick="showLoader()"><i class="bi bi-arrow-repeat"></i> Refund Form</a>
+        
+        <!-- Download App Button in Sidebar -->
+        <div class="download-sidebar">
+            <a href="{{ url_for('static', filename='shopkaro.apk') }}" download="ShopKaroDeals.apk" onclick="showLoader()">
+                <i class="bi bi-phone"></i> Download App
+            </a>
+        </div>
     </div>
 
     <!-- Mobile Bottom Navigation - 4 buttons + Profile -->
@@ -660,6 +728,13 @@
         </div>
     </div>
 
+    <!-- Mobile Download Button (below bottom nav) -->
+    <div class="download-mobile">
+        <a href="{{ url_for('static', filename='shopkaro.apk') }}" download="ShopKaroDeals.apk" onclick="showLoader()">
+            <i class="bi bi-download"></i> Download ShopKaro App
+        </a>
+    </div>
+
     <!-- Mobile Profile Menu -->
     <div id="mobileProfileMenu" class="profile-menu">
         <div class="user-info">
@@ -674,12 +749,18 @@
     <!-- Topbar -->
     <div class="topbar">
         <div class="top-title">Dashboard</div>
-        <div class="profile" onclick="toggleDesktopProfileMenu(event)">
-            <div class="text-end">
-                <div class="profile-name" style="font-weight:600;">{{ name }}</div>
-                <div class="profile-role" style="font-size:0.7rem; color:#888;">Customer</div>
+        <div class="d-flex align-items-center gap-2">
+            <!-- Download Button in Topbar (Desktop) -->
+            <a href="{{ url_for('static', filename='shopkaro.apk') }}" class="download-topbar-btn" download="ShopKaroDeals.apk" onclick="showLoader()">
+                <i class="bi bi-download"></i> App
+            </a>
+            <div class="profile" onclick="toggleDesktopProfileMenu(event)">
+                <div class="text-end">
+                    <div class="profile-name" style="font-weight:600;">{{ name }}</div>
+                    <div class="profile-role" style="font-size:0.7rem; color:#888;">Customer</div>
+                </div>
+                <div class="avatar">{{ name[0]|upper }}</div>
             </div>
-            <div class="avatar">{{ name[0]|upper }}</div>
         </div>
     </div>
 
@@ -841,7 +922,7 @@
 
     <script>
         function previewImage(src) { document.getElementById('modalImage').src = src; new bootstrap.Modal(document.getElementById('imageModal')).show(); }
-        function showLoader() { document.getElementById("global-loader").style.display = "flex"; }
+        function showLoader() { document.getElementById("global-loader").style.display = "flex"; setTimeout(() => { document.getElementById("global-loader").style.display = "none"; }, 2000); }
         function goOF() { window.location.href = "{{ url_for('orderform')}}"; }
         function goRF(OI, DC, RN) { window.location.href = "/refundform?id=" + OI + "&DealCode=" + DC + "&ProfileName=" + RN + "&direct=0"; }
 
