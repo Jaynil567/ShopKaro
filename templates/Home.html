@@ -285,6 +285,7 @@
     </section>
 
     <!-- Download App Banner - ONLY VISIBLE ON MOBILE -->
+     {% if request.args.get('source') != 'app' %}
     <div class="download-banner">
         <i class="bi bi-phone" style="font-size: 1.5rem;"></i>
         <h3>📱 Get the ShopKaro App</h3>
@@ -293,9 +294,10 @@
            class="btn-download" 
            download="ShopKaroDeals.apk"
            onclick="showLoader()">
-            <i class="bi bi-download"></i> Download App
+            <i class="bi bi-download"></i> Download/Update App
         </a>
     </div>
+    {% endif %}
 
     <div class="container py-4">
         <div class="row g-4 justify-content-center">
