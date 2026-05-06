@@ -5,7 +5,7 @@
     <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='logo.jpeg') }}">
     <meta charset="UTF-8">
     <title>Dashboard | ShopKaroDeals</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link
@@ -275,63 +275,6 @@
             padding: 2rem;
         }
 
-        /* Mobile override */
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            .bottom-nav {
-                display: flex;
-            }
-
-            .topbar {
-                margin-left: 0 !important;
-            }
-
-            .main {
-                margin-left: 0 !important;
-                padding-bottom: 80px;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .bottom-nav {
-                display: none;
-            }
-
-            .profile-menu {
-                display: none !important;
-            }
-        }
-
-        .top-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #000;
-        }
-
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .avatar {
-            width: 45px;
-            height: 45px;
-            background: #FF6B35;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: white;
-        }
-
         /* Mobile Download Button - ONLY ON MOBILE */
         .mobile-download-container {
             display: none;
@@ -343,6 +286,7 @@
             padding: 0.5rem 1rem;
             background: transparent;
         }
+
         .mobile-download-btn {
             background: linear-gradient(135deg, #FF6B35, #FF8C5A);
             color: white;
@@ -356,24 +300,19 @@
             justify-content: center;
             gap: 8px;
             width: 100%;
-            box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
             transition: all 0.3s ease;
             border: none;
         }
+
         .mobile-download-btn:hover {
             background: #000;
             transform: translateY(-2px);
             color: white;
         }
+
         .mobile-download-btn i {
             font-size: 1.1rem;
-        }
-
-        /* Show on mobile only */
-        @media (max-width: 768px) {
-            .mobile-download-container {
-                display: block;
-            }
         }
 
         .stats-grid {
@@ -641,6 +580,7 @@
             }
         }
 
+        /* ========== MOBILE VIEW FIXES ========== */
         @media (max-width: 1024px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -649,14 +589,125 @@
         }
 
         @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .bottom-nav {
+                display: flex;
+            }
+
+            .topbar {
+                margin-left: 0 !important;
+            }
+
+            .main {
+                margin-left: 0 !important;
+                padding-bottom: 130px;
+            }
+
+            /* Show download button on mobile */
+            .mobile-download-container {
+                display: block;
+            }
+
+            /* TABLE ZOOM OUT FIX - More columns visible */
             .orders-table-container {
                 overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                margin: 0 -0.75rem;
+                padding: 0 0.75rem;
             }
 
             .orders-table {
-                min-width: 800px;
+                min-width: 850px;
+                width: 100%;
+                font-size: 0.7rem;
+            }
+
+            .orders-table td,
+            .orders-table th {
+                padding: 0.5rem 0.4rem;
+                white-space: nowrap;
+            }
+
+            .orders-table tbody tr {
+                font-size: 0.65rem;
+            }
+
+            .orders-table td .btn {
+                font-size: 0.6rem;
+                padding: 0.2rem 0.5rem;
+                white-space: nowrap;
+            }
+
+            .payout-chip {
+                font-size: 0.7rem;
+                padding: 0.15rem 0.5rem;
+                white-space: nowrap;
+            }
+
+            .badge-done,
+            .badge-pending {
+                font-size: 0.6rem;
+                padding: 0.15rem 0.5rem;
+                white-space: nowrap;
+            }
+
+            .order-ss-img {
+                width: 35px;
+                height: 35px;
+            }
+
+            /* Stats cards compact */
+            .stat-card {
+                padding: 0.75rem;
+            }
+
+            .stat-value {
+                font-size: 1.25rem;
+            }
+
+            .stat-icon {
+                font-size: 1.25rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.65rem;
+            }
+
+            /* Welcome banner compact */
+            .welcome-banner {
+                padding: 0.75rem 1rem;
+            }
+
+            .welcome-banner h5 {
+                font-size: 0.9rem;
+            }
+
+            /* Buttons row wrap */
+            .d-flex.gap-2 {
+                gap: 0.5rem !important;
+            }
+
+            .btn-modern {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.7rem;
             }
         }
+
+        @media (min-width: 769px) {
+            .bottom-nav {
+                display: none;
+            }
+
+            .profile-menu {
+                display: none !important;
+            }
+        }
+
+        /* ========== END MOBILE VIEW FIXES ========== */
     </style>
 </head>
 
@@ -700,13 +751,11 @@
         </div>
     </div>
 
-    <!-- Mobile Download Button - ONLY VISIBLE ON MOBILE -->
-     {% if request.args.get('source') != 'app' %}
+    <!-- Mobile Download Button - ONLY VISIBLE ON MOBILE (NOT IN APP) -->
+    {% if request.args.get('source') != 'app' %}
     <div class="mobile-download-container">
-        <a href="{{ url_for('static', filename='shopkaro.apk') }}" 
-           class="mobile-download-btn" 
-           download="ShopKaroDeals.apk"
-           onclick="showLoader()">
+        <a href="{{ url_for('static', filename='shopkaro.apk') }}" class="mobile-download-btn"
+            download="ShopKaroDeals.apk" onclick="showLoader()">
             <i class="bi bi-download"></i> Download/Update ShopKaro App
             <i class="bi bi-phone"></i>
         </a>
@@ -779,19 +828,23 @@
         </div>
 
         <div class="d-flex gap-2 flex-wrap">
-            <button class="btn-modern" data-bs-toggle="modal" data-bs-target="#sortModal"><i
-                    class="bi bi-sort-down"></i> Sort By</button>
-            <button class="btn-modern" data-bs-toggle="modal" data-bs-target="#brandModal"><i class="bi bi-tags"></i>
-                Filter by Brand</button>
+            <button class="btn-modern" data-bs-toggle="modal" data-bs-target="#sortModal">
+                <i class="bi bi-sort-down"></i> Sort By
+            </button>
+            <button class="btn-modern" data-bs-toggle="modal" data-bs-target="#brandModal">
+                <i class="bi bi-tags"></i> Filter by Brand
+            </button>
             <button class="btn-modern"
-                onclick="window.open('https://wa.me/917440250871?text=Hii%20ShopKaro!','_blank')"><i
-                    class="bi bi-whatsapp"></i> Contact Support</button>
+                onclick="window.open('https://wa.me/917440250871?text=Hii%20ShopKaro!','_blank')">
+                <i class="bi bi-whatsapp"></i> Contact Support
+            </button>
         </div>
 
         <div class="orders-wrapper">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                 <h3 class="orders-title mb-0">📋 My Orders</h3>
-                <div class="orders-count" onclick="showLoader(),goOF()"><i class="bi bi-plus fs-5 me-2"></i> New Order
+                <div class="orders-count" onclick="showLoader(),goOF()">
+                    <i class="bi bi-plus fs-5 me-2"></i> New Order
                 </div>
             </div>
             {% if orders %}
@@ -812,14 +865,20 @@
                             <th>SS</th>
                         </tr>
                     </thead>
-                    <tbody>{% for order in orders %}
+                    <tbody>
+                        {% for order in orders %}
                         <tr>
                             <td>{{ loop.index }}</td>
-                            <td>{% if order[2]=='Done' %}<span class="badge-done">Done</span>{% else %}<button
-                                    class="btn"
+                            <td>
+                                {% if order[2]=='Done' %}
+                                <span class="badge-done">Done</span>
+                                {% else %}
+                                <button class="btn"
                                     style="background:#FF6B35; border:none; border-radius:50px; padding:0.3rem 1rem; color:white; font-size:0.7rem;"
-                                    onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')">Refund
-                                    Form</button>{% endif %}
+                                    onclick="showLoader();goRF('{{order[0]}}','{{order[3]}}','{{order[5]}}')">
+                                    Refund Form
+                                </button>
+                                {% endif %}
                             </td>
                             <td><span
                                     style="background:#FFF3F0; padding:2px 8px; border-radius:20px; font-size:0.7rem; color:#FF6B35;">{{
@@ -839,9 +898,12 @@
                     </tbody>
                 </table>
             </div>
-            {% else %}<div class="text-center py-5"><i class="bi bi-inbox" style="font-size: 3rem; color: #CCC;"></i>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 3rem; color: #CCC;"></i>
                 <p class="mt-3 text-muted">No orders yet. Start your first order!</p>
-            </div>{% endif %}
+            </div>
+            {% endif %}
         </div>
     </div>
 
@@ -850,53 +912,76 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Sort Orders</h5><button type="button" class="btn-close"
-                        data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">Sort Orders</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort=newFirst&brand={{ brand }}"
-                        class="sort-option"><i class="bi bi-arrow-down"></i> Newest First</a>
+                        class="sort-option">
+                        <i class="bi bi-arrow-down"></i> Newest First
+                    </a>
                     <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort=oldFirst&brand={{ brand }}"
-                        class="sort-option"><i class="bi bi-arrow-up"></i> Oldest First</a>
+                        class="sort-option">
+                        <i class="bi bi-arrow-up"></i> Oldest First
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="brandModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Filter by Brand</h5><button type="button" class="btn-close"
-                        data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">Filter by Brand</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand=" class="sort-option">All
                         Brands</a>
-                    {% for b in brands %}<a
-                        href="/Customer_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand={{ b[0] }}"
-                        class="sort-option">{{ b[0] }}</a>{% endfor %}
+                    {% for b in brands %}
+                    <a href="/Customer_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand={{ b[0] }}"
+                        class="sort-option">{{ b[0] }}</a>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="imageModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Screenshot Preview</h5><button type="button" class="btn-close"
-                        data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">Screenshot Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body text-center"><img id="modalImage" src=""
-                        style="max-width:100%; max-height:70vh; border-radius:16px;"></div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" style="max-width:100%; max-height:70vh; border-radius:16px;">
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        function previewImage(src) { document.getElementById('modalImage').src = src; new bootstrap.Modal(document.getElementById('imageModal')).show(); }
-        function showLoader() { document.getElementById("global-loader").style.display = "flex"; setTimeout(() => { document.getElementById("global-loader").style.display = "none"; }, 2000); }
-        function goOF() { window.location.href = "{{ url_for('orderform')}}"; }
-        function goRF(OI, DC, RN) { window.location.href = "/refundform?id=" + OI + "&DealCode=" + DC + "&ProfileName=" + RN + "&direct=0"; }
+        function previewImage(src) {
+            document.getElementById('modalImage').src = src;
+            new bootstrap.Modal(document.getElementById('imageModal')).show();
+        }
+
+        function showLoader() {
+            document.getElementById("global-loader").style.display = "flex";
+            setTimeout(() => {
+                document.getElementById("global-loader").style.display = "none";
+            }, 2000);
+        }
+
+        function goOF() {
+            window.location.href = "{{ url_for('orderform')}}";
+        }
+
+        function goRF(OI, DC, RN) {
+            window.location.href = "/refundform?id=" + OI + "&DealCode=" + DC + "&ProfileName=" + RN + "&direct=0";
+        }
 
         // Toggle desktop profile menu
         function toggleDesktopProfileMenu(event) {
