@@ -275,28 +275,86 @@
             padding: 2rem;
         }
 
-        /* Mobile Download Button - ONLY VISIBLE ON MOBILE */
+        /* Mobile override */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .bottom-nav {
+                display: flex;
+            }
+
+            .topbar {
+                margin-left: 0 !important;
+            }
+
+            .main {
+                margin-left: 0 !important;
+                padding-bottom: 80px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .bottom-nav {
+                display: none;
+            }
+
+            .profile-menu {
+                display: none !important;
+            }
+        }
+
+        .top-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #000;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background: #FF6B35;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        /* Mobile Download Button - ONLY ON MOBILE */
         .mobile-download-container {
             display: none;
             position: fixed;
-            bottom: 75px;
+            bottom: 70px;
             left: 0;
             right: 0;
             z-index: 999;
-            padding: 0 1rem;
+            padding: 0.5rem 1rem;
+            background: transparent;
         }
         .mobile-download-btn {
             background: linear-gradient(135deg, #FF6B35, #FF8C5A);
             color: white;
-            padding: 0.75rem 1rem;
+            padding: 0.7rem 1rem;
             border-radius: 60px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
             box-shadow: 0 4px 15px rgba(255,107,53,0.3);
             transition: all 0.3s ease;
@@ -308,7 +366,7 @@
             color: white;
         }
         .mobile-download-btn i {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         /* Show on mobile only */
@@ -316,14 +374,6 @@
             .mobile-download-container {
                 display: block;
             }
-            .main {
-                padding-bottom: 130px;
-            }
-        }
-
-        /* Hide desktop download buttons */
-        .download-sidebar, .download-topbar-btn {
-            display: none;
         }
 
         .stats-grid {
@@ -616,7 +666,7 @@
         <div style="color:#666;">Loading your dashboard...</div>
     </div>
 
-    <!-- Desktop Sidebar - 4 buttons (NO DOWNLOAD BUTTON HERE) -->
+    <!-- Desktop Sidebar - 4 buttons -->
     <div class="sidebar">
         <h4>Shop<span>Karo</span></h4>
         <a href="/Customer_Portal/Dashboard" class="active" onclick="showLoader()"><i class="bi bi-speedometer2"></i>
@@ -650,7 +700,7 @@
         </div>
     </div>
 
-    <!-- Mobile Download Button - ONLY VISIBLE ON MOBILE (Fixed at bottom) -->
+    <!-- Mobile Download Button - ONLY VISIBLE ON MOBILE -->
     <div class="mobile-download-container">
         <a href="{{ url_for('static', filename='shopkaro.apk') }}" 
            class="mobile-download-btn" 
@@ -672,7 +722,7 @@
         </a>
     </div>
 
-    <!-- Topbar (NO DOWNLOAD BUTTON HERE) -->
+    <!-- Topbar -->
     <div class="topbar">
         <div class="top-title">Dashboard</div>
         <div class="profile" onclick="toggleDesktopProfileMenu(event)">
