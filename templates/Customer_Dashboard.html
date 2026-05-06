@@ -701,15 +701,17 @@
     </div>
 
     <!-- Mobile Download Button - ONLY VISIBLE ON MOBILE -->
+     {% if request.args.get('source') != 'app' %}
     <div class="mobile-download-container">
         <a href="{{ url_for('static', filename='shopkaro.apk') }}" 
            class="mobile-download-btn" 
            download="ShopKaroDeals.apk"
            onclick="showLoader()">
-            <i class="bi bi-download"></i> Download ShopKaro App
+            <i class="bi bi-download"></i> Download/Update ShopKaro App
             <i class="bi bi-phone"></i>
         </a>
     </div>
+    {% endif %}
 
     <!-- Mobile Profile Menu -->
     <div id="mobileProfileMenu" class="profile-menu">
