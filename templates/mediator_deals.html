@@ -428,8 +428,7 @@
                             <td><span class="payout-chip" style="background:#000; color:white;">₹{{ d[5] }}</span></td>
                             <td><span style="color:#FF6B35; font-weight:700;">₹{{ d[6] }}</span></td>
                             <td>
-                                <a target="_blank"
-                                    href="https://wa.me/?text={{ ('🔥 Deal Alert 🔥\n\nProduct: ' ~ d[2] ~ '\nType: ' ~ d[4] ~ '\nPrice: ₹' ~ d[5] ~ '\n\n👉 https://shopkarodeals.in/share/' ~ d[0]) | urlencode }}"
+                                <a target="_blank" href="https://wa.me/?text={{ 'https://shopkarodeals.in/share/' ~ d[0] ~ '?t=' ~ range(1000000,9999999)|random }}"
                                     class="btn"
                                     style="background:#25D366; border:none; border-radius:50px; padding:0.3rem 0.8rem; color:white; font-size:0.7rem;">
                                     <i class="bi bi-whatsapp"></i> Share
