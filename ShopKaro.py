@@ -27,7 +27,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_name('etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
 def parse_timestamp(ts):
@@ -2099,10 +2099,10 @@ def Normal_refundform(ID,Brand,PN,MED):
 
         for i, row in enumerate(Mdata_rows, start=2):
             if row[Morder_id_index] == ID:
-                BrandSheet.update_cell(i, Mstatus_col + 1, "Done")
-                BrandSheet.update_cell(i, MDss_col + 1, D_url)
-                BrandSheet.update_cell(i, MRss_col + 1, Review_url)
-                BrandSheet.update_cell(i, MRL_col + 1, link)
+                MEDSheet.update_cell(i, Mstatus_col + 1, "Done")
+                MEDSheet.update_cell(i, MDss_col + 1, D_url)
+                MEDSheet.update_cell(i, MRss_col + 1, Review_url)
+                MEDSheet.update_cell(i, MRL_col + 1, link)
                 break
 
         return render_template("NOrder_Success.html")
