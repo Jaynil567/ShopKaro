@@ -4,12 +4,25 @@
     <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='logo.jpeg') }}">
     <meta charset="UTF-8">
     <title>🔥 Deal Alert | ShopKaroDeals</title>
-    <meta property="og:title" content="🔥 Deal Alert">
-    <meta property="og:description" content="Product: {{ deal[2] }} | Price: ₹{{ deal[5] }}">
-    <meta property="og:image" content="{{ deal[1] }}">
+    
+    <!-- Essential OG Tags for WhatsApp/Facebook -->
+    <meta property="og:title" content="🔥 Deal Alert | {{ deal[2] }}">
+    <meta property="og:description" content="🔥 {{ deal[2] }} on {{ deal[3] }} | Price: ₹{{ deal[5] }} | Refund: ₹{{ deal[6] }}">
+    <meta property="og:image" content="{{ deal[1] if deal[1] else 'https://shopkarodeals.in/static/logo.jpeg' }}">
+    <meta property="og:image:secure_url" content="{{ deal[1] if deal[1] else 'https://shopkarodeals.in/static/logo.jpeg' }}">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="800">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ShopKaroDeals">
+    
+    <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🔥 Deal Alert | {{ deal[2] }}">
+    <meta name="twitter:description" content="Price: ₹{{ deal[5] }} | Refund: ₹{{ deal[6] }}">
+    <meta name="twitter:image" content="{{ deal[1] if deal[1] else 'https://shopkarodeals.in/static/logo.jpeg' }}">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
@@ -27,7 +40,7 @@
 <body>
     <div class="deal-card">
         <h2>🔥 Deal Alert</h2>
-        <img src="{{ deal[1] }}" alt="Product Image">
+        <img src="{{ deal[1] if deal[1] else url_for('static', filename='logo.jpeg') }}" alt="Product Image">
         <div class="price">₹{{ deal[5] }}</div>
         <p><strong>{{ deal[2] }}</strong></p>
         <p>{{ deal[3] }} • {{ deal[4] }}</p>
