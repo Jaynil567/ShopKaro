@@ -175,7 +175,7 @@
 
         /* Main Content */
         .main {
-            margin-left: 280px;
+            margin-left: 0px;
             padding: 2rem;
             display: flex;
             align-items: center;
@@ -245,55 +245,6 @@
 <body>
     <div id="global-loader" style="display:none;"><div class="modern-loader"></div><div style="color:#666;">Loading...</div></div>
 
-    <!-- Desktop Sidebar -->
-    <div class="sidebar">
-        <h4>Shop<span>Karo</span></h4>
-        <a href="/Customer_Portal/Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a href="/orderform"><i class="bi bi-file-earmark-text"></i> Add Order</a>
-        <a href="/customer/deals"><i class="bi bi-tag"></i> Live Deals</a>
-        <a href="/directrefundform" class="active"><i class="bi bi-arrow-repeat"></i> Refund Form</a>
-    </div>
-
-    <!-- Mobile Bottom Nav -->
-    <div class="bottom-nav">
-        <a href="/Customer_Portal/Dashboard"><i class="bi bi-speedometer2"></i><span>Home</span></a>
-        <a href="/orderform"><i class="bi bi-file-earmark-text"></i><span>Order</span></a>
-        <a href="/customer/deals"><i class="bi bi-tag"></i><span>Deals</span></a>
-        <a href="/directrefundform" class="active"><i class="bi bi-arrow-repeat"></i><span>Refund</span></a>
-        <div class="profile-dropdown" onclick="toggleMobileProfileMenu(event)"><i class="bi bi-person-circle"></i><span>Profile</span></div>
-    </div>
-
-    <!-- Mobile Profile Menu -->
-    <div id="mobileProfileMenu" class="profile-menu">
-        <div class="user-info">
-            <div class="name">Customer</div>
-            <div class="email">Your Account</div>
-        </div>
-        <a href="/Customer_Portal/Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a href="/Logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
-    </div>
-
-    <!-- Topbar -->
-    <div class="topbar">
-        <div class="top-title">Refund Request</div>
-        <div class="profile" onclick="toggleDesktopProfileMenu(event)">
-            <div class="text-end">
-                <div class="profile-name" style="font-weight:600;">Customer</div>
-                <div class="profile-role" style="font-size:0.7rem; color:#888;">ShopKaro</div>
-            </div>
-            <div class="avatar">C</div>
-        </div>
-    </div>
-
-    <!-- Desktop Profile Menu -->
-    <div id="desktopProfileMenu" class="desktop-profile-menu">
-        <div class="user-info">
-            <div class="name">Customer Account</div>
-            <div class="email">ShopKaro Deals</div>
-        </div>
-        <a href="/Customer_Portal/Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a href="/Logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
-    </div>
 
     <!-- Main Content -->
     <div class="main">
