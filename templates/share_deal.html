@@ -32,19 +32,97 @@
         .deal-card h2 { font-size: 1.8rem; font-weight: 800; color: #000; margin-bottom: 1rem; }
         .deal-card img { width: 100%; max-width: 280px; border-radius: 20px; margin: 1rem 0; border: 2px solid #FF6B35; }
         .price { font-size: 2.5rem; font-weight: 800; color: #FF6B35; margin: 0.5rem 0; }
-        .code { font-size: 0.8rem; color: #888; font-family: monospace; background: #F5F5F5; padding: 0.5rem 1rem; border-radius: 60px; display: inline-block; }
-        .btn-buy { display: inline-flex; align-items: center; gap: 8px; margin-top: 1.5rem; padding: 0.75rem 1.5rem; background: #FF6B35; color: white; text-decoration: none; border-radius: 60px; font-weight: 600; transition: all 0.3s ease; }
-        .btn-buy:hover { background: #000; transform: translateY(-2px); }
+        
+        /* Details Table Style */
+        .details-table {
+            width: 100%;
+            text-align: left;
+            margin: 1rem 0;
+            border-collapse: collapse;
+        }
+        .details-table tr {
+            border-bottom: 1px solid #F0F0F0;
+        }
+        .details-table td {
+            padding: 0.5rem 0;
+        }
+        .details-table td:first-child {
+            font-weight: 600;
+            color: #666;
+            width: 40%;
+        }
+        .details-table td:last-child {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .code { 
+            font-size: 0.8rem; 
+            color: #888; 
+            font-family: monospace; 
+            background: #F5F5F5; 
+            padding: 0.5rem 1rem; 
+            border-radius: 60px; 
+            display: inline-block; 
+            margin-top: 0.5rem;
+        }
+        .btn-buy { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            margin-top: 1.5rem; 
+            padding: 0.75rem 1.5rem; 
+            background: #FF6B35; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 60px; 
+            font-weight: 600; 
+            transition: all 0.3s ease; 
+        }
+        .btn-buy:hover { 
+            background: #000; 
+            transform: translateY(-2px); 
+        }
     </style>
 </head>
 <body>
     <div class="deal-card">
         <h2>🔥 Deal Alert</h2>
+        
+        <!-- Product Image -->
         <img src="{{ deal[1] if deal[1] else url_for('static', filename='logo.jpeg') }}" alt="Product Image">
+        
+        <!-- Price Section -->
         <div class="price">₹{{ deal[5] }}</div>
-        <p><strong>{{ deal[2] }}</strong></p>
-        <p>{{ deal[3] }} • {{ deal[4] }}</p>
+        
+        <!-- Product Details Table -->
+        <table class="details-table">
+            <tr>
+                <td>📦 Product Code</td>
+                <td><strong>{{ deal[2] }}</strong></td>
+            </tr>
+            <tr>
+                <td>🛒 Platform</td>
+                <td>{{ deal[3] }}</td>
+            </tr>
+            <tr>
+                <td>💰 Price</td>
+                <td>₹{{ deal[5] }}</td>
+            </tr>
+            <tr>
+                <td>💸 Refund</td>
+                <td>₹{{ deal[6] }}</td>
+            </tr>
+            <tr>
+                <td>📋 Deliverables</td>
+                <td>{{ deal[4] }}</td>
+            </tr>
+        </table>
+        
+        <!-- Deal ID -->
         <div class="code">ID: {{ deal[0] }}</div>
+        
+        <!-- Buy Button -->
         <a href="https://wa.me/917440250871?text=Hi%20ShopKaro!%20I%20am%20interested%20in%20this%20deal!%0A%0ADeal%20ID:%20{{deal[0]}}%0AProduct%20code:%20{{deal[2]}}%0APlatform:%20{{deal[3]}}%0ADeal%20type:%20{{deal[4]}}%0AOrder%20price:%20₹{{deal[5]}}%0ARefund:%20₹{{deal[6]}}" target="_blank" class="btn-buy">
             <i class="bi bi-whatsapp"></i> Buy Now
         </a>
