@@ -605,19 +605,19 @@
         <!-- Stats Cards -->
         <div class="stats-grid">
             <div class="stat-card"
-                onclick="window.open('/Mediator_Portal/Dashboard?sort={{ sort }}&brand={{ currentbrand }}','_self')">
+                onclick="window.open('/Mediator_Portal/Dashboard?sort={{ sort }}&brand={{ currentbrand | urlencode }}','_self')">
                 <div class="stat-icon"><i class="bi bi-box"></i></div>
                 <div class="stat-value">{{ TO }}</div>
                 <div class="stat-label">Total Orders</div>
             </div>
             <div class="stat-card"
-                onclick="window.open('/Mediator_Portal/Dashboard?rec=Done&sort={{ sort }}&brand={{ currentbrand }}','_self')">
+                onclick="window.open('/Mediator_Portal/Dashboard?rec=Done&sort={{ sort }}&brand={{ currentbrand | urlencode }}','_self')">
                 <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
                 <div class="stat-value">{{ CO }}</div>
                 <div class="stat-label">Completed</div>
             </div>
             <div class="stat-card"
-                onclick="window.open('/Mediator_Portal/Dashboard?rec=Pending&sort={{ sort }}&brand={{ currentbrand }}','_self')">
+                onclick="window.open('/Mediator_Portal/Dashboard?rec=Pending&sort={{ sort }}&brand={{ currentbrand | urlencode }}','_self')">
                 <div class="stat-icon"><i class="bi bi-clock"></i></div>
                 <div class="stat-value">{{ PF }}</div>
                 <div class="stat-label">Pending</div>
@@ -771,9 +771,9 @@
                         data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort=newFirst&brand={{ currentbrand }}"
+                    <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort=newFirst&brand={{ currentbrand |urlencode }}"
                         class="sort-option"><i class="bi bi-arrow-down"></i> Newest First</a>
-                    <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort=oldFirst&brand={{ currentbrand }}"
+                    <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort=oldFirst&brand={{ currentbrand |urlencode }}"
                         class="sort-option"><i class="bi bi-arrow-up"></i> Oldest First</a>
                 </div>
             </div>
@@ -790,7 +790,7 @@
                     <a href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand=" class="sort-option">All
                         Brands</a>
                     {% for b in brands %}<a
-                        href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand={{ b[0] }}"
+                        href="/Mediator_Portal/Dashboard?rec={{ rec }}&sort={{ sort }}&brand={{ b[0] | urlencode }}"
                         class="sort-option">{{ b[0] }}</a>{% endfor %}
                 </div>
             </div>
