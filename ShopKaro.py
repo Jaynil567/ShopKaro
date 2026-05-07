@@ -27,7 +27,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_name('etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
 def parse_timestamp(ts):
@@ -1493,20 +1493,26 @@ ALL_DEALS = []
 def mediator_deals():
     if session.get('Med Username') == None:
         return redirect('/Mediator_Login')
+    
     MUN = session.get('Med Username')
     MN = session.get('Med name')
     MNUM = session.get('Med num')
 
     sheet = client.open_by_key(shopkaro_sheet_key).worksheet("Deals")
-    sheeturl=sheet.url
+    sheeturl = sheet.url
 
-    deals = sheet.get_all_values()[1:]
-    global ALL_DEALS
-    ALL_DEALS = deals[::-1]  # Show latest deals first
+    all_data = sheet.get_all_values()
+    
+    if len(all_data) > 1:
+        # Skip header row, format: [ID, Image URL, Product Code, Platform, Deal Type, Order Price, Refund Amount]
+        deals = all_data[1:]
+        deals = deals[::-1]  # Latest first
+    else:
+        deals = []
 
     return render_template(
         "mediator_deals.html",
-        deals=ALL_DEALS,
+        deals=deals,  # Now each deal is a list with ID at index 0
         NAME=NAME,
         MN=MN,
         MUN=MUN,
@@ -1515,6 +1521,14 @@ def mediator_deals():
     )
 
 
+
+import random
+import string
+
+def generate_unique_id():
+    """Generate a unique 8-character alphanumeric ID"""
+    characters = string.ascii_uppercase + string.digits
+    return ''.join(random.choices(characters, k=8))
 
 @app.route("/add_deal", methods=["POST"])
 def add_deal():
@@ -1531,15 +1545,22 @@ def add_deal():
     refund_amount = request.form.get("refund_amount")
 
     image_file = request.files.get("image")
-
     image_url = ""
 
     if image_file and image_file.filename != "":
         image_url = upload_compressed_image(image_file)
 
+    # 🔥 Generate unique ID
+    unique_id = generate_unique_id()
     
+    # Check if ID already exists (rare case, but handle)
+    all_ids = sheet.col_values(1)[1:]  # Skip header
+    while unique_id in all_ids:
+        unique_id = generate_unique_id()
 
-    data={
+    # 🔥 Data with ID as first column
+    data = {
+        "ID": unique_id,  # This will be column A
         "Image URL": image_url,
         "Product Code": product_code,
         "Platform": platform,
@@ -1550,51 +1571,68 @@ def add_deal():
 
     safe_append(sheet, data)
     
-
+    # 🔥 Store ID in session or return to refresh deals
     return redirect("/mediator/deals")
 
-@app.route("/delete_deal/<code>")
-def delete_deal(code):
-
+@app.route("/delete_deal/<deal_id>")
+def delete_deal(deal_id):
     sheet = client.open_by_key(shopkaro_sheet_key).worksheet("Deals")
-    data = sheet.get_all_values()
-
-    for i,row in enumerate(data):
-        if row[1] == code:
-            sheet.delete_rows(i+1)
+    all_data = sheet.get_all_values()
+    
+    for i, row in enumerate(all_data):
+        if len(row) > 0 and row[0] == deal_id:  # Compare with ID column
+            sheet.delete_rows(i + 1)  # +1 because rows are 1-indexed
             break
-
+    
     return redirect("/mediator/deals")
 
 
 
-def get_deal_by_code(code):
-    code = code.lower().replace("-", " ").strip()
-
-    for d in ALL_DEALS:
-        name = d[1].lower().strip()
-
-        if name == code:
-            return d
-
+def get_deal_by_id(deal_id):
+    """Fetch deal by unique ID (first column)"""
+    
+    sheet = client.open_by_key(shopkaro_sheet_key).worksheet("Deals")
+    all_data = sheet.get_all_values()
+    
+    if not all_data or len(all_data) < 2:
+        return None
+    
+    # all_data[0] is header, all_data[1:] are rows
+    for row in all_data[1:]:
+        if len(row) > 0 and row[0] == deal_id:  # First column is ID
+            # Return format: [ID, Image URL, Product Code, Platform, Deal Type, Order Price, Refund Amount]
+            return row
+    
     return None
 
 import urllib.parse
 
-@app.route("/share/<code>")
-def share_deal(code):
-
-
-    print("URL CODE:", code)
-
-    deal = get_deal_by_code(code)
-
-    print("FOUND DEAL:", deal)
-
-    if not deal:
+@app.route("/share/<deal_id>")
+def share_deal(deal_id):
+    """Share deal by unique ID - fetches directly from Google Sheet"""
+    print(f"Looking for deal ID: {deal_id}")
+    
+    try:
+        # Open the Deals worksheet
+        sheet = client.open_by_key(shopkaro_sheet_key).worksheet("Deals")
+        all_data = sheet.get_all_values()
+        
+        if not all_data or len(all_data) < 2:
+            print("No deals found in sheet")
+            return "No deals available", 404
+        
+        # Search through rows (skip header row)
+        for row in all_data[1:]:
+            if len(row) > 0 and row[0] == deal_id:
+                print("Found deal:", row)
+                return render_template("share_deal.html", deal=row)
+        
+        print(f"Deal ID '{deal_id}' not found in sheet")
         return "Deal not found", 404
-
-    return render_template("share_deal.html", deal=deal)
+        
+    except Exception as e:
+        print(f"Error in share_deal: {e}")
+        return "Error loading deal", 500
 
 
 @app.route("/subMediators")
