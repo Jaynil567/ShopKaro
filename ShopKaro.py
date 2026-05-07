@@ -20,6 +20,7 @@ import psycopg2
 from datetime import datetime
 from functools import lru_cache
 import time
+import urllib.parse
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -567,7 +568,8 @@ def Mediator_Portal_Dashboard():
     MN = session.get('Med name')
     MNUM = session.get('Med num')
 
-    
+    if currentbrand:
+        currentbrand = urllib.parse.unquote(currentbrand)
     
     conn=db()
     cur=conn.cursor()
