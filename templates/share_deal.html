@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <title>🔥 Deal Alert | ShopKaroDeals</title>
     <meta property="og:title" content="🔥 Deal Alert">
-    <meta property="og:description" content="Product: {{ deal[1] }} | Price: ₹{{ deal[4] }}">
-    <meta property="og:image" content="{{ deal[0] }}">
+    <meta property="og:description" content="Product: {{ deal[2] }} | Price: ₹{{ deal[5] }}">
+    <meta property="og:image" content="{{ deal[1] }}">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
@@ -25,6 +25,16 @@
     </style>
 </head>
 <body>
-    <div class="deal-card"><h2>🔥 Deal Alert</h2><img src="{{ deal[0] }}" alt="Product Image"><div class="price">₹{{ deal[4] }}</div><p><strong>{{ deal[1] }}</strong></p><p>{{ deal[2] }} • {{ deal[3] }}</p><div class="code">Code: {{ deal[1] }}</div><a href="https://wa.me/917440250871?text=Hi%20ShopKaro!%20I%20am%20interested%20in%20this%20deal!%0A%0AProduct%20code:%20{{deal[1]}}%0APlatform:%20{{deal[2]}}%0ADeal%20type:%20{{deal[3]}}%0AOrder%20price:%20₹{{deal[4]}}%0ARefund:%20₹{{deal[5]}}" target="_blank" class="btn-buy"><i class="bi bi-whatsapp"></i> Buy Now</a></div>
+    <div class="deal-card">
+        <h2>🔥 Deal Alert</h2>
+        <img src="{{ deal[1] }}" alt="Product Image">
+        <div class="price">₹{{ deal[5] }}</div>
+        <p><strong>{{ deal[2] }}</strong></p>
+        <p>{{ deal[3] }} • {{ deal[4] }}</p>
+        <div class="code">ID: {{ deal[0] }}</div>
+        <a href="https://wa.me/917440250871?text=Hi%20ShopKaro!%20I%20am%20interested%20in%20this%20deal!%0A%0ADeal%20ID:%20{{deal[0]}}%0AProduct%20code:%20{{deal[2]}}%0APlatform:%20{{deal[3]}}%0ADeal%20type:%20{{deal[4]}}%0AOrder%20price:%20₹{{deal[5]}}%0ARefund:%20₹{{deal[6]}}" target="_blank" class="btn-buy">
+            <i class="bi bi-whatsapp"></i> Buy Now
+        </a>
+    </div>
 </body>
 </html>
