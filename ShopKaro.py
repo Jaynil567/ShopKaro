@@ -1587,6 +1587,36 @@ def delete_deal(deal_id):
     return redirect("/mediator/deals")
 
 
+@app.context_processor
+def utility_functions():
+    def build_whatsapp_message(deal):
+        """Build WhatsApp message with emojis"""
+        product = deal[2] if len(deal) > 2 else ""
+        platform = deal[3] if len(deal) > 3 else ""
+        deliverables = deal[4] if len(deal) > 4 else ""
+        price = deal[5] if len(deal) > 5 else ""
+        refund = deal[6] if len(deal) > 6 else ""
+        deal_id = deal[0] if len(deal) > 0 else ""
+        
+        # Build message with emojis
+        message = f"""🔥 DEAL ALERT! 🔥
+
+📦 Product: {product}
+🛒 Platform: {platform}
+💰 Price: ₹{price}
+💸 Refund: ₹{refund}
+📋 Deliverables: {deliverables}
+
+✅ Safe deal
+⏰ Payment time within 7 working days
+
+👉 https://shopkarodeals.in/share/{deal_id}"""
+        
+        # URL encode the message
+        encoded_message = urllib.parse.quote(message)
+        return encoded_message
+    
+    return dict(build_whatsapp_message=build_whatsapp_message)
 
 def get_deal_by_id(deal_id):
     """Fetch deal by unique ID (first column)"""
