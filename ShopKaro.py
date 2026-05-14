@@ -1988,6 +1988,8 @@ def Normal_orderform():
         NAME=NAME
     )
 
+import urllib.parse
+
 @app.route("/Check_Order_for_refund", methods=["GET", "POST"])
 def check_order():
     msg = ""
@@ -2004,27 +2006,35 @@ def check_order():
         order_reviewer_index = headers.index("Profile Name")
         order_med_index = headers.index("Mediator name")
         
-        detail = None  # ✅ FIX: Initialize variable
+        detail = None
         
         for row in data_rows:
             if str(row[order_id_index]) == str(ID):
                 detail = (row[order_brand_index], row[order_id_index], row[order_reviewer_index], row[order_med_index])
-                break  # ✅ Stop loop once found
+                break
 
         if detail:
-            return redirect(f"/Normal_refundform/{detail[1]}/{detail[0]}/{detail[2]}/{detail[3]}")
+            # ✅ URL Encode special characters
+            encoded_brand = urllib.parse.quote(detail[0], safe='')
+            encoded_id = urllib.parse.quote(detail[1], safe='')
+            encoded_name = urllib.parse.quote(detail[2], safe='')
+            encoded_med = urllib.parse.quote(detail[3], safe='')
+            
+            return redirect(f"/Normal_refundform/{encoded_id}/{encoded_brand}/{encoded_name}/{encoded_med}")
         else:
             msg = "Order id does not exist"
             return render_template("order_check.html", msg=msg)
         
     return render_template("order_check.html")
 
-
 @app.route("/Normal_refundform/<ID>/<Brand>/<PN>/<MED>", methods=["GET", "POST"])
 def Normal_refundform(ID,Brand,PN,MED):
 
     msg=""
-    
+    ID = urllib.parse.unquote(ID)
+    Brand = urllib.parse.unquote(Brand)
+    PN = urllib.parse.unquote(PN)
+    MED = urllib.parse.unquote(MED)
     
     
     if request.method == "POST":
