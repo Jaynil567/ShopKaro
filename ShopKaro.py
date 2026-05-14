@@ -1280,7 +1280,7 @@ def orderform():
 
 @app.route("/directrefundform", methods=["GET", "POST"])
 def directrefundform():
-    msg=""
+    msg = ""
     if request.method == "POST":
         ID = request.form.get("order_id")
 
@@ -1293,16 +1293,18 @@ def directrefundform():
         order_brand_index = headers.index("Brand Name")
         order_reviewer_index = headers.index("Profile Name")
         
-
+        detail = None  # 🔥 FIX: Initialize variable
+        
         for row in data_rows:
             if str(row[order_id_index]) == str(ID):
-               detail=(row[order_brand_index],row[order_id_index],row[order_reviewer_index]) 
+                detail = (row[order_brand_index], row[order_id_index], row[order_reviewer_index])
+                break  # 🔥 Found, stop loop
 
         if detail:
             return redirect(f"/refundform?id={detail[1]}&DealCode={detail[0]}&ProfileName={detail[2]}&direct=1")
         else:
-            msg="Order id is not Exist"
-            return render_template("order_check.html",msg=msg)
+            msg = "Order id is not Exist"
+            return render_template("order_check.html", msg=msg)
         
     return render_template("order_check.html")
 
@@ -1988,7 +1990,7 @@ def Normal_orderform():
 
 @app.route("/Check_Order_for_refund", methods=["GET", "POST"])
 def check_order():
-    msg=""
+    msg = ""
     if request.method == "POST":
         ID = request.form.get("order_id")
 
@@ -2001,16 +2003,19 @@ def check_order():
         order_brand_index = headers.index("Brand Name")
         order_reviewer_index = headers.index("Profile Name")
         order_med_index = headers.index("Mediator name")
-
+        
+        detail = None  # ✅ FIX: Initialize variable
+        
         for row in data_rows:
             if str(row[order_id_index]) == str(ID):
-               detail=(row[order_brand_index],row[order_id_index],row[order_reviewer_index],row[order_med_index]) 
+                detail = (row[order_brand_index], row[order_id_index], row[order_reviewer_index], row[order_med_index])
+                break  # ✅ Stop loop once found
 
         if detail:
             return redirect(f"/Normal_refundform/{detail[1]}/{detail[0]}/{detail[2]}/{detail[3]}")
         else:
-            msg="Order id is not Exist"
-            return render_template("order_check.html",msg=msg)
+            msg = "Order id does not exist"
+            return render_template("order_check.html", msg=msg)
         
     return render_template("order_check.html")
 
