@@ -749,7 +749,7 @@ def login():
     flow = Flow.from_client_secrets_file(
         "/etc/secrets/client_secret.json",    
         scopes=SCOPES,
-        redirect_uri="https://shopkarodeals.in/callback"
+        redirect_uri="http://shopkarodeals.in/callback"
     )
 
     auth_url, state = flow.authorization_url(
@@ -773,7 +773,7 @@ def callback():
         "/etc/secrets/client_secret.json",
         scopes=SCOPES,
         state=session["state"],
-        redirect_uri="https://shopkarodeals.in/callback"
+        redirect_uri="http://127.0.0.1:8080/callback"
     )
 
     flow.code_verifier = session["code_verifier"]
@@ -823,9 +823,26 @@ def get_mediator_creds(username):
     return creds
 from google.auth.transport.requests import Request
 def refresh_if_needed(creds, username):
-    if creds.expired and creds.refresh_token:
-        creds.refresh(Request())
-        # Save updated token
+    try:
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            # Save updated token
+            conn = db()
+            cur = conn.cursor()
+            cur.execute(f"""
+                UPDATE {NAME}_mediator
+                SET token=%s
+                WHERE username=%s
+            """, (
+                creds.to_json(),
+                username
+            ))
+            conn.commit()
+            cur.close()
+            conn.close()
+        return creds
+    except Exception as e:
+        print("Error refreshing token:", e)
         conn = db()
         cur = conn.cursor()
         cur.execute(f"""
@@ -833,13 +850,13 @@ def refresh_if_needed(creds, username):
             SET token=%s
             WHERE username=%s
         """, (
-            creds.to_json(),
+            None,
             username
         ))
         conn.commit()
         cur.close()
         conn.close()
-    return creds
+        return redirect("/login")
 # ---------------- CREATE SHEET ----------------
 from google.auth.transport.requests import Request
 @app.route("/create-sheet")
