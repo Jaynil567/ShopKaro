@@ -749,7 +749,7 @@ def login():
     flow = Flow.from_client_secrets_file(
         "/etc/secrets/client_secret.json",    
         scopes=SCOPES,
-        redirect_uri="http://shopkarodeals.in/callback"
+        redirect_uri="https://shopkarodeals.in/callback"
     )
 
     auth_url, state = flow.authorization_url(
