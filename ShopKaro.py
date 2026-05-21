@@ -1073,20 +1073,13 @@ def Brands():
     for b in db_brands:
         try:
             # Open sheet
-            brand_sheet = client.open_by_key(b[1]).sheet1
-            url = brand_sheet.url
+            
+            url = f"https://docs.google.com/spreadsheets/d/{b[1]}/edit"
             
             # Get row count from sheet properties (faster and doesn't count against read quota heavily)
-            try:
-                # Use len(brand_sheet.get_all_values()) instead of col_values
-                # This is still one API call per brand, but we need to limit
-                all_data = brand_sheet.get_all_values()
-                row_count = len(all_data) - 1 if len(all_data) > 1 else 0
-            except Exception as e:
-                print(f"Error getting data for {b[0]}: {e}")
-                row_count = 0
+    
             
-            brands.append((b[0], row_count, url, b[2]))
+            brands.append((b[0], 0, url, b[2]))
             
             # 🔥 CRITICAL: Add delay between API calls (0.5 seconds)
             time.sleep(0.5)
