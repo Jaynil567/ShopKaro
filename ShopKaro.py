@@ -729,22 +729,22 @@ def login():
         return redirect("/Mediator_Login")
 
     # Check token in DB
-    conn = db()
-    cur = conn.cursor()
-
-    cur.execute(f"""
-        SELECT token FROM {NAME}_mediator
-        WHERE username=%s
-    """, (username,))
-
-    row = cur.fetchone()
-
-    cur.close()
-    conn.close()
-
-    # If token already exists skip Google login
-    if row and row[0]:
-        return redirect("/create-sheet")
+    #conn = db()
+    #cur = conn.cursor()
+#
+    #cur.execute(f"""
+    #    SELECT token FROM {NAME}_mediator
+    #    WHERE username=%s
+    #""", (username,))
+#
+    #row = cur.fetchone()
+#
+    #cur.close()
+    #conn.close()
+#
+    ## If token already exists skip Google login
+    #if row and row[0]:
+    #    return redirect("/create-sheet")
 
     flow = Flow.from_client_secrets_file(
         "/etc/secrets/client_secret.json",    
@@ -781,24 +781,24 @@ def callback():
     flow.fetch_token(authorization_response=request.url)
 
     creds = flow.credentials
-    token_json = creds.to_json()
+    session["token"] = creds.to_json()
 
     username = session.get("Med Username")
 
     if not username:
         return redirect("/Mediator_Login")
 
-    conn = db()
-    cur = conn.cursor()
-
-    cur.execute(
-        f"UPDATE {NAME}_mediator SET token=%s WHERE username=%s",
-        (token_json, username)
-    )
-
-    conn.commit()
-    cur.close()
-    conn.close()
+    #conn = db()
+    #cur = conn.cursor()
+#
+    #cur.execute(
+    #    f"UPDATE {NAME}_mediator SET token=%s WHERE username=%s",
+    #    (token_json, username)
+    #)
+#
+    #conn.commit()
+    #cur.close()
+    #conn.close()
 
     return redirect("/create-sheet")
 
@@ -864,12 +864,22 @@ def create_sheet():
 
     username = session["Med Username"]
 
-    creds = get_mediator_creds(username)
+    #creds = get_mediator_creds(username)
 
-    if not creds:
+    #if not creds:
+    #    return redirect("/login")
+
+    #creds = refresh_if_needed(creds, username)
+
+
+    token = session.get("token")
+
+    if not token:
         return redirect("/login")
 
-    creds = refresh_if_needed(creds, username)
+    creds = Credentials.from_authorized_user_info(
+        json.loads(token)
+    )
 
     sheets_service = build("sheets", "v4", credentials=creds)
     drive_service = build("drive", "v3", credentials=creds)
