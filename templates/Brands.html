@@ -458,7 +458,7 @@
                         <tr>
                             <th>#</th>
                             <th>Brand Name</th>
-                            <th>Orders</th>
+                            
                             <th>Status</th>
                             <th>Sheet</th>
                             <th>Delete</th>
@@ -468,7 +468,7 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td class="order-id">{{ b[0] }}</td>
-                            <td>{{ b[1] }}</td>
+                            
                             <td>{% if b[3] == "Open" %}<button class="btn"
                                     style="background:#10B981; border:none; border-radius:50px; padding:0.3rem 1rem; color:white; font-size:0.7rem;"
                                     onclick="showLoader();window.open('/Brand_Hide/{{ b[0] }}', '_self')"><i
