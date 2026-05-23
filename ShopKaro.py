@@ -1319,9 +1319,16 @@ def directrefundform():
             if str(row[order_id_index]) == str(ID):
                 detail = (row[order_brand_index], row[order_id_index], row[order_reviewer_index])
                 break  # 🔥 Found, stop loop
+        ID 
 
         if detail:
-            return redirect(f"/refundform?id={detail[1]}&DealCode={detail[0]}&ProfileName={detail[2]}&direct=1")
+            params = {
+                "id": detail[1],
+                "DealCode": detail[0],
+                "ProfileName": detail[2],
+                "direct": 1
+            }
+            return redirect(f"/refundform?{urlencode(params)}")
         else:
             msg = "Order id is not Exist"
             return render_template("order_check.html", msg=msg)
