@@ -943,7 +943,15 @@
         function previewImage(src) { document.getElementById('modalImage').src = src; new bootstrap.Modal(document.getElementById('imageModal')).show(); }
         function showLoader() { document.getElementById("global-loader").style.display = "flex"; setTimeout(() => { document.getElementById("global-loader").style.display = "none"; }, 2000); }
         function goOF() { window.location.href = "{{ url_for('orderform')}}"; }
-        function goRF(OI, DC, RN) { window.location.href = "/refundform?id=" + OI + "&DealCode=" + DC + "&ProfileName=" + RN + "&direct=0"; }
+        function goRF(OI, DC, RN) { 
+    // Sabhi variables ko encode kiya gaya hai
+    var encodedOI = encodeURIComponent(OI);
+    var encodedDC = encodeURIComponent(DC);
+    var encodedRN = encodeURIComponent(RN);
+
+    // Encode kiye gaye variables ke sath URL open hoga
+    window.location.href = "/refundform?id=" + encodedOI + "&DealCode=" + encodedDC + "&ProfileName=" + encodedRN + "&direct=0"; 
+}
 
         function toggleDesktopProfileMenu(event) { event.stopPropagation(); document.getElementById('desktopProfileMenu').classList.toggle('active'); }
         function toggleMobileProfileMenu(event) { event.stopPropagation(); document.getElementById('mobileProfileMenu').classList.toggle('active'); }
