@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, jsonify
 import random
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -21,13 +21,14 @@ from datetime import datetime
 from functools import lru_cache
 import time
 import urllib.parse
+from urllib.parse import urlencode
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('/etc/secrets/credentials.json', SCOPES)
+creds = ServiceAccountCredentials.from_json_keyfile_name('etc/secrets/credentials.json', SCOPES)
 client = gspread.authorize(creds)
 
 def parse_timestamp(ts):
@@ -105,7 +106,7 @@ def sitemap():
 
     # 🔹 Dynamic Pages (Brands)
     try:
-        conn = db()
+        conn = db() 
         cur = conn.cursor()
         cur.execute(f"SELECT Seller FROM {NAME}_Sellers")
         brands = cur.fetchall()
@@ -1060,7 +1061,14 @@ def Brands():
     global MainSheet
     sheet = MainSheet
     mainurl = sheet.url
-    brands = []
+
+
+    return render_template("Brands.html", Nmsg=Nmsg, Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, url=mainurl, NAME=NAME)
+
+
+@app.route("/Brands/api")
+def Brands_api():
+    brands_json = []
 
     conn = db()
     cursor = conn.cursor()
@@ -1069,27 +1077,28 @@ def Brands():
     cursor.close()
     conn.close()
 
-    # Process brands one by one with delay
     for b in db_brands:
         try:
-            # Open sheet
-            
             url = f"https://docs.google.com/spreadsheets/d/{b[1]}/edit"
-            
-            # Get row count from sheet properties (faster and doesn't count against read quota heavily)
-    
-            
-            brands.append((b[0], 0, url, b[2]))
-            
-            # 🔥 CRITICAL: Add delay between API calls (0.5 seconds)
-            time.sleep(0.5)
-            
+
+            brands_json.append({
+                "name": b[0],
+                "key": b[1],
+                "status": b[2],
+                "url": url
+            })
+
         except Exception as e:
             print(f"Error processing brand {b[0]}: {e}")
-            # Still add brand with 0 orders
-            brands.append((b[0], 0, "#", b[2]))
 
-    return render_template("Brands.html", Nmsg=Nmsg, Pmsg=Pmsg, MUN=MUN, MN=MN, MNUM=MNUM, brands=brands, url=mainurl, NAME=NAME)
+            brands_json.append({
+                "name": b[0],
+                "key": b[1],
+                "status": b[2],
+                "url": url
+            })
+
+    return jsonify({"brands": brands_json})
 
 @app.route("/Brand_Hide/<BN>")
 def BrandHide(BN):
