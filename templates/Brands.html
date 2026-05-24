@@ -479,11 +479,11 @@
                     <td>${b.status === "Open" ? `<button class="btn" style="background:#10B981; border:none; border-radius:50px; padding:0.3rem 1rem; color:white; font-size:0.7rem;" onclick="showLoader();window.open('/Brand_Hide/${encodeURIComponent(b.name)}', '_self')"><i class="bi bi-eye-slash"></i> Hide</button>` : `<button class="btn" style="background:#F59E0B; border:none; border-radius:50px; padding:0.3rem 1rem; color:white; font-size:0.7rem;" onclick="showLoader();window.open('/Brand_Open/${encodeURIComponent(b.name)}', '_self')"><i class="bi bi-eye"></i> Unhide</button>`}</td>
                     <td><button class="btn" style="background:#E0E0E0; border:none; border-radius:50px; padding:0.3rem 1rem; color:#333; font-size:0.7rem;" onclick="window.open('${b.url}', '_blank')"><i class="bi bi-file-earmark-spreadsheet"></i> Sheet</button></td>
                     <td><button class="btn text-danger" onclick="showLoader();goDelete('${encodeURIComponent(b.name)}')"><i class="bi bi-trash"></i> Delete</button></td>
-                </tr>`;                
+                </tr>`;
             });
             html += `</tbody></table></div>`;
             return html;
-        }   
+        }
         async function fetchBrands() {
             const response = await fetch('/Brands/api');
             const data = await response.json();
@@ -491,10 +491,15 @@
             if (data.brands) {
                 document.getElementById('tableSection').innerHTML = generateTableHTML(data.brands);
             }
-            else{
+            else {
                 document.getElementById('tableSection').innerHTML = '<div class="text-center py-5"><i class="bi bi-inbox" style="font-size: 3rem; color: #CCC;"></i><p class="mt-3 text-muted">No brands yet. Click "Add Brand" to get started!</p></div>';
             }
         }
+        document.getElementById('tableSection').innerHTML = `
+<div class="d-flex justify-content-center align-items-center py-5">
+    <div class="modern-loader"></div>
+</div>
+`;
         fetchBrands();
         function showLoader() { document.getElementById("global-loader").style.display = "flex"; }
         function goDelete(brandName) { if (!confirm("Are you sure you want to delete this brand?")) return; let requiredText = "I want delete " + brandName; let userInput = prompt("Type exactly:\n\n" + requiredText + "\n\nTo confirm deletion:"); if (userInput === requiredText) { window.location.href = "/delete-brand/" + encodeURIComponent(brandName); } else { alert("Confirmation text did not match. Deletion cancelled."); } }
