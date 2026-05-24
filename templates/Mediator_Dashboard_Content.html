@@ -1,0 +1,157 @@
+<!-- Stats Cards -->
+<div id="api-stats">
+    <div class="stats-grid">
+        <!-- ✅ Total Orders - Click to show ALL orders (reset only rec filter) -->
+        <div class="stat-card" onclick="applyFilter('rec', '')">
+            <div class="stat-icon"><i class="bi bi-box"></i></div>
+            <div class="stat-value">{{ TO }}</div>
+            <div class="stat-label">Total Orders</div>
+        </div>
+        
+        <!-- ✅ Completed - Click to show only Completed orders -->
+        <div class="stat-card" onclick="applyFilter('rec', 'Done')">
+            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="stat-value">{{ CO }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+        
+        <!-- ✅ Pending - Click to show only Pending orders -->
+        <div class="stat-card" onclick="applyFilter('rec', 'Pending')">
+            <div class="stat-icon"><i class="bi bi-clock"></i></div>
+            <div class="stat-value">{{ PF }}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon"><i class="bi bi-wallet2"></i></div>
+            <div class="stat-value">₹{{ TP }}</div>
+            <div class="stat-label">Total Payout</div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row - Pure CSS Bar Chart -->
+<div id="api-charts">
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h4><i class="bi bi-bar-chart me-2"></i> Order Status</h4>
+                
+                {% set completed = CO|int %}
+                {% set pending = PF|int %}
+                {% set total = completed + pending %}
+                {% set completedPercent = (completed / total * 100)|round if total > 0 else 0 %}
+                {% set pendingPercent = (pending / total * 100)|round if total > 0 else 0 %}
+                
+                <div style="padding: 20px 10px;">
+                    <!-- Completed Bar -->
+                    <div style="margin-bottom: 25px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-weight: 600; color: #10B981;"><i class="bi bi-check-circle-fill me-1"></i> Completed</span>
+                            <span style="font-weight: 700; color: #333;">{{ completed }} orders</span>
+                        </div>
+                        <div style="background: #E8E8E8; border-radius: 12px; overflow: hidden; height: 32px;">
+                            <div style="background: linear-gradient(90deg, #10B981, #34D399); width: {{ completedPercent }}%; height: 100%; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; color: white; font-weight: 600; border-radius: 12px;">
+                                {% if completedPercent > 15 %}{{ completedPercent }}%{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pending Bar -->
+                    <div style="margin-bottom: 25px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-weight: 600; color: #F59E0B;"><i class="bi bi-clock-fill me-1"></i> Pending</span>
+                            <span style="font-weight: 700; color: #333;">{{ pending }} orders</span>
+                        </div>
+                        <div style="background: #E8E8E8; border-radius: 12px; overflow: hidden; height: 32px;">
+                            <div style="background: linear-gradient(90deg, #F59E0B, #FBBF24); width: {{ pendingPercent }}%; height: 100%; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; color: white; font-weight: 600; border-radius: 12px;">
+                                {% if pendingPercent > 15 %}{{ pendingPercent }}%{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Total -->
+                    <div class="text-center mt-3 pt-2" style="border-top: 1px solid #E0E0E0;">
+                        <small class="text-muted">Total Orders: <strong>{{ total }}</strong></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h4><i class="bi bi-calendar-today me-2"></i> Today's Orders by Brand</h4>
+                {% if today_brand_orders %}
+                <div style="max-height: 250px; overflow-y: auto;">
+                    <table class="brand-stats-table">
+                        <thead>
+                            <tr><th>Brand Name</th><th>Orders Today</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for item in today_brand_orders %}
+                            <tr><td class="brand-name">{{ item.brand }}</td>
+                            <td><span class="order-count-badge">{{ item.count }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3 pt-2 text-center" style="border-top: 1px solid #E0E0E0;">
+                    <small class="text-muted">Total Today: <strong>{{ today_total_orders }}</strong> orders</small>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-calendar-x" style="font-size: 2rem; color: #CCC;"></i>
+                    <p class="mt-2 text-muted">No orders today</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Orders Table -->
+<div id="api-orders">
+    <div class="orders-wrapper">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h3 class="orders-title mb-0">📋 All Orders</h3>
+            <div class="orders-count">{{ orders|length }} Orders</div>
+        </div>
+        {% if orders %}
+        <div class="orders-table-container">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>#</th><th>Date</th><th>Brand</th><th>Order ID</th>
+                        <th>Profile</th><th>SS</th><th>Status</th>
+                        <th>Payout</th><th>Pay</th><th>WhatsApp</th><th>Delete</th>
+                    </td>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr id="order-{{ order[0] }}">
+                        <td>{{ loop.index }}</td>
+                        <td>{{ order[1] }}</td>
+                        <td>{{ order[3] }}</td>
+                        <td class="order-id">{{ order[0] }}</td>
+                        <td>{{ order[5] }}</td>
+                        <td><img src="{{ order[9] if order[9] else '/static/logo.jpeg' }}" class="order-ss-img" onclick="previewImage(this.src)"></td>
+                        <td>{% if order[2]=='Done' %}<span class="badge-done">Done</span>{% else %}<span class="badge-pending">Pending</span>{% endif %}</td>
+                        <td><span class="payout-chip">₹{{ order[4] }}</span></td>
+                        <td><button class="btn" style="background:#FF6B35; border:none; border-radius:50px; padding:0.3rem 0.8rem; color:white; font-size:0.7rem;" onclick="pay('{{ order[12] }}','{{ order[4] }}','{{ order[3] }}','{{ order[0] }}')"><i class="bi bi-currency-rupee"></i></button></td>
+                        <td><button class="btn" style="background:#25D366; border:none; border-radius:50px; padding:0.3rem 0.8rem; color:white; font-size:0.7rem;" onclick='sendWhatsApp({id:"{{ order[0] }}",date:"{{ order[1] }}",dealCode:"{{ order[3] }}",refund:"{{ order[4] }}",profileName:"{{ order[5] }}",mobile:"{{ order[7] }}",amount:"{{ order[11] }}",brand:"{{ order[3] }}"})'><i class="bi bi-whatsapp"></i></button></td>
+                        <td class="text-end"><a href="/delete_order/{{ order[0] }}/{{ order[3] }}" onclick="return confirm('Delete this order?')" class="btn text-danger"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5"><i class="bi bi-inbox" style="font-size: 3rem; color: #CCC;"></i><p class="mt-3 text-muted">No orders yet.</p></div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .chart-container { min-height: 280px; }
+</style>
