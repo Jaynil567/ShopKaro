@@ -559,37 +559,64 @@ def MPassword_Reset_Success():
 # ---------- MEDIATOR PORTAL ----------
 @app.route('/Mediator_Portal/Dashboard')
 def Mediator_Portal_Dashboard():
+
     if session.get('Med Username') == None:
         return redirect('/Mediator_Login')
-    
-    currentbrand = request.args.get('brand')
-    sort = request.args.get("sort")
-    rec = request.args.get("rec")
+
     MUN = session.get('Med Username')
     MN = session.get('Med name')
     MNUM = session.get('Med num')
 
+    global MainSheet
+    sheet = MainSheet
+    sheeturl = sheet.url
+
+    return render_template(
+        'Mediator_Dashboard.html',
+        MUN=MUN,
+        MN=MN,
+        MNUM=MNUM,
+        url=sheeturl,
+        NAME=NAME
+    )
+
+
+@app.route("/Mediator_Portal/api")
+def Mediator_Portal_api():
+
+    if session.get('Med Username') == None:
+        return jsonify({"error": "Unauthorized"})
+
+    currentbrand = request.args.get('brand')
+    sort = request.args.get("sort")
+    rec = request.args.get("rec")
+
+    MUN = session.get('Med Username')
+    MN = session.get('Med name')  # ✅ Already hai
+    MNUM = session.get('Med num')
+
     if currentbrand:
         currentbrand = urllib.parse.unquote(currentbrand)
-    
-    conn=db()
-    cur=conn.cursor()
+
+    conn = db()
+    cur = conn.cursor()
     cur.execute(f"SELECT Seller FROM {NAME}_Sellers")
     brands = cur.fetchall()
     cur.close()
     conn.close()
 
-
     global MainSheet
     sheet = MainSheet
-    sheeturl=sheet.url
+    sheeturl = sheet.url
+
     all_values = sheet.get_all_values()
+
     headers = all_values[0]
     data_rows = all_values[1:]
-    
+
     product_name_index = headers.index("Product Name")
     mobile_index = headers.index("Whatsapp")
-    timestamp_index= headers.index("TimeStamp")
+    timestamp_index = headers.index("TimeStamp")
     order_id_index = headers.index("Order ID")
     order_date_index = headers.index("Order Date")
     order_status_index = headers.index("Status")
@@ -602,95 +629,126 @@ def Mediator_Portal_Dashboard():
 
     user_orders = []
 
+    TO = 0
 
-    TO=0
     for row in data_rows:
-        if row[order_status_index]:
-            TO+=1
-            user_orders.append((row[order_id_index], row[order_date_index], row[order_status_index], row[order_brand_index], row[order_refundAmount_index],row[order_reviewer_index], row[order_date_index], row[mobile_index],row[timestamp_index], row[order_ss_index], row[product_name_index], row[order_amount_index],row[order_upi_index]))
 
-    
-    CO=0
-    Payout=0
+        if row[order_status_index]:
+
+            TO += 1
+
+            user_orders.append((
+                row[order_id_index],
+                row[order_date_index],
+                row[order_status_index],
+                row[order_brand_index],
+                row[order_refundAmount_index],
+                row[order_reviewer_index],
+                row[order_date_index],
+                row[mobile_index],
+                row[timestamp_index],
+                row[order_ss_index],
+                row[product_name_index],
+                row[order_amount_index],
+                row[order_upi_index]
+            ))
+
+    CO = 0
+    Payout = 0
+
     for i in user_orders:
-        if i[2]=="Done":
-            Payout+=int(i[4])
-            CO+=1
-    
+
+        if i[2] == "Done":
+
+            Payout += int(i[4])
+            CO += 1
+
     if sort == "oldFirst":
         user_orders = sorted(user_orders, key=lambda x: parse_timestamp(x[8]))
     else:
         user_orders = sorted(user_orders, key=lambda x: parse_timestamp(x[8]), reverse=True)
 
-    send_orders=[]
-    if rec=="Done":
-        for i in user_orders:
-            if i[2]=="Done":
-                send_orders.append(i)
-    elif rec=="Pending":
-        for i in user_orders:
-            if i[2]=="Pending":
-                send_orders.append(i)
-    else:
-        send_orders=user_orders
+    send_orders = []
 
+    if rec == "Done":
+
+        for i in user_orders:
+
+            if i[2] == "Done":
+
+                send_orders.append(i)
+
+    elif rec == "Pending":
+
+        for i in user_orders:
+
+            if i[2] == "Pending":
+
+                send_orders.append(i)
+
+    else:
+
+        send_orders = user_orders
 
     if currentbrand:
+
         filtered_orders = []
+
         for order in send_orders:
+
             if order[3] == str(currentbrand):
+
                 filtered_orders.append(order)
-        send_orders=filtered_orders
-    
-    # ========== NEW CODE: TODAY'S ORDERS BY BRAND ==========
-    from datetime import datetime
-    
-    # Get today's date in the same format as order_date (DD-MM-YYYY)
+
+        send_orders = filtered_orders
+
     today_date = datetime.now().strftime("%d-%m-%Y")
-    
-    # Dictionary to count orders by brand for today
+
     today_brand_counts = {}
-    
-    # Loop through all orders to find today's orders
+
     for order in user_orders:
-        order_date = order[1]  # order date is at index 1 (second element)
-        brand_name = order[3]  # brand name is at index 3
-        order_status = order[2]  # status is at index 2
-        
-        # Check if order date is today
+
+        order_date = order[1]
+        brand_name = order[3]
+
         if order_date == today_date:
+
             if brand_name in today_brand_counts:
                 today_brand_counts[brand_name] += 1
             else:
                 today_brand_counts[brand_name] = 1
-    
-    # Convert to list for template (brand wise sorted by count)
-    today_brand_orders = [{"brand": k, "count": v} for k, v in today_brand_counts.items()]
-    today_brand_orders.sort(key=lambda x: x['count'], reverse=True)
-    
-    # Total orders today
-    today_total_orders = sum(today_brand_counts.values())
-    # ========== END NEW CODE ==========
 
-    return render_template('Mediator_Dashboard.html',
+    today_brand_orders = [{"brand": k, "count": v} for k, v in today_brand_counts.items()]
+
+    today_brand_orders.sort(key=lambda x: x['count'], reverse=True)
+
+    today_total_orders = sum(today_brand_counts.values())
+
+    # ✅ FIX: Pass MN (Mediator Name) to template
+    html = render_template(
+        "Mediator_Dashboard_Content.html",
         brand=currentbrand,
         brands=brands,
         rec=rec,
         sort=sort,
         orders=send_orders,
         MUN=MUN,
-        MN=MN,
+        MN=MN,  # ✅ Ye line already hai
         MNUM=MNUM,
         TO=TO,
         CO=CO,
-        PF=(TO-CO),
+        PF=(TO - CO),
         TP=Payout,
         url=sheeturl,
         NAME=NAME,
-        # New variables for today's orders
         today_brand_orders=today_brand_orders,
         today_total_orders=today_total_orders
     )
+
+    return jsonify({
+        "html": html,
+        "brands": brands
+    })
 
 
 @app.route("/add_deal_code", methods=["POST"])
