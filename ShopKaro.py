@@ -155,7 +155,7 @@ NAME="ShopKaro"
 shopkaro_sheet_key="1P4ES2eTEUTD0qTyfFyLVmJXvMmxrzgY4fVFEZ7JcbcA"
 MainSheet = client.open_by_key(shopkaro_sheet_key).sheet1
     
-paymant=True 
+paymant=False 
 @app.before_request
 def force_custom_domain():
     if paymant:
