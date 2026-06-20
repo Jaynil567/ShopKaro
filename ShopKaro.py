@@ -2501,6 +2501,125 @@ def send_reminder_emails():
 
 
 
+@app.route("/bypassOrderform", methods=["GET", "POST"])
+def BYPASSorderform():
+    conn = db()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM {NAME}_Sellers")
+    brands = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    msg=""
+    
+    
+    if request.method == "POST":
+        UN = request.form.get("UN")
+        CN = request.form.get('CN')
+        email = request.form.get('email')
+
+
+        brand = request.form.get("brand")
+        order_id = request.form.get("order_id").replace(" ", "")
+        date_input = request.form.get("order_date")
+        order_date = datetime.strptime(date_input, "%Y-%m-%d").strftime("%d-%m-%Y")
+        reviewer_name = request.form.get("reviewer_name")
+        Product_name = request.form.get("PN")
+        Oamount = int(request.form.get("amount"))
+        Ramount = int(request.form.get("refund_amount"))
+        type = request.form.get("type")
+        upi = request.form.get("upi")
+        insta_link = request.form.get("insta_link")
+
+        global MainSheet
+        OSheet = MainSheet
+
+        
+        conn = db()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM {NAME}_customers WHERE number=%s", (CN,))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if user:
+            print("User already exists, skipping insertion.")
+        else:
+            print('user not found, inserting into database.')
+            conn = db()
+            cursor = conn.cursor()
+            cursor.execute(
+                f"INSERT INTO {NAME}_Customers (Name, Number, email, upi) VALUES (%s,%s,%s,%s)",
+                (UN, CN, email, upi)
+            )
+            conn.commit()  # <-- ADD THIS LINE TO COMMIT THE TRANSACTION
+            cursor.close()
+            conn.close()
+
+
+        for i in brands:
+            if i[0] == brand:
+                brand_key = i[1]
+                break
+            
+        
+        BrandSheet = client.open_by_key(brand_key).sheet1
+        all_values = OSheet.get_all_values()
+        headers = all_values[0]
+        data_rows = all_values[1:]
+        order_id_index = headers.index("Order ID")
+        user_orders = []
+        for row in data_rows:
+            if row[order_id_index] == order_id:
+                msg="This Order ID is already filled"
+                return render_template("BYPASS_orderform.html",brands=brands,msg=msg,NAME=NAME)
+
+
+        now = datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")
+
+        url = ""
+
+        Order_SS = request.files.get("screenshot")
+        if Order_SS:
+            url = upload_compressed_image(Order_SS)
+
+        data = {
+            "TimeStamp": str(now),
+            "Brand Name": brand,
+            "Profile Name": reviewer_name,
+            "Order Date": order_date,
+            "Product Name": Product_name,
+            "Order SS": url,
+            "Order Amount": Oamount,
+            "Order ID": order_id,
+            "Email": email,
+            "Whatsapp": CN,
+            "Status": "Pending",
+            "UPI ID": upi,
+            "Refund Amount": Ramount,
+            "Mediator name": NAME,
+            "Instagram Profile Link" : insta_link,
+            "Type" : type
+        }
+
+        safe_append(OSheet, data)
+        safe_append(BrandSheet, data)
+
+        # ========== NEW: Pass order details to success page ==========
+        return render_template("order_success.html", 
+            order_id=order_id, 
+            brand_name=brand,
+            refund_amount=Ramount,
+            NAME=NAME
+        )
+
+    return render_template(
+        "BYPASS_orderform.html",
+        brands=brands,
+        msg=msg,
+        NAME=NAME
+    )
+
+
 # ---------- RUN ----------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT",8080))
