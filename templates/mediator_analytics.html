@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='logo.jpeg') }}">
+    <meta charset="UTF-8">
+    <title>Mediator Analytics | ShopKaroDeals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #F5F5F5; color: #333; }
+
+        .sidebar {
+            position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+            background: #FFFFFF; border-right: 1px solid #E0E0E0;
+            padding: 2rem 1.5rem; z-index: 1000; overflow-y: auto;
+        }
+        .sidebar h4 { font-size: 1.5rem; font-weight: 800; color: #000; margin-bottom: 2rem; position: relative; display: inline-block; }
+        .sidebar h4 span { color: #FF6B35; }
+        .sidebar h4::before { content: ''; position: absolute; left: -25px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; border: 2px solid #FF6B35; border-right: none; border-bottom: none; }
+        .sidebar a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #666; text-decoration: none; border-radius: 16px; margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; }
+        .sidebar a:hover, .sidebar a.active { background: #FFF3F0; color: #FF6B35; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; background: #FFFFFF;
+            border-top: 1px solid #E0E0E0; display: none; justify-content: space-around;
+            padding: 0.6rem 0.8rem; z-index: 1000;
+        }
+        .bottom-nav a { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #999; font-size: 0.65rem; padding: 0.4rem 0.6rem; border-radius: 12px; }
+        .bottom-nav a i { font-size: 1.3rem; }
+        .bottom-nav a.active { color: #FF6B35; background: #FFF3F0; }
+
+        @media (max-width: 768px) { .sidebar { display: none; } .bottom-nav { display: flex; } .topbar { margin-left: 0 !important; } .main { margin-left: 0 !important; padding-bottom: 80px; } }
+
+        .topbar {
+            margin-left: 280px; background: #FFFFFF; border-bottom: 1px solid #E0E0E0;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem 2rem; position: sticky; top: 0; z-index: 999;
+        }
+        .top-title { font-weight: 700; font-size: 1.1rem; color: #000; }
+        .profile { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 45px; height: 45px; background: #FF6B35; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: white; }
+        .main { margin-left: 280px; padding: 2rem; }
+
+        .analytics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        .analytics-card {
+            background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 20px;
+            padding: 1.5rem; transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .analytics-card:hover { transform: translateY(-4px); border-color: #FF6B35; box-shadow: 0 10px 25px rgba(255,107,53,0.08); }
+        .analytics-card .icon { font-size: 2rem; margin-bottom: 0.75rem; display: inline-block; padding: 0.5rem; border-radius: 16px; }
+        .analytics-card .value { font-size: 2.2rem; font-weight: 800; color: #000; }
+        .analytics-card .label { font-size: 0.8rem; color: #888; margin-top: 0.3rem; }
+
+        .card-orange .icon { background: #FFF3F0; color: #FF6B35; }
+        .card-green .icon { background: #F0FFF4; color: #10B981; }
+        .card-blue .icon { background: #EFF6FF; color: #3B82F6; }
+        .card-purple .icon { background: #F5F3FF; color: #8B5CF6; }
+        .card-pink .icon { background: #FDF2F8; color: #EC4899; }
+        .card-cyan .icon { background: #ECFEFF; color: #06B6D4; }
+
+        .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .chart-box {
+            background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 20px;
+            padding: 1.5rem; transition: all 0.3s ease;
+        }
+        .chart-box:hover { border-color: #FF6B35; }
+        .chart-box h5 { font-weight: 600; font-size: 0.95rem; color: #000; margin-bottom: 1rem; }
+        .chart-box h5 i { color: #FF6B35; margin-right: 8px; }
+        .chart-wrapper { position: relative; height: 280px; }
+        .chart-full { grid-column: 1 / -1; }
+        .chart-full .chart-wrapper { height: 300px; }
+
+        .table-wrapper {
+            background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 20px;
+            padding: 1.5rem; margin-top: 1.5rem;
+        }
+        .table-wrapper h5 { font-weight: 600; font-size: 0.95rem; color: #000; margin-bottom: 1rem; }
+        .table-wrapper h5 i { color: #FF6B35; margin-right: 8px; }
+        .analytics-table { width: 100%; border-collapse: collapse; }
+        .analytics-table th { text-align: left; padding: 12px 10px; color: #666; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; border-bottom: 2px solid #E0E0E0; }
+        .analytics-table td { padding: 12px 10px; border-bottom: 1px solid #F0F0F0; font-size: 0.85rem; }
+        .analytics-table tr:hover { background: #FFF3F0; }
+        .progress-bar-custom { height: 6px; background: #E8E8E8; border-radius: 10px; overflow: hidden; }
+        .progress-bar-custom .fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, #FF6B35, #FF8C5A); }
+        .brand-badge { background: #FFF3F0; color: #FF6B35; padding: 0.2rem 0.6rem; border-radius: 50px; font-size: 0.7rem; font-weight: 600; }
+
+        .filter-bar { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; }
+        .filter-bar select, .filter-bar input { background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 60px; padding: 0.5rem 1rem; font-size: 0.85rem; color: #333; }
+        .filter-bar select:focus, .filter-bar input:focus { outline: none; border-color: #FF6B35; }
+
+        #global-loader { position: fixed; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: none; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; gap: 1rem; }
+        .modern-loader { width: 50px; height: 50px; border: 3px solid #E0E0E0; border-top: 3px solid #FF6B35; border-radius: 50%; animation: spin 0.8s ease infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 1024px) { .analytics-grid { grid-template-columns: repeat(2, 1fr); } .chart-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .analytics-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div id="global-loader"><div class="modern-loader"></div><div style="color:#666;">Loading analytics...</div></div>
+
+    <div class="sidebar">
+        <h4>Shop<span>Karo</span></h4>
+        <a href="/Mediator_Portal/Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="/mediator/deals"><i class="bi bi-tag"></i> Live Deals</a>
+        <a href="/subMediators"><i class="bi bi-person"></i> Mediators</a>
+        <a href="/Brands"><i class="bi bi-send-slash"></i> Brands</a>
+        <a href="/mediator/analytics" class="active"><i class="bi bi-graph-up-arrow"></i> Analytics</a>
+        <a href="/Logout" style="margin-top: 2rem; color: #999;"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="/Mediator_Portal/Dashboard"><i class="bi bi-speedometer2"></i><span>Home</span></a>
+        <a href="/mediator/deals"><i class="bi bi-tag"></i><span>Deals</span></a>
+        <a href="/subMediators"><i class="bi bi-person"></i><span>Mediators</span></a>
+        <a href="/Brands"><i class="bi bi-send-slash"></i><span>Brands</span></a>
+        <a href="/mediator/analytics" class="active"><i class="bi bi-graph-up-arrow"></i><span>Analytics</span></a>
+    </div>
+
+    <div class="topbar">
+        <div class="top-title"><i class="bi bi-graph-up-arrow me-2" style="color:#FF6B35;"></i>Analytics Dashboard</div>
+        <div class="profile">
+            <div class="text-end"><div class="profile-name" style="font-weight:600;">{{ MN }}</div><div class="profile-role" style="font-size:0.7rem; color:#888;">Mediator</div></div>
+            <div class="avatar">{{ MN[0]|upper if MN else 'M' }}</div>
+        </div>
+    </div>
+
+    <div class="main">
+
+        <div class="filter-bar">
+            <select id="timeFilter" onchange="updateAnalytics()">
+                <option value="7">Last 7 Days</option>
+                <option value="30" selected>Last 30 Days</option>
+                <option value="90">Last 90 Days</option>
+                <option value="365">Last Year</option>
+                <option value="all">All Time</option>
+            </select>
+            <select id="brandFilter" onchange="updateAnalytics()">
+                <option value="all">All Brands</option>
+            </select>
+            <button class="btn btn-sm" style="background:#FF6B35; color:white; border-radius:60px; padding:0.4rem 1.2rem;" onclick="updateAnalytics()">
+                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+            </button>
+        </div>
+
+        <div class="analytics-grid" id="kpiCards">
+            <div class="analytics-card card-orange">
+                <div class="icon"><i class="bi bi-box-seam"></i></div>
+                <div class="value" id="totalOrders">0</div>
+                <div class="label">Total Orders</div>
+            </div>
+            <div class="analytics-card card-green">
+                <div class="icon"><i class="bi bi-check-circle"></i></div>
+                <div class="value" id="completedOrders">0</div>
+                <div class="label">Completed Orders</div>
+            </div>
+            <div class="analytics-card card-blue">
+                <div class="icon"><i class="bi bi-clock"></i></div>
+                <div class="value" id="pendingOrders">0</div>
+                <div class="label">Pending Orders</div>
+            </div>
+            <div class="analytics-card card-purple">
+                <div class="icon"><i class="bi bi-wallet2"></i></div>
+                <div class="value" id="totalPayout">₹0</div>
+                <div class="label">Total Payout</div>
+            </div>
+            <div class="analytics-card card-pink">
+                <div class="icon"><i class="bi bi-trophy"></i></div>
+                <div class="value" id="avgRefund">₹0</div>
+                <div class="label">Avg Refund Amount</div>
+            </div>
+            <div class="analytics-card card-cyan">
+                <div class="icon"><i class="bi bi-people"></i></div>
+                <div class="value" id="uniqueCustomers">0</div>
+                <div class="label">Unique Customers</div>
+            </div>
+            <div class="analytics-card" style="border-left: 3px solid #FF6B35;">
+                <div class="icon" style="background:#FFF3F0; color:#FF6B35;"><i class="bi bi-hourglass-split"></i></div>
+                <div class="value" id="avgCompletionTime">0d</div>
+                <div class="label">Avg Completion Time</div>
+            </div>
+            <div class="analytics-card" style="border-left: 3px solid #8B5CF6;">
+                <div class="icon" style="background:#F5F3FF; color:#8B5CF6;"><i class="bi bi-percent"></i></div>
+                <div class="value" id="completionRate">0%</div>
+                <div class="label">Completion Rate</div>
+            </div>
+        </div>
+
+        <div class="chart-grid">
+            <div class="chart-box">
+                <h5><i class="bi bi-bar-chart-fill"></i>Order Status Distribution</h5>
+                <div class="chart-wrapper"><canvas id="statusChart"></canvas></div>
+            </div>
+            <div class="chart-box">
+                <h5><i class="bi bi-graph-up"></i>Daily Order Trend</h5>
+                <div class="chart-wrapper"><canvas id="trendChart"></canvas></div>
+            </div>
+            <div class="chart-box">
+                <h5><i class="bi bi-pie-chart-fill"></i>Top Brands by Orders</h5>
+                <div class="chart-wrapper"><canvas id="brandChart"></canvas></div>
+            </div>
+            <div class="chart-box">
+                <h5><i class="bi bi-currency-rupee"></i>Revenue by Brand</h5>
+                <div class="chart-wrapper"><canvas id="revenueChart"></canvas></div>
+            </div>
+            <div class="chart-box chart-full">
+                <h5><i class="bi bi-calendar-week"></i>Weekly Performance (Orders vs Payout)</h5>
+                <div class="chart-wrapper"><canvas id="weeklyChart"></canvas></div>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <h5><i class="bi bi-trophy"></i>Brand Performance Report</h5>
+            <div style="overflow-x:auto;">
+                <table class="analytics-table" id="brandTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Brand Name</th>
+                            <th>Total Orders</th>
+                            <th>Completed</th>
+                            <th>Pending</th>
+                            <th>Completion Rate</th>
+                            <th>Total Payout</th>
+                            <th>Avg Refund</th>
+                        </tr>
+                    </thead>
+                    <tbody id="brandTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-wrapper" style="margin-top:1.5rem;">
+            <h5><i class="bi bi-clock-history"></i>Recent Orders</h5>
+            <div style="overflow-x:auto;">
+                <table class="analytics-table" id="recentOrdersTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Brand</th>
+                            <th>Profile</th>
+                            <th>Amount</th>
+                            <th>Refund</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentOrdersBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let statusChartInstance = null, trendChartInstance = null, brandChartInstance = null, revenueChartInstance = null, weeklyChartInstance = null;
+        const COLORS = { orange: '#FF6B35', green: '#10B981', blue: '#3B82F6', purple: '#8B5CF6', pink: '#EC4899', cyan: '#06B6D4', yellow: '#F59E0B', red: '#EF4444', gray: '#6B7280' };
+        const CHART_COLORS = ['#FF6B35', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#06B6D4', '#F59E0B', '#EF4444'];
+
+        function showLoader() { document.getElementById('global-loader').style.display = 'flex'; }
+        function hideLoader() { document.getElementById('global-loader').style.display = 'none'; }
+
+        async function updateAnalytics() {
+            showLoader();
+            
+            const timeFilter = document.getElementById('timeFilter').value;
+            const brandFilter = document.getElementById('brandFilter').value;
+            
+            try {
+                const response = await fetch(`/mediator/analytics/api?time=${timeFilter}&brand=${brandFilter}`);
+                const data = await response.json();
+                renderAnalytics(data);
+            } catch (error) {
+                console.error('Error fetching analytics:', error);
+            }
+            
+            hideLoader();
+        }
+
+        function renderAnalytics(data) {
+            // Update KPI Cards
+            document.getElementById('totalOrders').textContent = data.totalOrders || 0;
+            document.getElementById('completedOrders').textContent = data.completed || 0;
+            document.getElementById('pendingOrders').textContent = data.pending || 0;
+            document.getElementById('totalPayout').textContent = '₹' + (data.totalPayout || 0).toLocaleString();
+            document.getElementById('avgRefund').textContent = '₹' + Math.round(data.avgRefund || 0);
+            document.getElementById('uniqueCustomers').textContent = data.uniqueCustomers || 0;
+            document.getElementById('avgCompletionTime').textContent = (data.avgCompletionTime || 0) + 'd';
+            document.getElementById('completionRate').textContent = (data.completionRate || 0) + '%';
+
+            // Update Brand Filter
+            if (data.brands) {
+                const filter = document.getElementById('brandFilter');
+                const currentValue = filter.value;
+                filter.innerHTML = '<option value="all">All Brands</option>';
+                data.brands.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b;
+                    opt.textContent = b;
+                    if (b === currentValue) opt.selected = true;
+                    filter.appendChild(opt);
+                });
+            }
+
+            renderStatusChart(data);
+            renderTrendChart(data);
+            renderBrandChart(data);
+            renderRevenueChart(data);
+            renderWeeklyChart(data);
+            renderBrandTable(data);
+            renderRecentOrders(data);
+        }
+
+        function renderStatusChart(data) {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            if (statusChartInstance) statusChartInstance.destroy();
+            
+            statusChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Pending'],
+                    datasets: [{
+                        data: [data.completed || 0, data.pending || 0],
+                        backgroundColor: [COLORS.green, COLORS.orange],
+                        borderWidth: 0,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true, pointStyle: 'circle', font: { size: 12, family: 'Inter' } } }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        function renderTrendChart(data) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            if (trendChartInstance) trendChartInstance.destroy();
+            
+            const dates = Object.keys(data.dailyData || {});
+            const orderCounts = dates.map(d => data.dailyData[d]?.orders || 0);
+            const completedCounts = dates.map(d => data.dailyData[d]?.completed || 0);
+            
+            trendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Total Orders',
+                            data: orderCounts,
+                            borderColor: COLORS.orange,
+                            backgroundColor: COLORS.orange + '20',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 2,
+                            pointBackgroundColor: COLORS.orange
+                        },
+                        {
+                            label: 'Completed',
+                            data: completedCounts,
+                            borderColor: COLORS.green,
+                            backgroundColor: COLORS.green + '20',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 2,
+                            pointBackgroundColor: COLORS.green
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', font: { size: 11, family: 'Inter' } } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#F0F0F0' } },
+                        x: { grid: { display: false }, ticks: { maxTicksLimit: 15, font: { size: 9 } } }
+                    },
+                    interaction: { intersect: false, mode: 'index' }
+                }
+            });
+        }
+
+        function renderBrandChart(data) {
+            const ctx = document.getElementById('brandChart').getContext('2d');
+            if (brandChartInstance) brandChartInstance.destroy();
+            
+            const stats = data.brandStats || {};
+            const sorted = Object.entries(stats).sort((a, b) => b[1].total - a[1].total).slice(0, 6);
+            const labels = sorted.map(([name]) => name);
+            const values = sorted.map(([, s]) => s.total);
+            const colors = CHART_COLORS.slice(0, labels.length);
+            
+            brandChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Orders',
+                        data: values,
+                        backgroundColor: colors.map(c => c + '80'),
+                        borderColor: colors,
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#F0F0F0' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderRevenueChart(data) {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            if (revenueChartInstance) revenueChartInstance.destroy();
+            
+            const stats = data.brandStats || {};
+            const sorted = Object.entries(stats).sort((a, b) => b[1].payout - a[1].payout).slice(0, 6);
+            const labels = sorted.map(([name]) => name);
+            const values = sorted.map(([, s]) => s.payout);
+            const colors = CHART_COLORS.slice(0, labels.length);
+            
+            revenueChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Payout (₹)',
+                        data: values,
+                        backgroundColor: colors.map(c => c + '60'),
+                        borderColor: colors,
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#F0F0F0' }, ticks: { callback: v => '₹' + v } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderWeeklyChart(data) {
+            const ctx = document.getElementById('weeklyChart').getContext('2d');
+            if (weeklyChartInstance) weeklyChartInstance.destroy();
+            
+            const weekly = data.weeklyData || [];
+            const weeks = weekly.map(w => w.week);
+            const orders = weekly.map(w => w.orders);
+            const completed = weekly.map(w => w.completed);
+            const payout = weekly.map(w => w.payout);
+            
+            weeklyChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: weeks,
+                    datasets: [
+                        {
+                            label: 'Orders',
+                            data: orders,
+                            backgroundColor: COLORS.orange + '60',
+                            borderColor: COLORS.orange,
+                            borderWidth: 2,
+                            borderRadius: 4,
+                            barPercentage: 0.3,
+                            order: 1
+                        },
+                        {
+                            label: 'Completed',
+                            data: completed,
+                            backgroundColor: COLORS.green + '60',
+                            borderColor: COLORS.green,
+                            borderWidth: 2,
+                            borderRadius: 4,
+                            barPercentage: 0.3,
+                            order: 1
+                        },
+                        {
+                            label: 'Payout (₹)',
+                            data: payout,
+                            type: 'line',
+                            borderColor: COLORS.purple,
+                            backgroundColor: COLORS.purple + '20',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: COLORS.purple,
+                            yAxisID: 'y1',
+                            order: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', font: { size: 11, family: 'Inter' } } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#F0F0F0' }, position: 'left' },
+                        y1: { beginAtZero: true, grid: { display: false }, position: 'right', ticks: { callback: v => '₹' + v } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderBrandTable(data) {
+            const tbody = document.getElementById('brandTableBody');
+            const stats = data.brandStats || {};
+            const sorted = Object.entries(stats).sort((a, b) => b[1].total - a[1].total);
+            
+            let html = '';
+            sorted.forEach(([brand, s], index) => {
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${brand}</strong></td>
+                        <td><span class="brand-badge">${s.total}</span></td>
+                        <td style="color:#10B981;">${s.completed}</td>
+                        <td style="color:#FF6B35;">${s.pending}</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div class="progress-bar-custom" style="flex:1;min-width:60px;">
+                                    <div class="fill" style="width:${s.rate || 0}%;"></div>
+                                </div>
+                                <span style="font-size:0.75rem;font-weight:600;">${Math.round(s.rate || 0)}%</span>
+                            </div>
+                        </td>
+                        <td>₹${(s.payout || 0).toLocaleString()}</td>
+                        <td>₹${Math.round(s.avg_refund || 0)}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html || '<tr><td colspan="8" class="text-center py-3">No data available</td></tr>';
+        }
+
+        function renderRecentOrders(data) {
+            const tbody = document.getElementById('recentOrdersBody');
+            const orders = data.orders || [];
+            
+            let html = '';
+            orders.slice(0, 20).forEach(o => {
+                const statusBadge = o.status === 'Done' 
+                    ? `<span style="background:#10B981;color:white;padding:0.2rem 0.6rem;border-radius:50px;font-size:0.7rem;">Done</span>`
+                    : `<span style="background:#F59E0B;color:white;padding:0.2rem 0.6rem;border-radius:50px;font-size:0.7rem;">Pending</span>`;
+                html += `
+                    <tr>
+                        <td style="font-weight:600;color:#FF6B35;font-family:monospace;">${o.order_id || '-'}</td>
+                        <td>${o.brand || '-'}</td>
+                        <td>${o.profile || '-'}</td>
+                        <td>₹${o.amount || 0}</td>
+                        <td style="font-weight:600;color:#FF6B35;">₹${o.refund || 0}</td>
+                        <td>${statusBadge}</td>
+                        <td style="font-size:0.8rem;color:#888;">${o.date || '-'}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html || '<tr><td colspan="7" class="text-center py-3">No recent orders</td></tr>';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAnalytics();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
