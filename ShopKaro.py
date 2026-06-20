@@ -2619,13 +2619,218 @@ def BYPASSorderform():
         NAME=NAME
     )
 
+@app.route('/mediator/analytics')
+def mediator_analytics():
+    if session.get('Med Username') == None:
+        return redirect('/Mediator_Login')
+    
+    MUN = session.get('Med Username')
+    MN = session.get('Med name')
+    MNUM = session.get('Med num')
+    
+    return render_template(
+        'mediator_analytics.html',
+        MUN=MUN,
+        MN=MN,
+        MNUM=MNUM,
+        NAME=NAME
+    )
+
+@app.route('/mediator/analytics/api')
+def mediator_analytics_api():
+    if session.get('Med Username') == None:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    time_filter = request.args.get('time', '30')
+    brand_filter = request.args.get('brand', 'all')
+    
+    # Convert time filter to days
+    try:
+        days = int(time_filter)
+    except:
+        days = 30
+    
+    # ------------------- FETCH DATA FROM MAIN SHEET -------------------
+    global MainSheet
+    sheet = MainSheet
+    all_values = sheet.get_all_values()
+    headers = all_values[0]
+    data_rows = all_values[1:]
+    
+    # Get column indices
+    timestamp_index = headers.index("TimeStamp")
+    order_id_index = headers.index("Order ID")
+    order_date_index = headers.index("Order Date")
+    order_status_index = headers.index("Status")
+    order_brand_index = headers.index("Brand Name")
+    order_amount_index = headers.index("Order Amount")
+    order_refundAmount_index = headers.index("Refund Amount")
+    order_reviewer_index = headers.index("Profile Name")
+    whatsapp_index = headers.index("Whatsapp")
+    order_ss_index = headers.index("Order SS")
+    
+    # ------------------- FETCH BRANDS FROM DB -------------------
+    conn = db()
+    cur = conn.cursor()
+    cur.execute(f"SELECT Seller FROM {NAME}_Sellers")
+    all_brands = [row[0] for row in cur.fetchall()]
+    cur.close()
+    conn.close()
+    
+    # ------------------- PROCESS ORDERS -------------------
+    orders = []
+    today = datetime.now()
+    
+    for row in data_rows:
+        if len(row) <= max(timestamp_index, order_id_index):
+            continue
+            
+        try:
+            # Parse timestamp
+            ts_str = row[timestamp_index] if len(row) > timestamp_index else ""
+            if ts_str:
+                order_date_obj = datetime.strptime(ts_str, "%Y-%m-%d %H:%M:%S")
+            else:
+                continue
+                
+            # 🔥 FIX: Check time filter
+            if time_filter != 'all':  # Only filter if not 'all'
+                days_diff = (today - order_date_obj).days
+                if days_diff > days:
+                    continue
+            # If time_filter == 'all', don't filter by date
+            
+            # Check brand filter
+            brand = row[order_brand_index] if len(row) > order_brand_index else ""
+            if brand_filter != 'all' and brand != brand_filter:
+                continue
+            
+            status = row[order_status_index] if len(row) > order_status_index else "Pending"
+            amount = int(row[order_amount_index]) if len(row) > order_amount_index and row[order_amount_index] else 0
+            refund = int(row[order_refundAmount_index]) if len(row) > order_refundAmount_index and row[order_refundAmount_index] else 0
+            reviewer = row[order_reviewer_index] if len(row) > order_reviewer_index else ""
+            whatsapp = row[whatsapp_index] if len(row) > whatsapp_index else ""
+            order_id = row[order_id_index] if len(row) > order_id_index else ""
+            order_date = row[order_date_index] if len(row) > order_date_index else ""
+            
+            orders.append({
+                'order_id': order_id,
+                'brand': brand,
+                'profile': reviewer,
+                'amount': amount,
+                'refund': refund,
+                'status': status,
+                'date': order_date,
+                'timestamp': order_date_obj,
+                'whatsapp': whatsapp,
+                'order_ss': row[order_ss_index] if len(row) > order_ss_index else ""
+            })
+            
+        except Exception as e:
+            print(f"Error processing row: {e}")
+            continue
+    
+    # Sort by timestamp (newest first)
+    orders.sort(key=lambda x: x['timestamp'], reverse=True)
+    
+    # ------------------- CALCULATE STATISTICS -------------------
+    total_orders = len(orders)
+    completed_orders = len([o for o in orders if o['status'] == 'Done'])
+    pending_orders = total_orders - completed_orders
+    total_payout = sum([o['refund'] for o in orders if o['status'] == 'Done'])
+    avg_refund = total_payout / completed_orders if completed_orders > 0 else 0
+    completion_rate = (completed_orders / total_orders * 100) if total_orders > 0 else 0
+    
+    # Unique customers (by WhatsApp number)
+    unique_customers = len(set([o['whatsapp'] for o in orders if o['whatsapp']]))
+    
+    # Average completion time (in days)
+    completion_times = []
+    for o in orders:
+        if o['status'] == 'Done':
+            try:
+                order_dt = datetime.strptime(o['date'], "%d-%m-%Y")
+                completion_times.append((today - order_dt).days)
+            except:
+                pass
+    avg_completion_time = sum(completion_times) / len(completion_times) if completion_times else 0
+    
+    # ------------------- BRAND STATISTICS -------------------
+    brand_stats = {}
+    for brand in all_brands:
+        brand_orders = [o for o in orders if o['brand'] == brand]
+        brand_done = [o for o in brand_orders if o['status'] == 'Done']
+        brand_stats[brand] = {
+            'total': len(brand_orders),
+            'completed': len(brand_done),
+            'pending': len(brand_orders) - len(brand_done),
+            'payout': sum([o['refund'] for o in brand_done]),
+            'avg_refund': sum([o['refund'] for o in brand_done]) / len(brand_done) if brand_done else 0,
+            'rate': (len(brand_done) / len(brand_orders) * 100) if brand_orders else 0
+        }
+    
+    # ------------------- DAILY TREND -------------------
+    daily_data = {}
+    
+    # 🔥 FIX: For 'all', take last 60 days, else take 'days' days
+    if time_filter == 'all':
+        days_for_trend = 60  # Show 60 days for 'all' filter
+    else:
+        days_for_trend = days if days <= 30 else 30  # Max 30 days for others
+    
+    for i in range(days_for_trend - 1, -1, -1):
+        d = today - timedelta(days=i)
+        key = d.strftime("%Y-%m-%d")
+        daily_data[key] = {'orders': 0, 'completed': 0, 'pending': 0, 'payout': 0}
+    
+    for o in orders:
+        try:
+            date_key = o['timestamp'].strftime("%Y-%m-%d")
+            if date_key in daily_data:
+                daily_data[date_key]['orders'] += 1
+                if o['status'] == 'Done':
+                    daily_data[date_key]['completed'] += 1
+                    daily_data[date_key]['payout'] += o['refund']
+                else:
+                    daily_data[date_key]['pending'] += 1
+        except:
+            pass
+    
+    # ------------------- WEEKLY DATA (Last 8 weeks) -------------------
+    weekly_data = []
+    # 🔥 For 'all' show 12 weeks, else 8 weeks
+    weeks_to_show = 12 if time_filter == 'all' else 8
+    
+    for w in range(weeks_to_show - 1, -1, -1):
+        week_start = today - timedelta(days=w*7 + 7)
+        week_end = today - timedelta(days=w*7)
+        week_orders = [o for o in orders if week_start <= o['timestamp'] <= week_end]
+        week_done = [o for o in week_orders if o['status'] == 'Done']
+        weekly_data.append({
+            'week': f"Week {weeks_to_show - w}",
+            'orders': len(week_orders),
+            'completed': len(week_done),
+            'payout': sum([o['refund'] for o in week_done])
+        })
+    
+    # ------------------- SEND RESPONSE -------------------
+    return jsonify({
+        'totalOrders': total_orders,
+        'completed': completed_orders,
+        'pending': pending_orders,
+        'totalPayout': total_payout,
+        'avgRefund': round(avg_refund, 2),
+        'uniqueCustomers': unique_customers,
+        'avgCompletionTime': round(avg_completion_time, 1),
+        'completionRate': round(completion_rate, 1),
+        'brandStats': brand_stats,
+        'dailyData': daily_data,
+        'weeklyData': weekly_data,
+        'orders': orders[:20],  # Send recent 20 orders
+        'brands': all_brands
+    })
 
 # ---------- RUN ----------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT",8080))
     app.run(host="0.0.0.0", port=port,  debug=True)
-
-
-
-
-
